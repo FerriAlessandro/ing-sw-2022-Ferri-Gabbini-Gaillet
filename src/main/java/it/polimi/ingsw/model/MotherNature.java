@@ -6,7 +6,7 @@ import java.util.Random;
 
 /**
  * Represents MotherNature with its current island
- * @author Angelo G. Gaillet
+ * @author A.G. Gaillet
  * @version 1.0
  * @serial
  * @see IslandTile
