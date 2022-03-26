@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.enumerations;
 
 /**
- * @Author Alessandro F.
- * @Version 1.0
+ * @author Alessandro F.
+ * @version 1.0
  * This is an enumeration class for the assistant cards
  */
 public enum AssistantCard {

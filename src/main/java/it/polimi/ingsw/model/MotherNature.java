@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
+
 /**
  * Represents MotherNature with its current island
  * @author A.G. Gaillet
