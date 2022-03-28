@@ -27,6 +27,7 @@ class AssistantDeckTest {
     void removeCardFromOneDeck() {
         deck1.removeCard(AssistantCard.CHEETAH);
         assertEquals(deck2.currNumOfCards()-1, deck1.currNumOfCards());
+
     }
 
     @Test

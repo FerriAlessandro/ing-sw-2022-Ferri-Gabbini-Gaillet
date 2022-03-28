@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.enumerations;
 /**
  * @author Alessandro F.
  * @version 1.0
- * This is an enumeration class for the assistant cards
+ * This is an Enumeration class for the assistant cards
  */
 public enum AssistantCard {
 
@@ -23,9 +23,9 @@ public enum AssistantCard {
     private boolean hasBeenPlayed;
 
     /**
-     * Constructor of the enum class, it's private by default. The attribute "hasBeenPlayed" is set to false.
-     * @param cardValue is the value of the card, it's used to decide the order of the turn (who plays first, second etc.)
-     * @param motherNatureMovement defines the maximum number of mother nature's steps that can be done by the player
+     * Constructor of the enum class, it's private by default. The attribute "hasBeenPlayed" is set to "False"
+     * @param cardValue The value of the card, it's used to decide the order of the turn (who plays first, second etc.)
+     * @param motherNatureMovement Defines the maximum number of mother nature's steps that can be done by the player
      */
 
     AssistantCard(int cardValue, int motherNatureMovement){
@@ -38,7 +38,7 @@ public enum AssistantCard {
 
     /**
      * Returns the number of steps that mother nature can do after the card is played
-     * @return number of mother nature steps
+     * @return The number of mother nature steps
      */
     public int getMotherNatureMovement() {
         return motherNatureMovement;
@@ -46,14 +46,14 @@ public enum AssistantCard {
 
     /**
      * Returns the card's value (to decide the turn order)
-     * @return value of the card
+     * @return The value of the card
      */
     public int getCardValue() {
         return cardValue;
     }
 
     /**
-     * @return true if the card has already been played, otherwise returns false
+     * @return "True" if the card has already been played, otherwise returns "False"
      */
     public boolean getPlayed(){
         return hasBeenPlayed;
@@ -67,7 +67,7 @@ public enum AssistantCard {
     }
 
     /**
-     * Sets the 'hasBeenPlayed' value to false
+     * Sets the 'hasBeenPlayed' value to "False"
      */
     public void resetPlayed(){
         hasBeenPlayed = false;
