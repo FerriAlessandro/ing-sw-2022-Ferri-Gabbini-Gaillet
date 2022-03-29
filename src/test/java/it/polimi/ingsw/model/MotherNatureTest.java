@@ -13,8 +13,10 @@ class MotherNatureTest {
     @Test
     @DisplayName("Test move method")
     void move() {
-        IslandTile isl1 = new IslandTile(TowerColor.BLACK);
-        IslandTile isl2 = new IslandTile(TowerColor.GRAY);
+        IslandTile isl1 = new IslandTile();
+        isl1.swapTower(TowerColor.BLACK);
+        IslandTile isl2 = new IslandTile();
+        isl2.swapTower(TowerColor.GRAY);
         ArrayList<IslandTile> islands = new ArrayList<>();
         islands.add(isl1);
         islands.add(isl2);
@@ -23,7 +25,8 @@ class MotherNatureTest {
         int pos = 3;
         mn.move(pos);
         assertEquals(mn.getCurrentIsland(), islands.get((islands.indexOf(currIsl) + pos)%(islands.size())));
-        IslandTile isl3 = new IslandTile(TowerColor.WHITE);
+        IslandTile isl3 = new IslandTile();
+        isl3.swapTower(TowerColor.WHITE);
         islands.add(isl3);
         mn.move(1);
         IslandTile isl4 = mn.getCurrentIsland();
