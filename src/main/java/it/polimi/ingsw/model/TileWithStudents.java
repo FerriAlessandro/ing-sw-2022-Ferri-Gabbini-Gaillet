@@ -30,7 +30,7 @@ public abstract class TileWithStudents {
         students.put(color, (students.get(color)) + 1);
     }
 
-    public int getNumStudent(Color color) {
+    public int getNumStudents(Color color) {
         return students.get(color);
     }
 
@@ -45,7 +45,13 @@ public abstract class TileWithStudents {
         students.put(color, (students.get(color)) - 1);
     }
 
+    /**
+     * @return the total of the students on the island
+     */
     public int getNumStudents() {
-        return 1;
+        int totalStudents = 0;
+        for(Color color : Color.values())
+            totalStudents += getNumStudents(color);
+        return totalStudents;
     }
 }

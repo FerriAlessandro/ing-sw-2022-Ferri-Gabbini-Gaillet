@@ -10,21 +10,28 @@ class EntranceTest {
     Entrance entrance;
     @BeforeEach
     void setup() {
-        this.entrance = new Entrance(9);
+        this.entrance = new Entrance(2);
     }
     @Test
-    @DisplayName("Tests a simple case of removing a student")
+    @DisplayName("Test the constructor method with illegal parameter")
+    void entranceConstructorTest() {
+        IllegalArgumentException e = new IllegalArgumentException();
+        assertThrowsExactly(e.getClass(), () -> this.entrance = new Entrance(1));
+    }
+
+    @Test
+    @DisplayName("Test a simple case of removeStudent")
     void removeStudentTest() {
         for(Color color : Color.values())
             entrance.addStudent(color);
         for(Color color : Color.values())
             entrance.removeStudent(color);
         for(Color color : Color.values())
-            assertEquals(0, entrance.getNumStudent(color));
+            assertEquals(0, entrance.getNumStudents(color));
     }
 
     @Test
-    @DisplayName("Tests the corner case of attempting to remove a student even though he's not present")
+    @DisplayName("Test the corner case of removeStudent when when there are no students.")
     void removeStudentCornerTest() {
         for(Color color : Color.values()){
             RuntimeException e = new RuntimeException();
@@ -32,17 +39,17 @@ class EntranceTest {
         }
     }
     @Test
-    @DisplayName("Tests a simple case of adding a student")
+    @DisplayName("Test a simple case of adding a student")
     void AddStudentTest() {
         for(Color color : Color.values())
             entrance.addStudent(color);
         for(Color color : Color.values())
-            assertEquals(1, entrance.getNumStudent(color));
+            assertEquals(1, entrance.getNumStudents(color));
     }
     @Test
-    @DisplayName("Tests the corner case of attempting to add a student even though the entrance is full")
+    @DisplayName("Test the corner case of attempting to add a student even though the entrance is full")
     void addStudentCornerTest() {
-        for(int i = 0; i < 9; i++)
+        for(int i = 0; i < entrance.getMaxStudents(); i++)
             entrance.addStudent(Color.GREEN);
             RuntimeException e = new RuntimeException();
             assertThrowsExactly(e.getClass(), () -> entrance.addStudent(Color.GREEN));

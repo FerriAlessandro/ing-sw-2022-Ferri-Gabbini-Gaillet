@@ -13,11 +13,24 @@ public class Entrance extends TileWithStudents{
 
     /**
      * Constructor needed because an entrance has a fixed maximum number of students.
-     * @param maxStudents 7 for 2 players-game, 9 for 3 players-game
+     * @param numOfPlayers determines the number of player of the game, hence
+     * how many students the entrance can host: 7 for 2 players-game, 9 for 3 players-game.
+     * @throws IllegalArgumentException when numOfPlayers is neither 2 nor 3.
      */
-    public Entrance(int maxStudents) {
+    public Entrance(int numOfPlayers) {
         super();
-        this.maxStudents = maxStudents;
+        switch (numOfPlayers) {
+            case 2: maxStudents = 7;
+                    break;
+            case 3: maxStudents = 9;
+                    break;
+            default: throw new IllegalArgumentException("Illegal number of players");
+
+        }
+    }
+
+    public int getMaxStudents() {
+        return this.maxStudents;
     }
 
     /**
@@ -28,7 +41,7 @@ public class Entrance extends TileWithStudents{
     public void addStudent(Color color) {
         int currentNumOfStudents = 0;
         for(Color color1 : Color.values()) {
-            currentNumOfStudents += getNumStudent(color1);
+            currentNumOfStudents += getNumStudents(color1);
         }
         if(currentNumOfStudents == maxStudents)
             throw new RuntimeException("The entrance is already full");
