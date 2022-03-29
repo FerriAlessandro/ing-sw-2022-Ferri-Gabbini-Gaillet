@@ -6,7 +6,7 @@ import java.util.Random;
 
 
 /**
- * Represents MotherNature with its current island
+ * Represents MotherNature with its current island.
  * @author A.G. Gaillet
  * @version 1.0
  * @serial
@@ -17,7 +17,7 @@ public class MotherNature implements Serializable {
     private IslandTile currentIsland;
     private static final long serialVersionUID = -5551582185882138723L;
     /**
-     * Constructor
+     * Constructor.
      * @param param {@link ArrayList} of {@link IslandTile} on which {@link MotherNature} moves
      */
     public MotherNature(ArrayList<IslandTile> param){
@@ -28,7 +28,7 @@ public class MotherNature implements Serializable {
     }
 
     /**
-     * This method changes the current {@link IslandTile} of {@link MotherNature} by the given number of positions
+     * This method changes the current {@link IslandTile} of {@link MotherNature} by the given number of positions.
      * @param positions represents the number of 'jumps' from one {@link IslandTile} to another
      */
     public void move(int positions){

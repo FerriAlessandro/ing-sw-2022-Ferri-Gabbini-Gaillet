@@ -4,9 +4,9 @@ import it.polimi.ingsw.model.enumerations.Color;
 import java.util.EnumMap;
 
 /**
+ * This abstract class provides methods and attributes that every other tile with students has.
  * @author AlessandroG
  * @version 1.0
- * This abstract class provides methods and attributes that every other tile with students has.
  */
 
 public abstract class TileWithStudents {
@@ -15,7 +15,7 @@ public abstract class TileWithStudents {
     private final EnumMap<Color, Integer> students;
 
     /**
-     * Constructor simply initializes the map's Color to 0
+     * Constructor simply initializes the map's Color to 0.
      */
     public TileWithStudents() {
         this.students = new EnumMap<>(Color.class);
@@ -24,7 +24,7 @@ public abstract class TileWithStudents {
     }
 
     /**
-     * Add one student of the color received by the caller, to the tile
+     * Add one student of the color received by the caller, to the tile.
      */
     public void addStudent(Color color) {
         students.put(color, (students.get(color)) + 1);
@@ -34,8 +34,9 @@ public abstract class TileWithStudents {
         return students.get(color);
     }
 
+
     /**
-     * Method for removing a student (any purpose)
+     * Method for removing a student (any purpose).
      * @throws RuntimeException when trying to remove a student even if he's not present
      */
     public void removeStudent(Color color) throws RuntimeException {
@@ -44,4 +45,7 @@ public abstract class TileWithStudents {
         students.put(color, (students.get(color)) - 1);
     }
 
+    public int getNumStudents() {
+        return 1;
+    }
 }

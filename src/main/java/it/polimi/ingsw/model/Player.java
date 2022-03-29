@@ -7,13 +7,13 @@ import it.polimi.ingsw.model.enumerations.Status;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 
 /**
+ * This class represents the Player entity in the game.
  * @author Alessandro F.
  * @version 1.0
- * This class represents the Player entity in the game
  */
 
 /**
- * Constructor of the Player Class, the status is set to "True"
+ * Constructor of the Player Class, the status is set to "True".
  */
 public class Player {
     private final String nickName;
@@ -72,7 +72,7 @@ public class Player {
     }
 
     /**
-     * This method sets the 'isFirst' attribute to "True" if the Player is the first to play, to "False" otherwise
+     * This method sets the 'isFirst' attribute to "True" if the Player is the first to play, to "False" otherwise.
      * @param first Boolean to set to "True" or "False" the 'isFirst' attribute
      */
     public void setFirst(boolean first){     //takes a bool as a parameter so we don't have to make another method to reset it
@@ -87,7 +87,7 @@ public class Player {
     }
 
     /**
-     * This method sets the 'isPlayerTurn' attribute to "True" if it's the Player's turn, to "False" otherwise
+     * This method sets the 'isPlayerTurn' attribute to "True" if it's the Player's turn, to "False" otherwise.
      * @param turn Boolean to set to "True" or "False" the 'isPlayerTurn' attribute
      */
     public void setPlayerTurn(boolean turn){
@@ -120,7 +120,7 @@ public class Player {
     }
 
     /**
-     * This method sets the Assistant card played by the Player, marks the card as 'already played' and removes it from the deck
+     * This method sets the Assistant card played by the Player, marks the card as 'already played' and removes it from the deck.
      * @param card The card played by the Player
      */
 

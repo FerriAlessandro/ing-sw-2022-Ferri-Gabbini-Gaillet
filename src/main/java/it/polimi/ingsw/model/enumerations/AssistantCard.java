@@ -1,9 +1,9 @@
 package it.polimi.ingsw.model.enumerations;
 
 /**
+ * This is an Enumeration class for the assistant cards.
  * @author Alessandro F.
  * @version 1.0
- * This is an Enumeration class for the assistant cards
  */
 public enum AssistantCard {
 
@@ -23,7 +23,7 @@ public enum AssistantCard {
     private boolean hasBeenPlayed;
 
     /**
-     * Constructor of the enum class, it's private by default. The attribute "hasBeenPlayed" is set to "False"
+     * Constructor of the enum class, it's private by default. The attribute "hasBeenPlayed" is set to "False".
      * @param cardValue The value of the card, it's used to decide the order of the turn (who plays first, second etc.)
      * @param motherNatureMovement Defines the maximum number of mother nature's steps that can be done by the player
      */
@@ -37,7 +37,7 @@ public enum AssistantCard {
     }
 
     /**
-     * Returns the number of steps that mother nature can do after the card is played
+     * Returns the number of steps that mother nature can do after the card is played.
      * @return The number of mother nature steps
      */
     public int getMotherNatureMovement() {
@@ -45,7 +45,7 @@ public enum AssistantCard {
     }
 
     /**
-     * Returns the card's value (to decide the turn order)
+     * Returns the card's value (to decide the turn order).
      * @return The value of the card
      */
     public int getCardValue() {
@@ -60,14 +60,14 @@ public enum AssistantCard {
     }
     /**
      * This method sets the 'hasBeenPlayed' value to true when a card is played by a player (this doesn't let another player
-     * play the same card on the same turn)
+     * play the same card on the same turn).
      */
     public void setPlayed(){
         hasBeenPlayed = true;
     }
 
     /**
-     * Sets the 'hasBeenPlayed' value to "False"
+     * Sets the 'hasBeenPlayed' value to "False".
      */
     public void resetPlayed(){
         hasBeenPlayed = false;

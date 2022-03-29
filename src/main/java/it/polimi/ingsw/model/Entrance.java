@@ -3,9 +3,9 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.enumerations.*;
 
 /**
+ * This class hosts the students extracted from the bag. It's part of the player board.
  * @author AlessandroG
  * @version 1.0
- * This class hosts the students extracted from the bag. It's part of the player board.
  */
 public class Entrance extends TileWithStudents{
     // the number of students in the entrance changes with the players number. 7 for 2 players, 9 for 3 players.
@@ -22,7 +22,7 @@ public class Entrance extends TileWithStudents{
 
     /**
      * The function is overridden because the entrance can't have more than 7 or 9 students per color.
-     * @throws RuntimeException when the entrance is full and someone tries to add a student.
+     * @throws RuntimeException when the entrance is full and someone tries to add a student
      */
     @Override
     public void addStudent(Color color) {

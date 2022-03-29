@@ -33,10 +33,10 @@ public class Bag implements Serializable{
     }
 
     /**
-     * This method returns an ArrayList of colors representing a given number of randomly extracted students
+     * This method returns an ArrayList of colors representing a given number of randomly extracted students.
      * @param num number of students to be extracted from the {@link Bag}
-     * @return An {@link ArrayList} of randomly extracted colors representing students
-     * If num > number of remaining students it returns all remaining students
+     * @return An {@link ArrayList} of randomly extracted colors representing students;
+     * if num > number of remaining students it returns all remaining students
      */
     public ArrayList<Color> getStudents(int num){
         ArrayList<Color> students = new ArrayList<>();
@@ -54,7 +54,7 @@ public class Bag implements Serializable{
     }
 
     /**
-     * This method returns the number of students of a given color remaining in the {@link Bag}
+     * This method returns the number of students of a given color remaining in the {@link Bag}.
      * @param color given {@link Color} of students
      * @return number of remaining students of the given {@link Color}
      */
@@ -63,7 +63,7 @@ public class Bag implements Serializable{
     }
 
     /**
-     * This method returns the total number of students remaining in the {@link Bag}
+     * This method returns the total number of students remaining in the {@link Bag}.
      * @return total number of remaining students
      */
     public int numRemaining(){
@@ -73,7 +73,7 @@ public class Bag implements Serializable{
     }
 
     /**
-     * This method adds to the bag the given number of students of the given color
+     * This method adds to the bag the given number of students of the given color.
      * @param num number of students to be added to the {@link Bag}
      * @param color {@link Color} of the students to be added to the {@link Bag}
      * @throws InvalidParameterException when the given number would cause the given color's number of students in the {@link Bag} to be higher than structural maximum

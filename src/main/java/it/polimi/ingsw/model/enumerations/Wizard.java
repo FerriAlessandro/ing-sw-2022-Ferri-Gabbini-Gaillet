@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.enumerations;
 
 /**
- * This enum represents the back of the assistant cards
+ * This enum represents the back of the assistant cards.
  * @author Alessandro F.
  * @version 1.0
  */

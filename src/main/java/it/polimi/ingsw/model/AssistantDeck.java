@@ -46,7 +46,7 @@ public class AssistantDeck {
     }
 
     /**
-     * Removes the played card from the player's deck
+     * Removes the played card from the player's deck.
      * @param chosenCard The card played
      */
     public void removeCard(AssistantCard chosenCard){
@@ -55,7 +55,7 @@ public class AssistantDeck {
     }
 
     /**
-     * Marks the card chosen by the player as 'already played' so that other players cannot use the same card
+     * Marks the card chosen by the player as 'already played' so that other players cannot use the same card.
      * @param chosenCard The card chosen by the player
      */
     public void chooseCard(AssistantCard chosenCard) {
