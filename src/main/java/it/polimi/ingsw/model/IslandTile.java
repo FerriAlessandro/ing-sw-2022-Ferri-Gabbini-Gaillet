@@ -46,6 +46,9 @@ public class IslandTile  extends TileWithStudents{
             throw new IllegalArgumentException("Players can't have NONE towerColor");
         if(towerColor == this.towerColor)
             throw new IllegalArgumentException("Color must be different from the actual towerColor!");
+        if(this.towerColor == TowerColor.NONE) {
+            towers = towers + 1;
+        }
         this.towerColor = towerColor;
     }
 
