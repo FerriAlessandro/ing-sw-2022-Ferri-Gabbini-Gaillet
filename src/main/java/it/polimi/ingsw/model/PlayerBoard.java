@@ -2,6 +2,13 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enumerations.TowerColor;
 
+/**This class represents the board personal to each player
+ * @author A.G. Gaillet
+ * @version 1.0
+ * @see Entrance
+ * @see DiningRoom
+ * @see TowerZone
+ */
 public class PlayerBoard {
     Entrance entrance;
     DiningRoom diningRoom;

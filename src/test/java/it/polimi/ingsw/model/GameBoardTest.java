@@ -10,10 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -267,12 +264,30 @@ class GameBoardTest {
     @Test
     void swapTowers() {
         IslandTile isl1 = islands.get(1);
-        for (TowerColor color : TowerColor.values()) {
+        EnumMap<TowerColor, Integer> intMap = new EnumMap<>(TowerColor.class);
+        ArrayList<TowerColor> colors = new ArrayList<>();
+        for (Player player : playerBoards.keySet()){
+            intMap.put(player.getTowerColor(), gb.getPlayerBoard(player).getTowerZone().getNumOfTowers());
+            colors.add(player.getTowerColor());
+        }
+
+        EnumMap<TowerColor, TowerZone> towerMap = new EnumMap<>(TowerColor.class);
+        for (Player player : playerBoards.keySet()){
+            towerMap.put(player.getTowerColor(), playerBoards.get(player).towerZone);
+        }
+
+        for (TowerColor color : colors) {
             if (!color.equals(TowerColor.NONE)) {
+                TowerColor oldColor = isl1.getTowerColor();
                 gb.swapTowers(isl1, color);
-                assertEquals(color, isl1.getTowerColor());
+                if(!oldColor.equals(TowerColor.NONE)){
+                    assertEquals(intMap.get(oldColor) + 1, towerMap.get(oldColor).getNumOfTowers());
+                    intMap.put(oldColor, towerMap.get(oldColor).getNumOfTowers());
+                }
+                assertEquals(intMap.get(color) - 1, towerMap.get(color).getNumOfTowers());
+                intMap.put(color, towerMap.get(color).getNumOfTowers());
             }
         }
-        //TODO: add check on final number of towers in the two TowerZones
     }
+
 }

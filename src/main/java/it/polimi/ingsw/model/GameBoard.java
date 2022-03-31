@@ -261,6 +261,11 @@ public class GameBoard implements Serializable {
         }catch (Exception e){
             e.printStackTrace();
         }
+        try{
+            getTowerZone(newColor).remove();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
