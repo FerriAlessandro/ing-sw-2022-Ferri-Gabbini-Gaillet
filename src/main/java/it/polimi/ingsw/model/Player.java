@@ -121,6 +121,8 @@ public class Player {
 
     /**
      * This method sets the Assistant card played by the Player, marks the card as 'already played' and removes it from the deck.
+     * @throws CardNotAvailableException Thrown if the selected card was already played by someone else in the same turn
+     * @throws CardNotFoundException Thrown if the player doesn't have the selected card in its deck
      * @param card The card played by the Player
      */
 
