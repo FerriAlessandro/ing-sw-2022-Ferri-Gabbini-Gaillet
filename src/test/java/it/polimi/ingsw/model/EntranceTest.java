@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ class EntranceTest {
     void setup() {
         this.entrance = new Entrance(2);
     }
+    
     @Test
     @DisplayName("Test the constructor method with illegal parameter")
     void entranceConstructorTest() {
@@ -21,7 +23,7 @@ class EntranceTest {
 
     @Test
     @DisplayName("Test a simple case of removeStudent")
-    void removeStudentTest() {
+    void removeStudentTest() throws Exception {
         for(Color color : Color.values())
             entrance.addStudent(color);
         for(Color color : Color.values())
@@ -40,7 +42,7 @@ class EntranceTest {
     }
     @Test
     @DisplayName("Test a simple case of adding a student")
-    void AddStudentTest() {
+    void AddStudentTest() throws FullDestinationException{
         for(Color color : Color.values())
             entrance.addStudent(color);
         for(Color color : Color.values())
@@ -48,11 +50,10 @@ class EntranceTest {
     }
     @Test
     @DisplayName("Test the corner case of attempting to add a student even though the entrance is full")
-    void addStudentCornerTest() {
+    void addStudentCornerTest() throws FullDestinationException {
         for(int i = 0; i < entrance.getMaxStudents(); i++)
             entrance.addStudent(Color.GREEN);
-            RuntimeException e = new RuntimeException();
-            assertThrowsExactly(e.getClass(), () -> entrance.addStudent(Color.GREEN));
+        FullDestinationException e = new FullDestinationException();
+        assertThrowsExactly(e.getClass(), () -> entrance.addStudent(Color.GREEN));
     }
-
 }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
 import java.util.EnumMap;
 
@@ -19,30 +20,12 @@ public abstract class TileWithStudents {
      */
     public TileWithStudents() {
         this.students = new EnumMap<>(Color.class);
-        for(Color color : Color.values())
+        for (Color color : Color.values())
             students.put(color, 0);
-    }
-
-    /**
-     * Add one student of the color received by the caller, to the tile.
-     */
-    public void addStudent(Color color) {
-        students.put(color, (students.get(color)) + 1);
     }
 
     public int getNumStudents(Color color) {
         return students.get(color);
-    }
-
-
-    /**
-     * Method for removing a student (any purpose).
-     * @throws RuntimeException when trying to remove a student even if he's not present
-     */
-    public void removeStudent(Color color) throws RuntimeException {
-        if(students.get(color) == 0)
-            throw new RuntimeException("There are no students of this color");
-        students.put(color, (students.get(color)) - 1);
     }
 
     /**
@@ -50,8 +33,27 @@ public abstract class TileWithStudents {
      */
     public int getNumStudents() {
         int totalStudents = 0;
-        for(Color color : Color.values())
+        for (Color color : Color.values())
             totalStudents += getNumStudents(color);
         return totalStudents;
     }
+
+    /**
+     * Add one student of the color received by the caller, to the tile.
+     */
+    public void addStudent(Color color) throws FullDestinationException {
+        students.put(color, (students.get(color)) + 1);
+    }
+
+    /**
+     * Method for removing a student (any purpose).
+     *
+     * @throws RuntimeException when trying to remove a student even if he's not present
+     */
+    public void removeStudent(Color color) throws RuntimeException {
+        if (students.get(color) == 0)
+            throw new RuntimeException("There are no students of this color");
+        students.put(color, (students.get(color)) - 1);
+    }
 }
+

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.*;
 
 /**
@@ -17,7 +18,7 @@ public class Entrance extends TileWithStudents{
      * how many students the entrance can host: 7 for 2 players-game, 9 for 3 players-game.
      * @throws IllegalArgumentException when numOfPlayers is neither 2 nor 3.
      */
-    public Entrance(int numOfPlayers) {
+    public Entrance(int numOfPlayers) throws IllegalArgumentException {
         super();
         switch (numOfPlayers) {
             case 2: maxStudents = 7;
@@ -25,7 +26,6 @@ public class Entrance extends TileWithStudents{
             case 3: maxStudents = 9;
                     break;
             default: throw new IllegalArgumentException("Illegal number of players");
-
         }
     }
 
@@ -34,17 +34,13 @@ public class Entrance extends TileWithStudents{
     }
 
     /**
-     * The function is overridden because the entrance can't have more than 7 or 9 students per color.
-     * @throws RuntimeException when the entrance is full and someone tries to add a student
+     * The method is overridden because the entrance can't have more than 7 or 9 students per color.
+     * @throws FullDestinationException when the entrance is full and someone tries to add a student
      */
     @Override
-    public void addStudent(Color color) {
-        int currentNumOfStudents = 0;
-        for(Color color1 : Color.values()) {
-            currentNumOfStudents += getNumStudents(color1);
-        }
-        if(currentNumOfStudents == maxStudents)
-            throw new RuntimeException("The entrance is already full");
+    public void addStudent(Color color) throws FullDestinationException {
+        if(getNumStudents() == maxStudents)
+            throw new FullDestinationException();
         super.addStudent(color);
     }
 }

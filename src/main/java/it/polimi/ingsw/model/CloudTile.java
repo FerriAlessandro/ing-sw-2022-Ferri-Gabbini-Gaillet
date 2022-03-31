@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CloudNotFullException;
+import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class CloudTile extends TileWithStudents {
      *                     how many students the entrance can host: 3 for 2 players-game, 4 for 3 players-game.
      * @throws IllegalArgumentException when numOfPlayers is neither 2 nor 3.
      */
-    public CloudTile(int numOfPlayers) {
+    public CloudTile(int numOfPlayers) throws IllegalArgumentException {
         super();
         switch (numOfPlayers) {
             case 2:
@@ -38,6 +39,17 @@ public class CloudTile extends TileWithStudents {
 
     public int getMaxStudents() {
         return maxStudents;
+    }
+
+    /**
+     * The method is overridden because the cloud can't have more than 3 or 4 students.
+     * @throws FullDestinationException when the cloud is full and someone tries to add a student.
+     */
+    @Override
+    public void addStudent(Color color) throws FullDestinationException {
+        if(getNumStudents() == maxStudents)
+            throw new FullDestinationException();
+        super.addStudent(color);
     }
 
     /**
@@ -58,4 +70,5 @@ public class CloudTile extends TileWithStudents {
         }
         return studentsToPick;
     }
+
 }

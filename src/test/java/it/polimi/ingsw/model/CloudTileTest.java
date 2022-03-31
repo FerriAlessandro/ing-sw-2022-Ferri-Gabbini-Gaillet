@@ -1,19 +1,18 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CloudNotFullException;
+import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Method addStudent, removeStudent and other method inherited from TileWithStudents won't be tested because
- * they've already been tested in EntranceTest, the operation is absolutely the same.
+ * Method removeStudent inherited from TileWithStudents won't be tested because
+ * it's already been tested in EntranceTest, the operation is absolutely the same.
  */
 
 class CloudTileTest {
@@ -44,26 +43,37 @@ class CloudTileTest {
     }
 
     @Test
+    @DisplayName("Test the normal operation of addStudent method")
+    void addStudentTest() throws FullDestinationException {
+        cloud.addStudent(Color.GREEN);
+        assertEquals(1, cloud.getNumStudents());
+    }
+
+    @Test
+    @DisplayName("Test if method addStudent throws FullDestinationException properly")
+    void addStudentExcTest() throws FullDestinationException {
+        for(int i = 0; i < cloud.getMaxStudents(); i++)
+            cloud.addStudent(Color.GREEN);
+        FullDestinationException e = new FullDestinationException();
+        assertThrowsExactly(e.getClass(), () -> cloud.addStudent(Color.GREEN));
+    }
+
+    @Test
     @DisplayName("Test the normal operation of method removeAllStudents")
-    void removeAllStudentsTest() {
+    void removeAllStudentsTest() throws Exception {
         cloud.addStudent(Color.YELLOW);
         cloud.addStudent(Color.GREEN);
         cloud.addStudent(Color.YELLOW);
-        try {
-            List<Color> studentsReturned = cloud.removeAllStudents();
-            int numOfYellow = numOfColor(studentsReturned, Color.YELLOW);
-            int numOfGreen = numOfColor(studentsReturned, Color.GREEN);
-            assertEquals(2, numOfYellow);
-            assertEquals(1, numOfGreen);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+        List<Color> studentsReturned = cloud.removeAllStudents();
+        int numOfYellow = numOfColor(studentsReturned, Color.YELLOW);
+        int numOfGreen = numOfColor(studentsReturned, Color.GREEN);
+        assertEquals(2, numOfYellow);
+        assertEquals(1, numOfGreen);
     }
 
     @Test
     @DisplayName("Test if removeAllStudents throws correctly the Exception")
-    void removeAllStudentsExcTest() {
+    void removeAllStudentsExcTest() throws FullDestinationException{
         cloud.addStudent(Color.YELLOW);
         assertThrows(CloudNotFullException.class, () -> cloud.removeAllStudents());
     }
