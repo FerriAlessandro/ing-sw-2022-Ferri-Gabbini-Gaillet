@@ -2,9 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CloudNotFullException;
 import it.polimi.ingsw.model.enumerations.Color;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents clouds that host students (3 for 2 players-game, 4 for 3 players-game).
@@ -36,6 +34,10 @@ public class CloudTile extends TileWithStudents {
                 throw new IllegalArgumentException("Illegal number of players");
 
         }
+    }
+
+    public int getMaxStudents() {
+        return maxStudents;
     }
 
     /**

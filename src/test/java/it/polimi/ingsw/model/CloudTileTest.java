@@ -65,18 +65,6 @@ class CloudTileTest {
     @DisplayName("Test if removeAllStudents throws correctly the Exception")
     void removeAllStudentsExcTest() {
         cloud.addStudent(Color.YELLOW);
-        try {
-            ArrayList<Color> list = cloud.removeAllStudents();
-            assertEquals(1, list.size());
-            assertEquals(Color.YELLOW, list.get(0));
-        }catch (CloudNotFullException e){
-            fail();
-        }
-        try {
-            cloud.removeStudent(Color.YELLOW);
-        }catch (Exception e){
-            fail();
-        }
         assertThrows(CloudNotFullException.class, () -> cloud.removeAllStudents());
     }
     
