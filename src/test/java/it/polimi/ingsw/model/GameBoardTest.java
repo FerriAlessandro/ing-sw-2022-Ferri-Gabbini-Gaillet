@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.EmptyOriginException;
+import it.polimi.ingsw.exceptions.CloudNotFullException;
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
@@ -41,7 +41,7 @@ class GameBoardTest {
         }
 
         for (int i = 0; i < numPlayers; i++) {
-            CloudTile cl1 = new CloudTile(4);
+            CloudTile cl1 = new CloudTile(numPlayers);
             clouds.add(cl1);
         }
 
@@ -49,11 +49,15 @@ class GameBoardTest {
         t1.add(TowerColor.BLACK);
         t1.add(TowerColor.WHITE);
         t1.add(TowerColor.GRAY);
+
+        ArrayList<TowerColor> t_col= new ArrayList<>();
+        t_col.add(TowerColor.BLACK);
+        t_col.add(TowerColor.WHITE);
+
         for (int i = 0; i< numPlayers; i++) {
             AssistantDeck ad = new AssistantDeck(Wizard.WIZARD_1);
             Player pl1 = new Player(ad, "test", false, false, t1.get(i % t1.size()));
-            PlayerBoard pb1 = new PlayerBoard(numPlayers);
-            //TODO: please add this constructor to PlayerBoard and fix related constructor in Entrance (logic for maxNumStud in Entrance should be implemented in Entrance)
+            PlayerBoard pb1 = new PlayerBoard(t_col.get(i%2), numPlayers);
             playerBoards.put(pl1, pb1);
         }
 
@@ -69,55 +73,32 @@ class GameBoardTest {
     }
 
     @Test
-    void checkForArchipelagoForwardLimited(){
+    void checkForArchipelago(){
         int originalSize = islands.size();
         for (IslandTile island : islands) {
             island.swapTower(TowerColor.BLACK);
-            island.addStudent(Color.GREEN);
+            try {
+                island.addStudent(Color.GREEN);
+            }catch (FullDestinationException e){
+                e.printStackTrace();
+                fail();
+            }
             island.addNoEntry();
         }
         islands.get(islands.size() - 2).swapTower(TowerColor.WHITE);
         islands.get(islands.size() - 2).removeNoEntry();
         gb.checkForArchipelago(islands.get(2));
-        assertEquals(2, islands.size());
-        assertEquals(TowerColor.BLACK, islands.get(0).getTowerColor());
-        assertEquals(TowerColor.WHITE, islands.get(1).getTowerColor());
-        assertEquals(originalSize - 1, islands.get(0).getNumStudents(Color.GREEN));
-        assertEquals(1, islands.get(1).getNumStudents(Color.GREEN));
-        assertEquals(originalSize - 1, islands.get(0).getNumTowers());
-        assertEquals(1, islands.get(1).getNumTowers());
-        for (int i = 0; i < originalSize - 1; i++) {
-            assertTrue(islands.get(0).isForbidden());
-        }
-        assertFalse(islands.get(0).isForbidden());
-        assertFalse(islands.get(1).isForbidden());
-    }
-
-    @Test
-    void checkForArchipelagoBackwardsLimited(){
-        int originalSize = islands.size();
-        for (IslandTile island : islands) {
-            island.swapTower(TowerColor.BLACK);
-            island.addStudent(Color.GREEN);
-            island.addNoEntry();
-        }
-        islands.get(2).swapTower(TowerColor.WHITE);
-        islands.get(2).removeNoEntry();
-        gb.checkForArchipelago(islands.get(islands.size() - 2));
-        assertEquals(2, islands.size());
+        assertEquals(originalSize - 2, islands.size());
         assertEquals(TowerColor.BLACK, islands.get(1).getTowerColor());
-        assertEquals(TowerColor.WHITE, islands.get(0).getTowerColor());
-        assertEquals(originalSize - 1, islands.get(1).getNumStudents(Color.GREEN));
+        assertEquals(TowerColor.WHITE, islands.get(islands.size() - 2).getTowerColor());
+        assertEquals(3, islands.get(1).getNumStudents(Color.GREEN));
         assertEquals(1, islands.get(0).getNumStudents(Color.GREEN));
-        assertEquals(originalSize - 1, islands.get(1).getNumTowers());
+        assertEquals(3, islands.get(1).getNumTowers());
         assertEquals(1, islands.get(0).getNumTowers());
-        for (int i = 0; i < originalSize - 1; i++) {
-            assertTrue(islands.get(1).isForbidden());
-        }
-        assertFalse(islands.get(1).isForbidden());
-        assertFalse(islands.get(0).isForbidden());
+        assertEquals(3, islands.get(1).getNumOfNoEntryTiles());
+        assertTrue(islands.get(0).isForbidden());
+        assertTrue(islands.get(2).isForbidden());
     }
-
 
     @Test
     void checkEmptyTowerZone() {
@@ -142,21 +123,39 @@ class GameBoardTest {
     @DisplayName("Test move method general behaviour")
     void move(){
         IslandTile is1 = new IslandTile();
+        int numPlayers = 2;
         int maxStud = 7;
-        Entrance en1 = new Entrance(maxStud);
+        Entrance en1 = new Entrance(numPlayers);
         //Check behaviour when given origin is empty
 
-        assertThrows(EmptyOriginException.class, () -> gb.move(Color.GREEN, en1, is1));
-        en1.addStudent(Color.GREEN);
+
+        assertThrows(InvalidParameterException.class, () -> gb.move(Color.GREEN, en1, is1));
+        try {
+            en1.addStudent(Color.GREEN);
+        }catch (FullDestinationException e){
+            e.printStackTrace();
+            fail();
+        }
         //Check behaviour in nominal conditions
+        try {
+            gb.move(Color.GREEN, en1, is1);
+        } catch (FullDestinationException e) {
+            e.printStackTrace();
+            fail();
+        }
         assertEquals(0, en1.getNumStudents(Color.GREEN));
         assertEquals(1, is1.getNumStudents(Color.GREEN));
 
         for (int i = 0; i < maxStud; i++) {
-            is1.addStudent(Color.GREEN);
+            try {
+                is1.addStudent(Color.GREEN);
+            } catch (FullDestinationException e){
+                e.printStackTrace();
+                fail();
+            }
             try {
                 gb.move(Color.GREEN, is1, en1);
-            } catch (EmptyOriginException | FullDestinationException e) {
+            } catch (InvalidParameterException | FullDestinationException e) {
                 e.printStackTrace();
                 fail();
             }
@@ -167,46 +166,86 @@ class GameBoardTest {
 
     @Test
     @DisplayName("Test that professors are assigned correctly in move")
-    void moveCheckProf(){
+    void moveCheckProf() throws FullDestinationException{
         assertTrue(gb.getProfessors().keySet().isEmpty());
         Player p1 = playerBoards.keySet().iterator().next();
         Player p2 = playerBoards.keySet().iterator().next();
-        playerBoards.get(p1).getDiningRoom().addStudent(Color.GREEN);
+        IslandTile is1 = islands.get(0);
+        is1.addStudent(Color.GREEN);
+        gb.move(Color.GREEN, is1, playerBoards.get(p1).getDiningRoom());
         assertEquals(p1, gb.getProfessorOwnerByColor(Color.GREEN));
-        playerBoards.get(p2).getDiningRoom().addStudent(Color.GREEN);
-        playerBoards.get(p2).getDiningRoom().addStudent(Color.GREEN);
+        is1.addStudent(Color.GREEN);
+        is1.addStudent(Color.GREEN);
+        gb.move(Color.GREEN, is1, playerBoards.get(p2).getDiningRoom());
+        gb.move(Color.GREEN, is1, playerBoards.get(p2).getDiningRoom());
         assertEquals(p2, gb.getProfessorOwnerByColor(Color.GREEN));
     }
 
     @Test
-    void chooseCloud() {
+    void chooseCloud() throws FullDestinationException {
         Player p1 = playerBoards.keySet().iterator().next();
         Entrance en1 = gb.getPlayerBoard(p1).getEntrance();
         CloudTile c1 = clouds.get(0);
         EnumMap<Color, Integer> students = new EnumMap<>(Color.class);
+        c1.addStudent(Color.GREEN);
+        c1.addStudent(Color.YELLOW);
+        c1.addStudent(Color.BLUE);
+        c1.addStudent(Color.BLUE);
+
         for (Color color : Color.values()){
-            students.put(color, students.get(color) + c1.getNumStudents(color));
+            students.put(color, c1.getNumStudents(color));
         }
         try {
             gb.chooseCloud(c1,p1);
-        }catch(Exception e){
+        }catch(CloudNotFullException | FullDestinationException e){
             fail();
         }
         for (Color color : students.keySet()){
             assertEquals(en1.getNumStudents(color), students.get(color));
         }
 
-        assertThrows(InvalidParameterException.class, () -> gb.chooseCloud(c1, p1));
+        assertThrows(CloudNotFullException.class, () -> gb.chooseCloud(c1, p1));
 
         CloudTile c2 = clouds.get(1);
+        c2.addStudent(Color.GREEN);
+        c2.addStudent(Color.YELLOW);
+        c2.addStudent(Color.BLUE);
+        c2.addStudent(Color.BLUE);
+        try {
+            gb.chooseCloud(c2,p1);
+        }catch (Exception e){
+            fail();
+        }
+        c2.addStudent(Color.GREEN);
+        c2.addStudent(Color.YELLOW);
+        c2.addStudent(Color.BLUE);
+        c2.addStudent(Color.BLUE);
+        try{
+            gb.chooseCloud(c2, p1);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        c2.addStudent(Color.GREEN);
+        c2.addStudent(Color.YELLOW);
+        c2.addStudent(Color.BLUE);
+        c2.addStudent(Color.BLUE);
         assertThrows(FullDestinationException.class, () -> gb.chooseCloud(c2, p1));
     }
 
     @Test
-    void fillClouds() {
+    void fillClouds() throws FullDestinationException {
         //Check normal behaviour
+        for (CloudTile cloud : clouds){
+            for (int i = 0; i < cloud.getMaxStudents(); i++) {
+                cloud.addStudent(Color.GREEN);
+            }
+        }
         for (CloudTile cloud: clouds) {
-            cloud.removeAllStudents(); //TODO: please add this method to CloudTile
+            try {
+                cloud.removeAllStudents();
+            }catch(CloudNotFullException e){
+                fail();
+            }
         }
         gb.fillClouds();
         for (CloudTile cloud: clouds){
@@ -228,9 +267,12 @@ class GameBoardTest {
     @Test
     void swapTowers() {
         IslandTile isl1 = islands.get(1);
-        for (TowerColor color : TowerColor.values()){
-            gb.swapTowers(isl1, color);
-            assertEquals(color, isl1.getTowerColor());
+        for (TowerColor color : TowerColor.values()) {
+            if (!color.equals(TowerColor.NONE)) {
+                gb.swapTowers(isl1, color);
+                assertEquals(color, isl1.getTowerColor());
+            }
         }
+        //TODO: add check on final number of towers in the two TowerZones
     }
 }
