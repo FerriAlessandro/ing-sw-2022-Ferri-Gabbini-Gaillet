@@ -42,10 +42,10 @@ public class CloudTile extends TileWithStudents {
      * Function called when the cloud is chosen, it empties the cloud and returns the students.
      * @throws CloudNotFullException when the cloud is not full, yet somebody tries to invoke this method.
      */
-    public List<Color> removeAllStudents() throws CloudNotFullException {
+    public ArrayList<Color> removeAllStudents() throws CloudNotFullException {
         if(getNumStudents() < maxStudents)
             throw new CloudNotFullException();
-        List<Color> studentsToPick = new ArrayList<>();
+        ArrayList<Color> studentsToPick = new ArrayList<>();
         for (Color color : Color.values()) {
             for(int i = 0; i < getNumStudents(color); i++)
                 studentsToPick.add(color);

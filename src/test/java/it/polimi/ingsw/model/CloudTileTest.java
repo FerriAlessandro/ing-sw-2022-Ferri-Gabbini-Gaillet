@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,15 +46,13 @@ class CloudTileTest {
     @Test
     @DisplayName("Test the normal operation of method removeAllStudents")
     void removeAllStudentsTest() {
-        int numOfYellow = 0;
-        int numOfGreen = 0;
         cloud.addStudent(Color.YELLOW);
         cloud.addStudent(Color.GREEN);
         cloud.addStudent(Color.YELLOW);
         try {
             List<Color> studentsReturned = cloud.removeAllStudents();
-            numOfYellow = numOfColor(studentsReturned, Color.YELLOW);
-            numOfGreen = numOfColor(studentsReturned, Color.GREEN);
+            int numOfYellow = numOfColor(studentsReturned, Color.YELLOW);
+            int numOfGreen = numOfColor(studentsReturned, Color.GREEN);
             assertEquals(2, numOfYellow);
             assertEquals(1, numOfGreen);
         }
@@ -66,17 +65,19 @@ class CloudTileTest {
     @DisplayName("Test if removeAllStudents throws correctly the Exception")
     void removeAllStudentsExcTest() {
         cloud.addStudent(Color.YELLOW);
-        List<Color> list;
-        boolean exceptionThrown = false;
-        //Sinceramente non ho idea di come fare a testare il fatto che venga lanciata questa eccezione,
-        //usando la AssertThrowsExactly,
         try {
-            list = cloud.removeAllStudents();
-        } catch (CloudNotFullException e) {
-            exceptionThrown = true;
-        } finally {
-            assertTrue(exceptionThrown);
+            ArrayList<Color> list = cloud.removeAllStudents();
+            assertEquals(1, list.size());
+            assertEquals(Color.YELLOW, list.get(0));
+        }catch (CloudNotFullException e){
+            fail();
         }
+        try {
+            cloud.removeStudent(Color.YELLOW);
+        }catch (Exception e){
+            fail();
+        }
+        assertThrows(CloudNotFullException.class, () -> cloud.removeAllStudents());
     }
     
 }
