@@ -18,6 +18,9 @@ class PlayerTest {
     void setUp() {
         p1 = new Player(new AssistantDeck(Wizard.WIZARD_1), "alex", true, true, TowerColor.WHITE);
         p2 = new Player(new AssistantDeck(Wizard.WIZARD_2), "alex2", false, false, TowerColor.BLACK);
+        for(AssistantCard assistantCard : AssistantCard.values()) {
+            assistantCard.resetPlayed();
+        }
     }
 
     @Test

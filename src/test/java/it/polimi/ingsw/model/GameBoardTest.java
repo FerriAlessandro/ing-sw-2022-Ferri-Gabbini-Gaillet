@@ -217,15 +217,6 @@ class GameBoardTest {
         c2.addStudent(Color.YELLOW);
         c2.addStudent(Color.BLUE);
         c2.addStudent(Color.BLUE);
-        try{
-            gb.chooseCloud(c2, p1);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        c2.addStudent(Color.GREEN);
-        c2.addStudent(Color.YELLOW);
-        c2.addStudent(Color.BLUE);
-        c2.addStudent(Color.BLUE);
         assertThrows(FullDestinationException.class, () -> gb.chooseCloud(c2, p1));
     }
 

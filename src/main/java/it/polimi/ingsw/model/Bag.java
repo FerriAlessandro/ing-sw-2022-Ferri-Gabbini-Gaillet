@@ -80,7 +80,7 @@ public class Bag implements Serializable{
      */
     public void addStudents(int num, Color color) throws InvalidParameterException {
         if(numOfStudents.get(color) + num > maxStudByColor){
-            throw new InvalidParameterException();
+            throw new InvalidParameterException("Max of students of this color reached!");
         }
         numOfStudents.put(color, numOfStudents.get(color) + num);
     }
