@@ -7,6 +7,8 @@ package it.polimi.ingsw.model.enumerations;
  */
 
 public enum Phase {
-    PREPARATION,
-    ACTION;
+    CHOOSE_ASSISTANT_CARD,
+    MOVE_STUDENTS,
+    MOVE_MOTHERNATURE,
+    CHOOSE_CLOUD;
 }

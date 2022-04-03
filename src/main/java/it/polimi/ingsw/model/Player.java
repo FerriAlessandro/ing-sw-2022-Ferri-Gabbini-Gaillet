@@ -57,7 +57,7 @@ public class Player {
     }
 
     /**
-     * This method sets the Player's Status
+     * This method sets the Player's Status.
      * @param playerStatus current Status of the Player
      */
     public void setStatus(Status playerStatus){
@@ -72,8 +72,8 @@ public class Player {
     }
 
     /**
-     * This method sets the 'isFirst' attribute to "True" if the Player is the first to play, to "False" otherwise.
-     * @param first Boolean to set to "True" or "False" the 'isFirst' attribute
+     * Set the player as the 'First Player' in a round.
+     * @param first Boolean to mark (or remove) a player as 'First Player'
      */
     public void setFirst(boolean first){     //takes a bool as a parameter so we don't have to make another method to reset it
         this.isFirst = first;
@@ -87,7 +87,7 @@ public class Player {
     }
 
     /**
-     * This method sets the 'isPlayerTurn' attribute to "True" if it's the Player's turn, to "False" otherwise.
+     * Marks the player as the 'Current Playing' player.
      * @param turn Boolean to set to "True" or "False" the 'isPlayerTurn' attribute
      */
     public void setPlayerTurn(boolean turn){
@@ -109,7 +109,7 @@ public class Player {
     }
 
     /**
-     * @return "False if the player has at least 1 card that hasn't already been played in this turn by other players, "True" otherwise
+     * @return "False" if the player has at least 1 card that hasn't already been played in this turn by other players, "True" otherwise.
      */
     private boolean noCardsAvailable(){
         boolean noCards = true;

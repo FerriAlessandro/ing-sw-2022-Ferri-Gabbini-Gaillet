@@ -25,21 +25,21 @@ public class AssistantDeck {
     }
 
     /**
-     * @return The deck of the player with the cards he has left
+     * @return The deck of the player with the cards he has left.
      */
     public List<AssistantCard> getCards() {
         return deck;
     }
 
     /**
-     * @return The back of the deck
+     * @return The back of the deck.
      */
     public Wizard getWizard() {
         return wizard;
     }
 
     /**
-     * @return The number of cards left in the deck
+     * @return The number of cards left in the deck.
      */
     public int currNumOfCards(){
         return this.deck.size();

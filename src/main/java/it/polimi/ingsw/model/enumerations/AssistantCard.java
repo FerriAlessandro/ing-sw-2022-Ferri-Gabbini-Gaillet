@@ -59,7 +59,7 @@ public enum AssistantCard {
         return hasBeenPlayed;
     }
     /**
-     * This method sets the 'hasBeenPlayed' value to true when a card is played by a player (this doesn't let another player
+     * This method marks a card as 'Already Played' when a card is played by someone (this doesn't let another player
      * play the same card on the same turn).
      */
     public void setPlayed(){
@@ -67,7 +67,7 @@ public enum AssistantCard {
     }
 
     /**
-     * Sets the 'hasBeenPlayed' value to "False".
+     * Remove the 'Already Played' mark from a card.
      */
     public void resetPlayed(){
         hasBeenPlayed = false;
