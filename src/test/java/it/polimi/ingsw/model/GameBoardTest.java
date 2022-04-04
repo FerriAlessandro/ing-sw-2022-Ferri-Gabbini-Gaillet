@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CloudNotFullException;
 import it.polimi.ingsw.exceptions.FullDestinationException;
+import it.polimi.ingsw.exceptions.TowerWinException;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.model.enumerations.Wizard;
@@ -108,9 +109,15 @@ class GameBoardTest {
         Optional<Player> opt = gb.checkEmptyTowerZone();
         assertTrue(opt.isEmpty());
         Player p = playerBoards.keySet().iterator().next();
-        while (playerBoards.get(p).getTowerZone().getNumOfTowers() > 0){
-            playerBoards.get(p).getTowerZone().remove();
+        while (playerBoards.get(p).getTowerZone().getNumOfTowers() > 1) {
+            try {
+                playerBoards.get(p).getTowerZone().remove();
+            } catch (Exception e) {
+                fail();
+            }
         }
+        assertThrows(TowerWinException.class, () -> playerBoards.get(p).getTowerZone().remove());
+
         Optional<Player> opt2 = gb.checkEmptyTowerZone();
         assertTrue(opt2.isPresent());
         assertEquals(opt2.get(), p);
@@ -270,7 +277,11 @@ class GameBoardTest {
         for (TowerColor color : colors) {
             if (!color.equals(TowerColor.NONE)) {
                 TowerColor oldColor = isl1.getTowerColor();
-                gb.swapTowers(isl1, color);
+                try {
+                    gb.swapTowers(isl1, color);
+                }catch (Exception e){
+                    fail();
+                }
                 if(!oldColor.equals(TowerColor.NONE)){
                     assertEquals(intMap.get(oldColor) + 1, towerMap.get(oldColor).getNumOfTowers());
                     intMap.put(oldColor, towerMap.get(oldColor).getNumOfTowers());

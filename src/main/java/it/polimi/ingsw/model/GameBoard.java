@@ -149,7 +149,6 @@ public class GameBoard implements Serializable {
      */
     public IslandTile moveMotherNature(int pos) {
         motherNature.move(pos);
-        checkForArchipelago(motherNature.getCurrentIsland());
         return motherNature.getCurrentIsland();
     }
 
@@ -225,7 +224,7 @@ public class GameBoard implements Serializable {
                     try {
                         bag.addStudents(1, student);
                     } catch (InvalidParameterException e) {
-                        e.printStackTrace();
+                        //Ignore this exception, it is due to the structure of the test
                     }
                     fullDestFlag = true;
                 }
@@ -233,7 +232,7 @@ public class GameBoard implements Serializable {
                 try {
                     bag.addStudents(1, student);
                 } catch (InvalidParameterException e) {
-                    e.printStackTrace();
+                    //Ignore this exception, it is due to the structure of the test
                 }
             }
         }
@@ -263,24 +262,23 @@ public class GameBoard implements Serializable {
      *
      * @param island   target {@link IslandTile}
      * @param newColor new {@link TowerColor} of the tower(s)
+     * @throws IllegalArgumentException when given {@link TowerColor} is {@link TowerColor#NONE}
+     * @throws TowerWinException when a {@link TowerZone} becomes empty, in this case the message contains the nickname of the {@link Player} that won
      */
-    public void swapTowers(IslandTile island, TowerColor newColor) {
+    public void swapTowers(IslandTile island, TowerColor newColor) throws IllegalArgumentException, TowerWinException{
         TowerColor oldColor = island.getTowerColor();
-        try {
-            island.swapTower(newColor);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        try {
+        island.swapTower(newColor);
+
+        for (int i = 0; i < island.getNumTowers(); i++){
             if (!oldColor.equals(TowerColor.NONE))
-                getTowerZone(oldColor).add();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            getTowerZone(newColor).remove();
-        } catch (Exception e) {
-            e.printStackTrace();
+                try { getTowerZone(oldColor).add(); } catch (InvalidParameterException e) { e.printStackTrace(); }
+
+            try { getTowerZone(newColor).remove(); } catch (RuntimeException e) { e.printStackTrace(); }
+            catch (TowerWinException ex) {
+                Optional<Player> p = getPlayerByTowerColor(newColor);
+                if(p.isPresent())
+                    throw new TowerWinException(p.get().getNickName() + "has won !");
+            }
         }
     }
 
@@ -381,15 +379,9 @@ public class GameBoard implements Serializable {
      * @param playersInfluence maps each player with his current influence on the island
      */
     protected void computeInfByColor(Color color, IslandTile islandToCheck, HashMap<Player, Integer> playersInfluence) {
-        int valueToAdd = islandToCheck.getNumStudents(color);
-        Player ownerOfProf;
         if(getProfessorOwnerByColor(color) != null) {
-            ownerOfProf = getProfessorOwnerByColor(color);
-            for(Player p : playersInfluence.keySet())
-                if(p.equals(ownerOfProf)) {
-                    int previousInfluence = playersInfluence.get(p); //the influence computed since now
-                    playersInfluence.put(p, previousInfluence + valueToAdd); //the new total influence
-                }
+            Player ownerOfProf = getProfessorOwnerByColor(color);
+            playersInfluence.put(ownerOfProf, playersInfluence.get(ownerOfProf) + islandToCheck.getNumStudents(color));
         }
     }
 
@@ -400,59 +392,23 @@ public class GameBoard implements Serializable {
      *                         Only one (or none) of the all influences will be modified due to the presence of the tower(s).
      */
     protected void computeInfByTower(IslandTile islandToCheck, HashMap<Player, Integer> playersInfluence) {
-        int valueToAdd = islandToCheck.getNumTowers();
-        TowerColor colorOfTheOwner = islandToCheck.getTowerColor(); //it's the current possessor's island tower's color
-        for(Player p : playerBoards.keySet())
-            if (colorOfTheOwner.equals(p.getTowerColor())) {
-                int previousInfluence = playersInfluence.get(p); //the influence computed since now
-                playersInfluence.put(p, previousInfluence + valueToAdd); //p is the current owner of the tower
-            }
+        getPlayerByTowerColor(islandToCheck.getTowerColor()).ifPresent(player -> playersInfluence.put(player, playersInfluence.get(player) + islandToCheck.getNumTowers()));
     }
 
     /**
      * Utility method to decide who is going to be the new owner of the island (could be the old one),
      * by checking the influences values computed previously.
      * It's pretty long because there are many "particular" scenarios to be handled.
-     * @param islandToCheck the island where it's been checking the influence of each player
      * @param playersInfluence maps each player with his current influence on the island.
-     *                         At this point the influences values won't change.
-     * @return the TowerColor of the (new) owner of the island.
-     * @throws RuntimeException when every player gets 0 influence, so nobody won.
+     * @return the TowerColor linked to who won the contention.
+     * @throws RuntimeException when nobody won.
      */
-    protected TowerColor computeMaxInfluence(IslandTile islandToCheck, HashMap<Player, Integer> playersInfluence) {
-        int infMax = 0; //the current value of the max influence
-        Player newOwnerOfTheIsland = null; //actually it may happen that nobody gets the island
-        TowerColor actualColor = islandToCheck.getTowerColor(); //just to avoid a too long if
-        for(Player p: playerBoards.keySet())
-            //the following if statement can be validated in two scenarios:
-            //1- there is a player with more influence than any other players (more common scenario)
-            //2- the currentOwner ties with another player, hence he keeps the island
-            if((playersInfluence.get(p) > infMax) || (playersInfluence.get(p) == infMax && p.getTowerColor() == actualColor)) {
-                infMax = playersInfluence.get(p);
-                newOwnerOfTheIsland = p;
-            }
-
-        //handles the very corner case of 3 players-game:
-        //when two players tie and their influence is higher than the oldOwner, the island must remain of the oldOwner
-        Player oldOwnerOfTheIsland = null;
-        for(Player p : playerBoards.keySet())
-            if (p.getTowerColor().equals(actualColor))
-                oldOwnerOfTheIsland = p; //find the actualOwner
-        if(playersInfluence.get(oldOwnerOfTheIsland) != infMax) {
-            int counterOfMaxInfluences = 0;
-            for(Player p : playerBoards.keySet())
-                if(playersInfluence.get(p) == infMax)
-                    counterOfMaxInfluences ++;
-            if(counterOfMaxInfluences == 2) //if this happens then the island must not change owner
-                newOwnerOfTheIsland = oldOwnerOfTheIsland;
-        }
-
-        //handles the case with no winner (can happen in the early rounds)
-        if(newOwnerOfTheIsland == null)
-            throw new RuntimeException("Every player with 0 influence: no need to swap Tower!");
-
-        //normal return of the function
-        return newOwnerOfTheIsland.getTowerColor();
+    protected TowerColor computeMaxInfluence(HashMap<Player, Integer> playersInfluence) {
+        Player mostInfPlayer = playersInfluence.keySet().stream().reduce((a,b) -> playersInfluence.get(a) > playersInfluence.get(b) ? a : b).orElse(null);
+        if (mostInfPlayer!=null && playersInfluence.keySet().stream().filter(x -> playersInfluence.get(x).intValue() == playersInfluence.get(mostInfPlayer).intValue()).count() == 1)
+            return mostInfPlayer.getTowerColor();
+        else
+            throw new RuntimeException();
     }
 
     /**
@@ -476,8 +432,15 @@ public class GameBoard implements Serializable {
 
         computeInfByTower(islandToCheck, playersInfluence); //compute the second part of the influence
 
-        return computeMaxInfluence(islandToCheck, playersInfluence);
-
+        return computeMaxInfluence(playersInfluence);
     }
 
+    /**
+     * Returns {@link Player} linked to the given {@link TowerColor}
+     * @param color of the tower
+     * @return {@link Player} which owns towers of the given color
+     */
+    private Optional<Player> getPlayerByTowerColor(TowerColor color){
+        return playerBoards.keySet().stream().filter(player -> player.getTowerColor().equals(color)).findFirst();
+    }
 }

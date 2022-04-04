@@ -39,13 +39,12 @@ public class IslandTile  extends TileWithStudents{
      * Changes the "owner" of the island, following a contention after Mother Nature movement.
      * @param towerColor is the winner's tower color.
      * @throws IllegalArgumentException when the towerColor received is "NONE".
-     * @throws IllegalArgumentException when the towerColor received is the same of the actual one.
      */
     public void swapTower(TowerColor towerColor) {
         if(towerColor == TowerColor.NONE)
             throw new IllegalArgumentException("Players can't have NONE towerColor");
         if(towerColor == this.towerColor)
-            throw new IllegalArgumentException("Color must be different from the actual towerColor!");
+            return;
         if(this.towerColor == TowerColor.NONE) {
             towers = 1;
         }

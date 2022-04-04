@@ -1,9 +1,13 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.TowerWinException;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.security.spec.ECField;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TowerZoneTest {
@@ -61,15 +65,26 @@ class TowerZoneTest {
     @DisplayName("Test the normal operation of remove method")
     void removeTest() {
         int valueToCheck = towerZone.getNumOfTowers();
-        towerZone.remove();
+        try {
+            towerZone.remove();
+        }catch (Exception e){
+            fail();
+        }
         assertEquals(valueToCheck - 1, towerZone.getNumOfTowers());
     }
 
     @Test
-    @DisplayName("Test if RunTimeException is thrown properly when there are no towers left")
+    @DisplayName("Test if RunTimeException and TowerWinException are thrown properly")
     public void removeTestExcTest() {
-        for(int i = 0, j = towerZone.getNumOfTowers(); i < j; i++)
-            towerZone.remove();
+        for(int i = 0, j = towerZone.getNumOfTowers() - 1; i < j; i++) {
+            try {
+                towerZone.remove();
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+        assertThrows(TowerWinException.class, () -> towerZone.remove());
         RuntimeException e = new RuntimeException();
         assertThrowsExactly(e.getClass(), () -> towerZone.remove());
     }

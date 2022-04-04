@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.TowerWinException;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 
 /**
@@ -69,10 +70,13 @@ public class TowerZone {
      * This method simply remove a tower.
      * It is called when an island is conquered by the towerZone's owner: a tower from here must go there.
      * @throws RuntimeException when there are no towers left, still the method is called.
+     * @throws TowerWinException when the number of remaining towers becomes zero.
      */
-    public void remove() throws RuntimeException {
-        if(getNumOfTowers() == 0)
-            throw new RuntimeException("There are no towers left. This player has probably won the game!");
+    public void remove() throws RuntimeException, TowerWinException {
+        if(this.towers == 0)
+            throw new RuntimeException("There are no towers left to complete the remove");
         this.towers --;
+        if (this.towers == 0)
+        throw new TowerWinException();
     }
 }

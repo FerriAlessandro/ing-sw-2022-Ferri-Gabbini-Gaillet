@@ -28,13 +28,6 @@ class IslandTileTest {
     }
 
     @Test
-    @DisplayName("Test the corner case of swapTower when the param is the same of the actual one")
-    void swapTowerSAMETest() {
-        IllegalArgumentException e = new IllegalArgumentException();
-        islandTile.swapTower(TowerColor.BLACK);
-        assertThrowsExactly(e.getClass(), () -> islandTile.swapTower(TowerColor.BLACK));
-    }
-    @Test
     @DisplayName("Test the normal operation of method mergeTower")
     void mergeTowerTest() {
         islandTile.mergeTower();
