@@ -11,7 +11,7 @@ import it.polimi.ingsw.model.enumerations.TowerColor;
  */
 public class TowerZone {
     private int towers;
-    private TowerColor color;
+    private final TowerColor color;
 
     /**
      * Constructor receives 2 param:
@@ -51,6 +51,10 @@ public class TowerZone {
 
     public int getNumOfTowers() {
         return this.towers;
+    }
+
+    public TowerColor getTowerColor() {
+        return this.color;
     }
 
     /**

@@ -47,7 +47,7 @@ public class IslandTile  extends TileWithStudents{
         if(towerColor == this.towerColor)
             throw new IllegalArgumentException("Color must be different from the actual towerColor!");
         if(this.towerColor == TowerColor.NONE) {
-            towers = towers + 1;
+            towers = 1;
         }
         this.towerColor = towerColor;
     }
@@ -81,9 +81,6 @@ public class IslandTile  extends TileWithStudents{
      * @return true if the island is forbidden, false otherwise.
      */
     public boolean isForbidden() {
-        if(numOfNoEntryTiles > 0)
-            return true;
-        else
-            return false;
+        return (numOfNoEntryTiles > 0);
     }
 }
