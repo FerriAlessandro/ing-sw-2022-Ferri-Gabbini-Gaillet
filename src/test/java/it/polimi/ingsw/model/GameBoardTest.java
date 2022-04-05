@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CloudNotFullException;
+import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.exceptions.TowerWinException;
 import it.polimi.ingsw.model.enumerations.Color;
@@ -224,7 +225,7 @@ class GameBoardTest {
     }
 
     @Test
-    void fillClouds() throws FullDestinationException {
+    void fillClouds() throws FullDestinationException, EmptyBagException {
         //Check normal behaviour
         for (CloudTile cloud : clouds){
             for (int i = 0; i < cloud.getMaxStudents(); i++) {

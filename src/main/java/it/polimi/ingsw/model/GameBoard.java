@@ -51,10 +51,10 @@ public class GameBoard implements Serializable {
         int idxStartingIsland = islands.indexOf(motherNature.getCurrentIsland());
         for (int idx = 0; idx < islands.size(); idx++) {
             if (idx != (idxStartingIsland + (maxNumIslands / 2))) {
-                Color student = bag.getStudents(1).get(0);
-                try {
+                try{
+                    Color student = bag.getStudents(1).get(0);
                     islands.get(idx).addStudent(student);
-                } catch (FullDestinationException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -236,7 +236,7 @@ public class GameBoard implements Serializable {
     /**
      * Refills all {@link CloudTile} using students from the {@link Bag}.
      */
-    public void fillClouds() {
+    public void fillClouds() throws EmptyBagException {
         for (CloudTile cloud : clouds) {
             if (cloud.getNumStudents() == 0) {
                 ArrayList<Color> students = bag.getStudents(cloud.getMaxStudents());
