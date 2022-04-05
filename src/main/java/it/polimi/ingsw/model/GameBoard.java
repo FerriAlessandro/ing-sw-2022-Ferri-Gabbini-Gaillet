@@ -61,14 +61,8 @@ public class GameBoard implements Serializable {
         }
 
         playerBoards = new HashMap<>();
-        ArrayList<TowerColor> t_col = new ArrayList<>();
-        t_col.add(TowerColor.BLACK);
-        t_col.add(TowerColor.WHITE);
-        if (players.size() == 3) {
-            t_col.add(TowerColor.GRAY);
-        }
         for (Player player : players) {
-            playerBoards.put(player, new PlayerBoard(t_col.get(players.indexOf(player) % 2), players.size()));
+            playerBoards.put(player, new PlayerBoard(players.size()));
         }
 
         professors = new EnumMap<>(Color.class);

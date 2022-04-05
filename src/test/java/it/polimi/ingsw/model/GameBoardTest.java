@@ -48,14 +48,10 @@ class GameBoardTest {
         t1.add(TowerColor.WHITE);
         t1.add(TowerColor.GRAY);
 
-        ArrayList<TowerColor> t_col= new ArrayList<>();
-        t_col.add(TowerColor.BLACK);
-        t_col.add(TowerColor.WHITE);
-
         for (int i = 0; i< numPlayers; i++) {
             AssistantDeck ad = new AssistantDeck(Wizard.WIZARD_1);
             Player pl1 = new Player(ad, "test", false, false, t1.get(i % t1.size()));
-            PlayerBoard pb1 = new PlayerBoard(t_col.get(i%2), numPlayers);
+            PlayerBoard pb1 = new PlayerBoard(numPlayers);
             playerBoards.put(pl1, pb1);
         }
 

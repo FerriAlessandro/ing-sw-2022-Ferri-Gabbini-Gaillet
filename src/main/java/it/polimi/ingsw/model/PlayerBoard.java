@@ -16,10 +16,9 @@ public class PlayerBoard {
 
     /**
      * Class constructor.
-     * @param towerColor {@link TowerColor} of the towers to be stored in the linked {@link TowerZone}
      * @param numOfPlayers number of players
      */
-    public PlayerBoard(TowerColor towerColor, int numOfPlayers){
+    public PlayerBoard(int numOfPlayers){
         entrance = new Entrance(numOfPlayers);
         diningRoom = new DiningRoom();
         towerZone = new TowerZone(numOfPlayers);

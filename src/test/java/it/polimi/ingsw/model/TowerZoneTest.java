@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.security.spec.ECField;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class TowerZoneTest {
@@ -48,7 +46,6 @@ class TowerZoneTest {
     public void removeExc1Test() throws Exception {
         for(int i = 0, j = towerZone.getNumOfTowers(); i < j - 1; i++)
             towerZone.remove();
-        RuntimeException e = new RuntimeException();
         assertThrowsExactly(TowerWinException.class, () -> towerZone.remove());
     }
 

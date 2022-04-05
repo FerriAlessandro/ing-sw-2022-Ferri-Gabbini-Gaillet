@@ -28,7 +28,7 @@ class PlayerTest {
     void testPlayCard() throws CardNotAvailableException, CardNotFoundException {
         p1.playAssistantCard(AssistantCard.CHEETAH);
         assertEquals(p1.getPlayedCard(), AssistantCard.CHEETAH);
-        assertTrue(!(p1.getDeck().getCards().contains(AssistantCard.CHEETAH)));
+        assertFalse(p1.getDeck().getCards().contains(AssistantCard.CHEETAH));
 
     }
 
@@ -36,7 +36,7 @@ class PlayerTest {
     @DisplayName("This test checks if the CardNotAvailableException is thrown properly")
     void testCardNotAvailableException() throws CardNotAvailableException, CardNotFoundException {
         p1.playAssistantCard(AssistantCard.CHEETAH);
-        CardNotAvailableException exception = assertThrows(CardNotAvailableException.class,()->p2.playAssistantCard(AssistantCard.CHEETAH));
+        assertThrows(CardNotAvailableException.class,()->p2.playAssistantCard(AssistantCard.CHEETAH));
 
     }
 
@@ -44,7 +44,7 @@ class PlayerTest {
     @DisplayName("This test checks if the CardNotFoundException is thrown properly")
     void testCardNotFoundException() throws CardNotAvailableException, CardNotFoundException {
         p1.playAssistantCard(AssistantCard.CHEETAH);
-        CardNotFoundException exception = assertThrows(CardNotFoundException.class, ()->p1.playAssistantCard(AssistantCard.CHEETAH));
+        assertThrows(CardNotFoundException.class, ()->p1.playAssistantCard(AssistantCard.CHEETAH));
 
     }
 
@@ -53,8 +53,8 @@ class PlayerTest {
             "played by other players, the CardNotAvailableException should not be thrown")
     void testCornerCaseCardsNotAvailableException() throws CardNotAvailableException, CardNotFoundException {
         p1.playAssistantCard(AssistantCard.CHEETAH);
-        p2.getDeck().getCards().removeAll(p1.getDeck().getCards()); // p2 has only the CEETAH card which has already been played
-        assertTrue(p2.getDeck().getCards().get(0).getPlayed()); //CEETAH HAS ALREADY BEEN PLAYED
+        p2.getDeck().getCards().removeAll(p1.getDeck().getCards()); // p2 has only the CHEETAH card which has already been played
+        assertTrue(p2.getDeck().getCards().get(0).getPlayed()); //CHEETAH HAS ALREADY BEEN PLAYED
         p2.playAssistantCard(AssistantCard.CHEETAH); // DOES NOT THROW AN EXCEPTION, TEST PASSED
 
     }
