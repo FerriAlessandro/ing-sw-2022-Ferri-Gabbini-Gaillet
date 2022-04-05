@@ -419,7 +419,7 @@ public class GameBoard implements Serializable {
      *                       the third one determines the return of the all checkInfluence method.
      * @param islandToCheck is the island where it's been checking the influence.
      * @return the TowerColor of the owner of the island (can be the previous owner!)
-     * @throws RuntimeException when every player gets 0 influence, so nobody won.
+     * @throws RuntimeException when there isn't a player with more influence than any other player.
      */
     protected TowerColor checkInfluence(IslandTile islandToCheck) throws RuntimeException {
         //playersInfluence is a map that matches every player with his actual influence on the islandToCheck

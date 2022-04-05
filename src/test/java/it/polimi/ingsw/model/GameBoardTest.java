@@ -291,5 +291,82 @@ class GameBoardTest {
             }
         }
     }
+    @Test
+    @DisplayName("Test the normal operation of CheckInfluence method in two scenarios")
+    public void checkInfluenceTest() throws Exception {
+
+        IslandTile islandToCheck = new IslandTile();
+        Player black = null;
+        Player gray = null;
+        //White player has PINK professor
+        //Black player has GREEN professor
+        //Gray player has YELLOW professor and the tower on the island
+        for(Player p : playerBoards.keySet()) {
+            if (p.getTowerColor() == TowerColor.WHITE)
+                professors.put(Color.PINK, p);
+            if(p.getTowerColor() == TowerColor.BLACK) {
+                professors.put(Color.GREEN, p);
+                black = p;
+            }
+            if(p.getTowerColor() == TowerColor.GRAY) {
+                professors.put(Color.YELLOW, p);
+                islandToCheck.swapTower(p.getTowerColor());
+                gray = p;
+            }
+        }
+
+        //Scenario 1: one YELLOW, one PINK, GRAY must win
+        islandToCheck.addStudent(Color.PINK);
+        islandToCheck.addStudent(Color.YELLOW);
+        assertEquals(gray.getTowerColor(), gb.checkInfluence(islandToCheck));
+
+        //Scenario 2: (previous +) three GREEN students on the island, Black must win
+        for(int i = 0; i < 3; i++)
+            islandToCheck.addStudent(Color.GREEN);
+        assertEquals(black.getTowerColor(), gb.checkInfluence(islandToCheck));
+    }
+
+    @Test
+    @DisplayName("Test if exception is thrown properly: scenario 1")
+    public void checkInfExc1() {
+        //Every player has 0 influence, method has to throw an exception because there is no winner
+        IslandTile islandToCheck = new IslandTile();
+        RuntimeException e = new RuntimeException();
+        assertThrowsExactly(e.getClass(), () -> gb.checkInfluence(islandToCheck));
+    }
+
+    @Test
+    @DisplayName("Test if exception is thrown properly: scenario 2")
+    public void checkInfExc2() throws Exception {
+        //Two player has the same influence, method has to throw an exception because there is no winner
+        IslandTile islandToCheck = new IslandTile();
+        for(Player p : playerBoards.keySet()) {
+            if(p.getTowerColor() == TowerColor.BLACK)
+                professors.put(Color.GREEN, p);
+            if (p.getTowerColor() == TowerColor.WHITE)
+                professors.put(Color.PINK, p);
+        }
+        islandToCheck.addStudent(Color.GREEN);
+        islandToCheck.addStudent(Color.PINK);
+        RuntimeException e = new RuntimeException();
+        assertThrowsExactly(e.getClass(), () -> gb.checkInfluence(islandToCheck));
+    }
+
+    @Test
+    @DisplayName("Test if exception is thrown properly: scenario 3")
+    public void checkInfExc3() throws Exception {
+        //A contender has the same influence of the actual owner, method has to throw an exception
+        IslandTile islandToCheck = new IslandTile();
+        for(Player p : playerBoards.keySet()) {
+            if (p.getTowerColor() == TowerColor.BLACK)
+                islandToCheck.swapTower(p.getTowerColor());
+            if (p.getTowerColor() == TowerColor.WHITE)
+                professors.put(Color.PINK, p);
+        }
+            islandToCheck.addStudent(Color.PINK);
+            RuntimeException e = new RuntimeException();
+            assertThrowsExactly(e.getClass(), () -> gb.checkInfluence(islandToCheck));
+    }
 
 }
+
