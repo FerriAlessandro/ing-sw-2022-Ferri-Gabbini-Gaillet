@@ -22,7 +22,7 @@ public class PlayerBoard {
     public PlayerBoard(TowerColor towerColor, int numOfPlayers){
         entrance = new Entrance(numOfPlayers);
         diningRoom = new DiningRoom();
-        towerZone = new TowerZone(numOfPlayers, towerColor);
+        towerZone = new TowerZone(numOfPlayers);
     }
 
     public DiningRoom getDiningRoom() {
