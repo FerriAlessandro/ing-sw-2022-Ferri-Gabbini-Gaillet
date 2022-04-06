@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.EmptyBagException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,36 +20,33 @@ class BagTest {
 
     @Test
     @DisplayName("Test the getStudents method. Ensure all students are eventually returned and in the correct number")
-    void getStudentsAll() {
+    void getStudentsAll() throws EmptyBagException {
         ArrayList<Color> value = new ArrayList<>(bag.getStudents(26 * Color.values().length));
         for(Color color:Color.values()) {
             assertEquals(26, value.stream()
                     .filter(x -> x.equals(color))
                     .count());
         }
-        ArrayList<Color> other = new ArrayList<>(bag.getStudents(1));
-        assertEquals(0, other.size());
+        assertThrows(EmptyBagException.class, ()-> bag.getStudents(1));
     }
 
     @Test
     @DisplayName("Test the getStudents method. Ensure compliance in corner case (more students required than available)")
-    void getStudentsLessThanRequested(){
+    void getStudentsLessThanRequested() throws EmptyBagException {
         bag.getStudents(26 * Color.values().length - 1);
-        ArrayList<Color> checkValue = new ArrayList<>(bag.getStudents(2));
-        assertEquals(1, checkValue.size());
+        assertThrows(EmptyBagException.class, ()-> bag.getStudents(2));
     }
 
     @Test
     @DisplayName("Test the numRemaining method")
-    void numRemaining() {
+    void numRemainingTest() throws EmptyBagException {
         bag.getStudents(50);
-        ArrayList<Color> checkValue = new ArrayList<>(bag.getStudents(26 * Color.values().length));
-        assertEquals(26 * Color.values().length - 50, checkValue.size());
+        assertEquals(26 * Color.values().length - 50, bag.numRemaining());
     }
 
     @Test
     @DisplayName("Test the numRemaining method. Ensure compliance with corner case: no students remaining")
-    void NumRemainingCorner() {
+    void NumRemainingCorner() throws EmptyBagException {
         bag.getStudents(26 * Color.values().length);
         int checkValue = bag.numRemaining();
         assertEquals(0, checkValue);
@@ -56,7 +54,7 @@ class BagTest {
 
     @Test
     @DisplayName("Test the addStudents method. Ensure general compliance")
-    void addStudents() {
+    void addStudents() throws EmptyBagException {
         bag.getStudents(26 * Color.values().length);
         for (Color color: Color.values()) {
             bag.addStudents(2, color);

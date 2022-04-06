@@ -52,24 +52,18 @@ public class GameBoard implements Serializable {
         int idxStartingIsland = islands.indexOf(motherNature.getCurrentIsland());
         for (int idx = 0; idx < islands.size(); idx++) {
             if (idx != (idxStartingIsland + (maxNumIslands / 2))) {
-                Color student = bag.getStudents(1).get(0);
-                try {
+                try{
+                    Color student = bag.getStudents(1).get(0);
                     islands.get(idx).addStudent(student);
-                } catch (FullDestinationException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
 
         playerBoards = new HashMap<>();
-        ArrayList<TowerColor> t_col = new ArrayList<>();
-        t_col.add(TowerColor.BLACK);
-        t_col.add(TowerColor.WHITE);
-        if (players.size() == 3) {
-            t_col.add(TowerColor.GRAY);
-        }
         for (Player player : players) {
-            playerBoards.put(player, new PlayerBoard(t_col.get(players.indexOf(player) % 2), players.size()));
+            playerBoards.put(player, new PlayerBoard(players.size()));
         }
 
         professors = new EnumMap<>(Color.class);
@@ -249,7 +243,7 @@ public class GameBoard implements Serializable {
     /**
      * Refills all {@link CloudTile} using students from the {@link Bag}.
      */
-    public void fillClouds() {
+    public void fillClouds() throws EmptyBagException {
         for (CloudTile cloud : clouds) {
             if (cloud.getNumStudents() == 0) {
                 ArrayList<Color> students = bag.getStudents(cloud.getMaxStudents());
@@ -426,7 +420,7 @@ public class GameBoard implements Serializable {
      *                       the third one determines the return of the all checkInfluence method.
      * @param islandToCheck is the island where it's been checking the influence.
      * @return the TowerColor of the owner of the island (can be the previous owner!)
-     * @throws RuntimeException when every player gets 0 influence, so nobody won.
+     * @throws RuntimeException when there isn't a player with more influence than any other player.
      */
     protected TowerColor checkInfluence(IslandTile islandToCheck) throws RuntimeException {
         //playersInfluence is a map that matches every player with his actual influence on the islandToCheck

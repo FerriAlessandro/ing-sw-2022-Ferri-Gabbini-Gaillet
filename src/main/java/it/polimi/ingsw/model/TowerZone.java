@@ -1,49 +1,27 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.TowerWinException;
-import it.polimi.ingsw.model.enumerations.TowerColor;
 
 /**
  * Represents the tower zone of a player board. It hosts the player's towers.
- * More specifically there are towers attribute that indicates how many towers are left
- * and color indicates the color of the tower of this player.
+ * towers attribute indicates how many towers are left
  * @author AlessandroG
- * @version 1.0
+ * @version 2.0
  */
 public class TowerZone {
     private int towers;
-    private final TowerColor color;
 
     /**
-     * Constructor receives 2 param:
+     * Constructor initializes towers attribute:
      * @param numOfPlayer indicates how many player will play the game, hence the number of towers.
-     * @param towerColor determines the color of the tower of this towerZone. Actually it has to be
-     *                   compatible with the numOfPlayer. Read rules for more info.
      */
-    public TowerZone(int numOfPlayer, TowerColor towerColor) throws IllegalArgumentException {
+    public TowerZone(int numOfPlayer) throws IllegalArgumentException {
         switch (numOfPlayer) {
             case 2:
                 this.towers = 8;
-                switch (towerColor) {
-                    case BLACK:
-                    case WHITE:
-                        this.color = towerColor;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("With 2 players only BLACK and WHITE allowed!");
-                }
                 break;
             case 3:
                 this.towers = 9;
-                switch (towerColor) {
-                    case BLACK:
-                    case WHITE:
-                    case GRAY:
-                        this.color = towerColor;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Color must be GRAY, BLACK or WHITE!");
-                }
                 break;
             default:
                 throw new IllegalArgumentException("Illegal number of players!");
@@ -52,10 +30,6 @@ public class TowerZone {
 
     public int getNumOfTowers() {
         return this.towers;
-    }
-
-    public TowerColor getTowerColor() {
-        return this.color;
     }
 
     /**
@@ -69,14 +43,12 @@ public class TowerZone {
     /**
      * This method simply remove a tower.
      * It is called when an island is conquered by the towerZone's owner: a tower from here must go there.
-     * @throws RuntimeException when there are no towers left, still the method is called.
      * @throws TowerWinException when the number of remaining towers becomes zero.
      */
-    public void remove() throws RuntimeException, TowerWinException {
-        if(this.towers == 0)
-            throw new RuntimeException("There are no towers left to complete the remove");
-        this.towers --;
+    public void remove() throws TowerWinException {
+        if(this.towers > 0)
+            this.towers --;
         if (this.towers == 0)
-        throw new TowerWinException();
+            throw new TowerWinException("This player has won the game!");
     }
 }

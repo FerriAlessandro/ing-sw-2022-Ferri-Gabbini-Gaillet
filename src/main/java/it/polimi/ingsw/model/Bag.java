@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.model.enumerations.Color;
 
 /**
@@ -38,11 +39,13 @@ public class Bag implements Serializable{
      * @return An {@link ArrayList} of randomly extracted colors representing students;
      * if num > number of remaining students it returns all remaining students
      */
-    public ArrayList<Color> getStudents(int num){
+    public ArrayList<Color> getStudents(int num) throws EmptyBagException{
         ArrayList<Color> students = new ArrayList<>();
         Color[] colors = Color.values();
         int count = 0;
-        while(count < num && numRemaining()>0){
+        if(num > numRemaining())
+            throw new EmptyBagException();
+        while(count < num ){
             Color color = colors[rand.nextInt(colors.length)];
             if(numRemaining(color) > 0){
                 count++;

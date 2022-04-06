@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.CardNotAvailableException;
 import it.polimi.ingsw.exceptions.CardNotFoundException;
+import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Status;
 import it.polimi.ingsw.model.enumerations.TowerColor;
@@ -126,7 +127,7 @@ public class Player {
      * @param card The card played by the Player
      */
 
-    public void playAssistantCard (AssistantCard card) throws CardNotAvailableException, CardNotFoundException {
+    public void playAssistantCard (AssistantCard card) throws CardNotAvailableException, CardNotFoundException, EmptyDeckException {
 
         if(!(this.assistantDeck.getCards().contains(card)))
             throw new CardNotFoundException();
@@ -137,6 +138,9 @@ public class Player {
         this.playedCard = card;
         assistantDeck.chooseCard(card);
         assistantDeck.removeCard(card);
+
+        if(assistantDeck.currNumOfCards() == 0)
+            throw new EmptyDeckException(getNickName() + " played his last card, this is the last Round!");
     }
 
 
