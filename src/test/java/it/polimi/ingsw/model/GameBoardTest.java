@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.CloudNotFullException;
-import it.polimi.ingsw.exceptions.EmptyBagException;
-import it.polimi.ingsw.exceptions.FullDestinationException;
-import it.polimi.ingsw.exceptions.TowerWinException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.model.enumerations.Wizard;
@@ -35,7 +32,7 @@ class GameBoardTest {
         islands.add(isl1);
         mn = new MotherNature(islands);
         tmn = new MotherNature(islands);
-        for (int i = 1; i < 12; i++) {
+        for (int i = 1; i < 6; i++) {
             isl1 = new IslandTile();
             islands.add(isl1);
         }
@@ -80,19 +77,26 @@ class GameBoardTest {
             }
             island.addNoEntry();
         }
-        islands.get(islands.size() - 2).swapTower(TowerColor.WHITE);
-        islands.get(islands.size() - 2).removeNoEntry();
-        gb.checkForArchipelago(islands.get(2));
+        islands.get(4).swapTower(TowerColor.WHITE);
+        islands.get(4).removeNoEntry();
+        try {
+            gb.checkForArchipelago(islands.get(1));
+        } catch (NumOfIslandsException e){
+            fail();
+        }
         assertEquals(originalSize - 2, islands.size());
         assertEquals(TowerColor.BLACK, islands.get(1).getTowerColor());
         assertEquals(TowerColor.WHITE, islands.get(islands.size() - 2).getTowerColor());
-        assertEquals(3, islands.get(1).getNumStudents(Color.GREEN));
-        assertEquals(1, islands.get(0).getNumStudents(Color.GREEN));
-        assertEquals(3, islands.get(1).getNumTowers());
-        assertEquals(1, islands.get(0).getNumTowers());
-        assertEquals(3, islands.get(1).getNumOfNoEntryTiles());
+        assertEquals(1, islands.get(1).getNumStudents(Color.GREEN));
+        assertEquals(3, islands.get(0).getNumStudents(Color.GREEN));
+        assertEquals(1, islands.get(1).getNumTowers());
+        assertEquals(3, islands.get(0).getNumTowers());
+        assertEquals(3, islands.get(0).getNumOfNoEntryTiles());
         assertTrue(islands.get(0).isForbidden());
-        assertTrue(islands.get(2).isForbidden());
+        assertFalse(islands.get(2).isForbidden());
+
+        assertThrows(NumOfIslandsException.class, () -> gb.checkForArchipelago(islands.get(1)));
+        assertEquals(3, islands.size());
     }
 
     @Test
@@ -162,14 +166,18 @@ class GameBoardTest {
             }
         }
         //Check behaviour when given destination is full
-        ArrayList<Color> stud = new ArrayList<>(bg.getStudents(1));
-        try{
-            is1.addStudent(stud.get(0));
-        } catch (Exception e){
+        try {
+            ArrayList<Color> stud = new ArrayList<>(bg.getStudents(1));
+            try{
+                is1.addStudent(stud.get(0));
+            } catch (Exception e){
+                fail();
+            }
+            assertThrows(FullDestinationException.class, () -> gb.move(stud.get(0), is1, en1));
+            assertEquals(26*Color.values().length, bg.numRemaining());
+        } catch (EmptyBagException e) {
             fail();
         }
-        assertThrows(FullDestinationException.class, () -> gb.move(stud.get(0), is1, en1));
-        assertEquals(26*Color.values().length, bg.numRemaining());
     }
 
     @Test

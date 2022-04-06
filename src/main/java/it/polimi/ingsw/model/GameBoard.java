@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Represents the game-board.
  * @author A.G. Gaillet
- * @version 1.0
+ * @version 1.2
  * @serial
  * @see CloudTile
  * @see IslandTile
@@ -287,8 +287,9 @@ public class GameBoard implements Serializable {
      * Creates an archipelago from the current {@link IslandTile} and adjacent tiles when merging conditions are met.
      *
      * @param currentIsland {@link IslandTile} where {@link MotherNature} is currently standing
+     * @throws NumOfIslandsException when the minimum number of remaining islands is reached
      */
-    public void checkForArchipelago(IslandTile currentIsland) {
+    public void checkForArchipelago(IslandTile currentIsland) throws NumOfIslandsException{
         int currentIdx = islands.indexOf(currentIsland);
         int nextIdx;
         if (currentIdx == islands.size() - 1) nextIdx = 0;
@@ -307,8 +308,9 @@ public class GameBoard implements Serializable {
      *
      * @param firstIslandIdx  index of first Island
      * @param secondIslandIdx index of the second island
+     * @throws NumOfIslandsException when the minimum number of remaining islands is reached
      */
-    private void checkForArchipelagoStep(int firstIslandIdx, int secondIslandIdx) {
+    private void checkForArchipelagoStep(int firstIslandIdx, int secondIslandIdx) throws NumOfIslandsException{
         IslandTile isl1 = islands.get(firstIslandIdx);
         IslandTile isl2 = islands.get(secondIslandIdx);
         if (isl1.getTowerColor().equals(isl2.getTowerColor())) {
@@ -329,7 +331,10 @@ public class GameBoard implements Serializable {
                 isl1.addNoEntry();
             }
             islands.remove(isl2);
-            //checkForArchipelago(islands.get(firstIslandIdx)); //recursive step
+
+            if (islands.size() == 3){
+                throw new NumOfIslandsException();
+            }
         }
     }
 
