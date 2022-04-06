@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.enumerations.Color;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Observer;
 
 /**
  * Generic interface to be implemented by every View.
