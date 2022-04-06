@@ -24,6 +24,7 @@ class GameBoardTest {
     HashMap<Player, PlayerBoard> playerBoards = new HashMap<>();
     EnumMap<Color, Player> professors = new EnumMap<>(Color.class);
     int numPlayers = 3;
+    Bag bg = new Bag();
 
     MotherNature tmn;
 
@@ -58,8 +59,7 @@ class GameBoardTest {
             PlayerBoard pb1 = new PlayerBoard(t_col.get(i%2), numPlayers);
             playerBoards.put(pl1, pb1);
         }
-
-        gb = new GameBoard(clouds, islands, mn, playerBoards, professors);
+        gb = new GameBoard(clouds, islands, mn, playerBoards, professors, bg);
     }
 
     @Test
@@ -165,7 +165,14 @@ class GameBoardTest {
             }
         }
         //Check behaviour when given destination is full
-        assertThrows(FullDestinationException.class, () -> gb.move(Color.GREEN, is1, en1));
+        ArrayList<Color> stud = new ArrayList<>(bg.getStudents(1));
+        try{
+            is1.addStudent(stud.get(0));
+        } catch (Exception e){
+            fail();
+        }
+        assertThrows(FullDestinationException.class, () -> gb.move(stud.get(0), is1, en1));
+        assertEquals(26*Color.values().length, bg.numRemaining());
     }
 
     @Test

@@ -27,7 +27,7 @@ public class GameBoard implements Serializable {
     private final MotherNature motherNature;
     private final HashMap<Player, PlayerBoard> playerBoards;
     private final EnumMap<Color, Player> professors;
-    private final Bag bag = new Bag();
+    private final Bag bag;
     private static final int maxNumIslands = 12;
     private static final long serialVersionUID = 1L;
 
@@ -37,6 +37,7 @@ public class GameBoard implements Serializable {
      * @param players {@link ArrayList} of {@link Player} containing references to all players of the game
      */
     public GameBoard(ArrayList<Player> players) {
+        bag = new Bag();
         clouds = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
             clouds.add(new CloudTile(players.size()));
@@ -77,12 +78,13 @@ public class GameBoard implements Serializable {
     /**
      * Alternative Constructor, useful in testing. Allows for external initialization of all non-static attributes.
      */
-    public GameBoard(ArrayList<CloudTile> clouds, ArrayList<IslandTile> islands, MotherNature motherNature, HashMap<Player, PlayerBoard> playerBoards, EnumMap<Color, Player> professors) {
+    public GameBoard(ArrayList<CloudTile> clouds, ArrayList<IslandTile> islands, MotherNature motherNature, HashMap<Player, PlayerBoard> playerBoards, EnumMap<Color, Player> professors, Bag bag) {
         this.clouds = clouds;
         this.islands = islands;
         this.motherNature = motherNature;
         this.playerBoards = playerBoards;
         this.professors = professors;
+        this.bag = bag;
     }
 
     /**
@@ -196,6 +198,11 @@ public class GameBoard implements Serializable {
         try {
             destination.addStudent(color);
         } catch (FullDestinationException ex) {
+            try {
+                bag.addStudents(1, color);
+            } catch (InvalidParameterException exc){
+                exc.printStackTrace();
+            }
             throw new FullDestinationException();
         }
 
