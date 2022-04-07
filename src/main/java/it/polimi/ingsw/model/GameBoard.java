@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Represents the game-board.
  * @author A.G. Gaillet
- * @version 1.2
+ * @version 1.3
  * @serial
  * @see CloudTile
  * @see IslandTile
@@ -64,6 +64,25 @@ public class GameBoard implements Serializable {
         playerBoards = new HashMap<>();
         for (Player player : players) {
             playerBoards.put(player, new PlayerBoard(players.size()));
+            //Fill entrances with students
+            int max = playerBoards.get(player).getEntrance().getMaxStudents();
+            try {
+                ArrayList<Color> students = bag.getStudents(max);
+                for (int i = 0; i < max; i++) {
+                    try {
+                        playerBoards.get(player).getEntrance().addStudent(students.get(i));
+                    } catch (FullDestinationException e){
+                        try{
+                            bag.addStudents(1, students.get(i));
+                        } catch (InvalidParameterException ex){
+                            ex.printStackTrace();
+                        }
+                        e.printStackTrace();
+                    }
+                }
+            }catch (EmptyBagException e){
+                e.printStackTrace();
+            }
         }
 
         professors = new EnumMap<>(Color.class);
