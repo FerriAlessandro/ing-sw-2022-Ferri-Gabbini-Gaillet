@@ -3,11 +3,12 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
 import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * This abstract class provides methods and attributes that every other tile with students has.
  * @author AlessandroG
- * @version 1.0
+ * @version 1.1
  */
 
 public abstract class TileWithStudents {
@@ -54,6 +55,14 @@ public abstract class TileWithStudents {
         if (students.get(color) == 0)
             throw new RuntimeException("There are no students of this color");
         students.put(color, (students.get(color)) - 1);
+    }
+
+    /**
+     * Getter for the internal map of students.
+     * @return the reference to the memorized map.
+     */
+    public Map<Color, Integer> getState(){
+        return students;
     }
 }
 
