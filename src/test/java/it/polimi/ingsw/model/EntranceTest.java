@@ -9,16 +9,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EntranceTest {
     Entrance entrance;
+
     @BeforeEach
     void setup() {
-        this.entrance = new Entrance(2);
+        entrance = new Entrance(2);
     }
-    
+
+    @Test
+    @DisplayName("Test normal operation of constructor method")
+    void constructorTest() {
+        assertDoesNotThrow(() -> entrance = new Entrance(3));
+    }
+
     @Test
     @DisplayName("Test the constructor method with illegal parameter")
     void entranceConstructorTest() {
-        IllegalArgumentException e = new IllegalArgumentException();
-        assertThrowsExactly(e.getClass(), () -> this.entrance = new Entrance(1));
+        assertThrowsExactly(IllegalArgumentException.class, () -> entrance = new Entrance(1));
     }
 
     @Test
@@ -36,8 +42,7 @@ class EntranceTest {
     @DisplayName("Test the corner case of removeStudent when when there are no students.")
     void removeStudentCornerTest() {
         for(Color color : Color.values()){
-            RuntimeException e = new RuntimeException();
-            assertThrowsExactly(e.getClass(), () -> entrance.removeStudent(color));
+            assertThrowsExactly(RuntimeException.class, () -> entrance.removeStudent(color));
         }
     }
     @Test
@@ -53,7 +58,7 @@ class EntranceTest {
     void addStudentCornerTest() throws FullDestinationException {
         for(int i = 0; i < entrance.getMaxStudents(); i++)
             entrance.addStudent(Color.GREEN);
-        FullDestinationException e = new FullDestinationException();
-        assertThrowsExactly(e.getClass(), () -> entrance.addStudent(Color.GREEN));
+        assertThrowsExactly(FullDestinationException.class, () -> entrance.addStudent(Color.GREEN));
     }
+
 }
