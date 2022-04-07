@@ -2,6 +2,8 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.*;
+import it.polimi.ingsw.network.messages.GameStateMessage;
+import it.polimi.ingsw.observers.Observable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  */
 
-public class Game {
+public class Game extends Observable {
 
     private ArrayList<Player> players; //sorted based on the assistant cards played (lowest to highest)
     private Phase gamePhase;
@@ -82,6 +84,7 @@ public class Game {
      */
 
     public void moveMotherNature(int num) throws TowerWinException, NumOfIslandsException {
+        IslandTile oldIsland = gameBoard.getMotherNature().getCurrentIsland();
 
         IslandTile islandToCheck;
         TowerColor influenceWinner;
@@ -90,6 +93,9 @@ public class Game {
         gameBoard.swapTowers(islandToCheck, influenceWinner);
         gameBoard.checkForArchipelago(islandToCheck);
 
+        if (oldIsland == gameBoard.getMotherNature().getCurrentIsland()){
+            notifyObservers();
+        }
     }
 
     /**
@@ -143,7 +149,6 @@ public class Game {
 
             endPlayerTurn(getCurrentPlayer());
             throw e;
-
         }
 
     }
@@ -156,9 +161,9 @@ public class Game {
      * @throws FullDestinationException Thrown if the selected destination is already full
      */
     public void move (Color color, TileWithStudents origin, TileWithStudents destination) throws FullDestinationException {
-
         gameBoard.move(color, origin, destination);
 
+        notifyObservers();
     }
 
     /**
@@ -227,10 +232,4 @@ public class Game {
         players = p;
     }
 
-
-
-
 }
-
-
-

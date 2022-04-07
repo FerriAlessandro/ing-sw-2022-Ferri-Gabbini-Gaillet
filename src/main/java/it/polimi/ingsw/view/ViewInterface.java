@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.enumerations.Color;
+import it.polimi.ingsw.network.messages.GameStateMessage;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,8 +29,7 @@ public interface ViewInterface {
 
     void showDisconnectionMessage();
 
-    void showBoard(Map<String, ArrayList<Color>> studEntrance, Map<String, Map<Color, Integer>> studDining,
-                   Map<Integer, ArrayList<Color>> studIslands, Map<Integer, Integer> towerIslands, Map<Integer, Integer> forbiddenTokens);
+    void showBoard(GameStateMessage gameState);
 
     void showCoins(int coins);
 
