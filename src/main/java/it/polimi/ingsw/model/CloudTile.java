@@ -17,7 +17,6 @@ public class CloudTile extends TileWithStudents {
 
     /**
      * Constructor needed because an entrance has a fixed maximum number of students.
-     *
      * @param numOfPlayers determines the number of player of the game, hence
      *                     how many students the entrance can host: 3 for 2 players-game, 4 for 3 players-game.
      * @throws IllegalArgumentException when numOfPlayers is neither 2 nor 3.

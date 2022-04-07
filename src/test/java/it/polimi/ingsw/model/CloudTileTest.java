@@ -24,7 +24,7 @@ class CloudTileTest {
     public int numOfColor(List<Color> listOfColor, Color color) {
         int numOfCol = 0;
         for(Color c : listOfColor) {
-            if(c.equals(color))
+            if(c == color)
                 numOfCol ++;
         }
         return numOfCol;
@@ -33,6 +33,12 @@ class CloudTileTest {
     @BeforeEach
     void setUp() {
         this.cloud = new CloudTile(2);
+    }
+
+    @Test
+    @DisplayName("Test normal operation of constructor method")
+    void constructorTest() {
+        assertDoesNotThrow(() -> this.cloud = new CloudTile(3));
     }
 
     @Test
