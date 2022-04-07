@@ -17,6 +17,7 @@ import it.polimi.ingsw.model.enumerations.TowerColor;
  * Constructor of the Player Class, the status is set to "True".
  */
 public class Player {
+    private final int ID;
     private final String nickName;
     private final AssistantDeck assistantDeck;
     private Status playerStatus;
@@ -25,8 +26,9 @@ public class Player {
     private final TowerColor towerColor;
     private AssistantCard playedCard;
 
-    public Player(AssistantDeck deck, String name, boolean isFirst, boolean isPlayerTurn, TowerColor color){
+    public Player(int ID, AssistantDeck deck, String name, boolean isFirst, boolean isPlayerTurn, TowerColor color){
 
+        this.ID = ID;
         this.assistantDeck = deck;
         this.nickName = name;
         this.isFirst = isFirst;
@@ -35,6 +37,11 @@ public class Player {
         this.playerStatus = Status.ONLINE;
 
     }
+
+    /**
+     * @return The Player's ID
+     */
+    public int getID(){return ID;}
 
     /**
      * @return The Nickname of the Player
@@ -142,6 +149,8 @@ public class Player {
         if(assistantDeck.currNumOfCards() == 0)
             throw new EmptyDeckException(getNickName() + " played his last card, this is the last Round!");
     }
+
+
 
 
 

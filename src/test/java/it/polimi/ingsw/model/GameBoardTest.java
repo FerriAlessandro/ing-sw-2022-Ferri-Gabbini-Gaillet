@@ -49,7 +49,7 @@ class GameBoardTest {
 
         for (int i = 0; i< numPlayers; i++) {
             AssistantDeck ad = new AssistantDeck(Wizard.WIZARD_1);
-            Player pl1 = new Player(ad, "test", false, false, t1.get(i % t1.size()));
+            Player pl1 = new Player(1, ad, "test", false, false, t1.get(i % t1.size()));
             PlayerBoard pb1 = new PlayerBoard(numPlayers);
             playerBoards.put(pl1, pb1);
         }
