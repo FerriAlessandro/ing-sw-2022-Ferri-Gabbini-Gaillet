@@ -5,10 +5,9 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.enumerations.Color;
-import it.polimi.ingsw.network.messages.GameStateMessage;
+import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
 import it.polimi.ingsw.observers.Observer;
-import it.polimi.ingsw.network.ClientHandler;
 
 import java.util.*;
 
@@ -25,17 +24,17 @@ public class VirtualView implements ViewInterface, Observer {
         //TODO: assign param to attribute
     }
     @Override
-    public void askNickName() {
+    public void askNickName(SMessage message) {
 
     }
 
     @Override
-    public void askNumOfPlayers() {
+    public void askNumOfPlayers(SMessage message) {
 
     }
 
     @Override
-    public void askMotherNatureMove(int pos) {
+    public void askMotherNatureMove(SMessage message) {
 
     }
 
@@ -45,12 +44,12 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     @Override
-    public void showLobby(ArrayList<String> nicknames, int requiredNum) {
+    public void showAssistantChoice(SMessage message) {
 
     }
 
     @Override
-    public void showTextMessage(String genericMessage) {
+    public void showLobby(SMessageLobby message) {
 
     }
 
@@ -60,23 +59,19 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     @Override
-    public void showBoard(GameStateMessage message) {
+    public void showWinMessage(SMessageWin message) {
+
+    }
+
+    @Override
+    public void showBoard(SMessageGameState message) {
         //TODO: send message
     }
 
-    @Override
-    public void showCoins(int coins) {
-
-    }
-
-    @Override
-    public void showWinMessage(String winner) {
-
-    }
 
     /**
-     * When this method is called by the observed {@link Game} it creates a {@link GameStateMessage} containing the game state
-     * and calls the {@link VirtualView#showBoard(GameStateMessage)} method
+     * When this method is called by the observed {@link Game} it creates a {@link SMessageGameState} containing the game state
+     * and calls the {@link VirtualView#showBoard(SMessageGameState)} method
      * @param observable the observable object
      */
     @Override
@@ -114,7 +109,7 @@ public class VirtualView implements ViewInterface, Observer {
 
         int motherNaturePosition = islands.indexOf(g.getGameBoard().getMotherNature().getCurrentIsland());
 
-        GameStateMessage message = new GameStateMessage(studEntrance, studDining, studIslands, towerIslands, forbiddenTokens, studClouds, motherNaturePosition);
+        SMessageGameState message = new SMessageGameState(studEntrance, studDining, studIslands, towerIslands, forbiddenTokens, studClouds, motherNaturePosition);
 
         showBoard(message);
     }

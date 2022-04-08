@@ -1,11 +1,8 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.model.enumerations.Color;
-import it.polimi.ingsw.network.messages.GameStateMessage;
+import it.polimi.ingsw.network.messages.*;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Observer;
 
 /**
  * Generic interface to be implemented by every View.
@@ -15,24 +12,22 @@ import java.util.Observer;
  */
 public interface ViewInterface {
 
-    void askNickName();
+    void askNickName(SMessage message);
 
-    void askNumOfPlayers();
+    void askNumOfPlayers(SMessage message);
 
-    void askMotherNatureMove(int pos);
+    void askMotherNatureMove(SMessage message);
 
     void showAssistantChoice();
 
-    void showLobby (ArrayList<String> nicknames, int requiredNum);
+    void showAssistantChoice(SMessage message);
 
-    void showTextMessage(String genericMessage);
+    void showLobby (SMessageLobby message);
 
     void showDisconnectionMessage();
 
-    void showBoard(GameStateMessage gameState);
+    void showBoard(SMessageGameState gameState);
 
-    void showCoins(int coins);
-
-    void showWinMessage(String winner);
+    void showWinMessage(SMessageWin message);
 
 }

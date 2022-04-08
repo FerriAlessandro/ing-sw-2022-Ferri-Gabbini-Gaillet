@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.*;
-import it.polimi.ingsw.network.messages.GameStateMessage;
 import it.polimi.ingsw.observers.Observable;
 
 import java.util.*;

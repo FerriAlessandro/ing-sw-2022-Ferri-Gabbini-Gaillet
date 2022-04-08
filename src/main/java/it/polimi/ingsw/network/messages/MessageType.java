@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
 public enum MessageType {
-    GENERIC,
-    S_GAMESTATE
+    S_GAMESTATE,
+    S_WIN,
+    S_LOBBY
 }
