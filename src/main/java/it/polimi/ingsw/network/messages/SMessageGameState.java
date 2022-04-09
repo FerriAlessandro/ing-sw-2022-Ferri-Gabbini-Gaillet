@@ -4,6 +4,11 @@ import it.polimi.ingsw.model.enumerations.Color;
 
 import java.util.Map;
 
+/**
+ * {@link Message} used by the server to notify a change in the state of the model.
+ * @author A.G. Gaillet
+ * @version 1.0
+ */
 public class SMessageGameState extends Message {
     public Map<String, Map<Color, Integer>> studEntrance;
     public Map<String, Map<Color, Integer>> studDining;
