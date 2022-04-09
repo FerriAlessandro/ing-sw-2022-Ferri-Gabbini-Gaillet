@@ -8,7 +8,8 @@ package it.polimi.ingsw.model.enumerations;
 
 public enum Phase {
     CHOOSE_ASSISTANT_CARD,
+    CHOOSE_CHARACTER_CARD,
     MOVE_STUDENTS,
     MOVE_MOTHERNATURE,
-    CHOOSE_CLOUD;
+    CHOOSE_CLOUD
 }

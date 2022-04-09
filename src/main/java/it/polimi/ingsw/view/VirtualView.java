@@ -68,6 +68,10 @@ public class VirtualView implements ViewInterface, Observer {
         //TODO: send message
     }
 
+    public void showGenericMessage(Message m){
+        //TODO: send message
+    }
+
 
     /**
      * When this method is called by the observed {@link Game} it creates a {@link SMessageGameState} containing the game state
