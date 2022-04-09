@@ -1,9 +1,9 @@
 package it.polimi.ingsw.network;
 
-import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
-import it.polimi.ingsw.network.messages.RMessageNumPlayers;
+import it.polimi.ingsw.network.messages.RMessageGameSettings;
 import it.polimi.ingsw.network.messages.SMessage;
 
 import java.io.IOException;
@@ -12,15 +12,22 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * Class that represent the Server. It contains the server-side entrypoint.
+ * @author A.G. Gaillet
+ * @version 1.0
+ */
 public class Server {
     int port = 2351;
     int numCurrentGame = 0;
     int numRequiredGame = 0;
     InputController controller;
 
+    /**
+     * Main function
+     * @param args port value to override default value
+     */
     public void main(String[] args){
-        //TODO: controller should take as constructor param the number of players
-
         if (args.length == 1){
             port = Integer.parseInt(args[0]);
         }else if (args.length > 1){
@@ -41,17 +48,18 @@ public class Server {
                         ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
                         Message message = null;
                         do {
-                            outputStream.writeObject(new SMessage(MessageType.S_NUMPLAYERS));
+                            outputStream.writeObject(new SMessage(MessageType.S_GAMESETTINGS));
                             try {
                                 message = (Message) inputStream.readObject();
                             } catch (ClassNotFoundException e) {
                                 e.printStackTrace();
                                 break;
                             }
-                        }while (!message.getType().equals(MessageType.R_NUMPLAYERS));
+                        }while (!message.getType().equals(MessageType.R_GAMESETTINGS));
                         if (message != null) {
-                            numRequiredGame = ((RMessageNumPlayers) message).numPlayers;
-                            controller = new InputController(numRequiredGame);
+                            numRequiredGame = ((RMessageGameSettings) message).numPlayers;
+                            boolean expertGame = ((RMessageGameSettings) message).expert;
+                            controller = new InputController(numRequiredGame, expertGame);
                             new ClientHandler(socket, inputStream, outputStream, controller).start();
                         }
                     } catch (IOException ioException){

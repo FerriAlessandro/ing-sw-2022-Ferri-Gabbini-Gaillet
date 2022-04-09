@@ -45,11 +45,6 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     @Override
-    public void showAssistantChoice(SMessage message) {
-        clientHandler.sendMessage(message);
-    }
-
-    @Override
     public void showLobby(SMessageLobby message) {
         clientHandler.sendMessage(message);
     }

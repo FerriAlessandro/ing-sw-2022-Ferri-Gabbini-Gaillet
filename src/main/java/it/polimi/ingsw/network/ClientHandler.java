@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network;
 
-import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 import it.polimi.ingsw.network.messages.RMessageNickname;
@@ -18,9 +18,8 @@ public class ClientHandler extends Thread{
     Socket clientSocket;
     ObjectInputStream in;
     ObjectOutputStream out;
-    final Object writeLock = new Object();
+    final Object sendLock = new Object();
     final InputController controller;
-    //TODO: Add final attribute controller
 
     public ClientHandler(Socket socket, InputController controller){
         this.clientSocket = socket;
@@ -38,7 +37,7 @@ public class ClientHandler extends Thread{
             ioException.printStackTrace();
             return;
         }
-    } //TODO: add controller param
+    }
 
     public ClientHandler(Socket socket, ObjectInputStream in, ObjectOutputStream out, InputController controller) {
         this.clientSocket = socket;
@@ -47,6 +46,9 @@ public class ClientHandler extends Thread{
         this.controller = controller;
     }
 
+    /**
+     * This method elaborates messages received by the socket.
+     */
     public void run() {
         if (in == null) return;
 
@@ -64,12 +66,16 @@ public class ClientHandler extends Thread{
                         System.out.println("Nickname for " + clientSocket.getInetAddress() + "is " + nickMessage.nickname);
 
                         VirtualView virtualView = new VirtualView(this);
-                        //TODO: addClient to controller (nickname, virtualView)
+                        try {
+                            controller.addPlayer(nickMessage.nickname, virtualView);
+                        }catch (FullGameException e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             } while(!inMessage.getType().equals(MessageType.R_NICKNAME));
         } catch (Exception e){
-            System.out.println("Invalid input");
+            System.out.println("Invalid input or corrupted input stream\n");
             e.printStackTrace();
         }
 
@@ -80,24 +86,28 @@ public class ClientHandler extends Thread{
 
                 if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
                     Thread.currentThread().interrupt();
+                    clientSocket.close();
                     System.out.println("Thread interrupted, closing connection\n");
                 }else{
-                    //TODO: pass message onto appropriate controller
+                    controller.elaborateMessage(inMessage);
                 }
             } catch (Exception e){
-                System.out.println("Invalid input");
+                System.out.println("Invalid input or corrupted input stream\n");
                 e.printStackTrace();
             }
         }
     }
 
-
+    /**
+     * Method to be called to send a message to the linked client.
+     * @param message the {@link Message} to be sent
+     */
     public void sendMessage(Message message){
-        synchronized (writeLock){
+        synchronized (sendLock){
             try {
                 out.writeObject(message);
             } catch (IOException e){
-                System.out.println("Unable to send the given message");
+                System.out.println("Unable to send the given message\n");
             }
         }
     }

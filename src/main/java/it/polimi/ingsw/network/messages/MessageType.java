@@ -11,5 +11,6 @@ public enum MessageType {
     S_NUMPLAYERS,
     R_DISCONNECT,
     R_NICKNAME,
-    R_NUMPLAYERS,
+    R_GAMESETTINGS,
+    S_GAMESETTINGS,
 }
