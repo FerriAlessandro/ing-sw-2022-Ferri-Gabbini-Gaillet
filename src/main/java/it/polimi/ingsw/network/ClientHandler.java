@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.controller.InputController;
+import it.polimi.ingsw.exceptions.FullGameException;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 import it.polimi.ingsw.network.messages.RMessageNickname;
@@ -23,6 +24,11 @@ public class ClientHandler extends Thread{
     ObjectOutputStream out;
     final InputController controller;
 
+    /**
+     * Constructor to be used for players that are not first.
+     * @param socket to be used for communication
+     * @param controller of the current game
+     */
     public ClientHandler(Socket socket, InputController controller){
         this.clientSocket = socket;
         this.controller = controller;
@@ -40,6 +46,13 @@ public class ClientHandler extends Thread{
         }
     }
 
+    /**
+     * Constructor to be used for players who are first.
+     * @param socket to be used for communication
+     * @param in {@link ObjectInputStream} of the given {@link Socket}
+     * @param out {@link ObjectOutputStream} of the given {@link Socket}
+     * @param controller of the current game
+     */
     public ClientHandler(Socket socket, ObjectInputStream in, ObjectOutputStream out, InputController controller) {
         this.clientSocket = socket;
         this.in = in;
@@ -59,12 +72,13 @@ public class ClientHandler extends Thread{
             do {
                 if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
                     Thread.currentThread().interrupt();
-                    System.out.println("Thread interrupted, closing connection\n");
+                    clientSocket.close();
+                    System.out.println("Thread interrupted, closing connection");
                     break;
                 }else {
                     if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
                         RMessageNickname nickMessage= (RMessageNickname) inMessage;
-                        System.out.println("Nickname for " + clientSocket.getInetAddress() + "is " + nickMessage.nickname);
+                        System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
 
                         VirtualView virtualView = new VirtualView(this);
                         try {
@@ -76,7 +90,7 @@ public class ClientHandler extends Thread{
                 }
             } while(!inMessage.getType().equals(MessageType.R_NICKNAME));
         } catch (Exception e){
-            System.out.println("Invalid input or corrupted input stream\n");
+            System.out.println("Invalid input or corrupted input stream");
             e.printStackTrace();
         }
 
@@ -84,20 +98,22 @@ public class ClientHandler extends Thread{
         while (!Thread.currentThread().isInterrupted()){
             try {
                 Message inMessage = (Message) in.readObject();
+                //System.out.println("Message received, type: " + inMessage.getType());
 
                 if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
                     Thread.currentThread().interrupt();
                     clientSocket.close();
-                    System.out.println("Thread interrupted, closing connection\n");
+                    System.out.println("Thread interrupted, closing connection");
                 }else if(!inMessage.getType().equals(MessageType.PING)){
                     try{
-                        controller.elaborateMessage(inMessage);}
+                        controller.elaborateMessage(inMessage);
+                    }
                     catch (UnsupportedOperationException e){
                         sendMessage(new SMessage(MessageType.S_ERROR));
                     }
                 }
             } catch (Exception e){
-                System.out.println("Invalid input or corrupted input stream\n");
+                System.out.println("Invalid input or corrupted input stream");
                 e.printStackTrace();
             }
         }
@@ -111,7 +127,7 @@ public class ClientHandler extends Thread{
         try {
             out.writeObject(message);
         } catch (IOException e){
-            System.out.println("Unable to send the given message\n");
+            System.out.println("Unable to send the given message");
         }
     }
 
