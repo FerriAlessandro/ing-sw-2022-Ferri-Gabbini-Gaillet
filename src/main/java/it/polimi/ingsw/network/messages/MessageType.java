@@ -5,6 +5,8 @@ package it.polimi.ingsw.network.messages;
  * @author A.G. Gaillet, AlessandroF, AlessandroG
  */
 public enum MessageType {
+    PING,
+    DISCONNECTED,
     S_GAMESTATE,
     S_WIN,
     S_LOBBY,
@@ -13,4 +15,5 @@ public enum MessageType {
     R_NICKNAME,
     R_GAMESETTINGS,
     S_GAMESETTINGS,
+    S_ERROR,
 }

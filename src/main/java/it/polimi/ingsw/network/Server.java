@@ -13,9 +13,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Class that represent the Server. It contains the server-side entrypoint.
+ * Class that represent the Server. It contains the server-side entrypoint and handles initial communication with
+ * the clients before creating specific {@link ClientHandler}s.
  * @author A.G. Gaillet
  * @version 1.0
+ * @see ServerSocket
+ * @see ClientHandler
  */
 public class Server {
     int port = 2351;

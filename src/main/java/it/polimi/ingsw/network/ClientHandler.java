@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 import it.polimi.ingsw.network.messages.RMessageNickname;
+import it.polimi.ingsw.network.messages.SMessage;
 import it.polimi.ingsw.view.VirtualView;
 
 import java.io.*;
@@ -13,12 +14,13 @@ import java.net.Socket;
  * This class handles communications with one client.
  * @author A.G. Gaillet
  * @version 1.0
+ * @see Socket
+ * @see ClientSocket
  */
 public class ClientHandler extends Thread{
     Socket clientSocket;
     ObjectInputStream in;
     ObjectOutputStream out;
-    final Object sendLock = new Object();
     final InputController controller;
 
     public ClientHandler(Socket socket, InputController controller){
@@ -35,7 +37,6 @@ public class ClientHandler extends Thread{
         } catch (IOException ioException){
             System.out.println("Unable to get the output stream");
             ioException.printStackTrace();
-            return;
         }
     }
 
@@ -88,8 +89,12 @@ public class ClientHandler extends Thread{
                     Thread.currentThread().interrupt();
                     clientSocket.close();
                     System.out.println("Thread interrupted, closing connection\n");
-                }else{
-                    controller.elaborateMessage(inMessage);
+                }else if(!inMessage.getType().equals(MessageType.PING)){
+                    try{
+                        controller.elaborateMessage(inMessage);}
+                    catch (UnsupportedOperationException e){
+                        sendMessage(new SMessage(MessageType.S_ERROR));
+                    }
                 }
             } catch (Exception e){
                 System.out.println("Invalid input or corrupted input stream\n");
@@ -103,12 +108,10 @@ public class ClientHandler extends Thread{
      * @param message the {@link Message} to be sent
      */
     public void sendMessage(Message message){
-        synchronized (sendLock){
-            try {
-                out.writeObject(message);
-            } catch (IOException e){
-                System.out.println("Unable to send the given message\n");
-            }
+        try {
+            out.writeObject(message);
+        } catch (IOException e){
+            System.out.println("Unable to send the given message\n");
         }
     }
 
