@@ -20,8 +20,6 @@ public interface ViewInterface {
 
     void showAssistantChoice();
 
-    void showAssistantChoice(SMessage message);
-
     void showLobby (SMessageLobby message);
 
     void showDisconnectionMessage();

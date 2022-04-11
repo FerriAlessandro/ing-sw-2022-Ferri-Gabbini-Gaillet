@@ -92,7 +92,7 @@ public class Game extends Observable {
         gameBoard.swapTowers(islandToCheck, influenceWinner);
         gameBoard.checkForArchipelago(islandToCheck);
 
-        if (oldIsland == gameBoard.getMotherNature().getCurrentIsland()){
+        if (oldIsland != gameBoard.getMotherNature().getCurrentIsland()){
             notifyObservers();
         }
     }
