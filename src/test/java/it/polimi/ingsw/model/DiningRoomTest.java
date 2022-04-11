@@ -26,8 +26,10 @@ class DiningRoomTest {
     @Test
     @DisplayName("Test if method throws exception properly")
     void addStudentExc1Test() throws FullDestinationException {
-        for(int i = 0; i < diningRoom.getMaxStudents(); i++)
-            diningRoom.addStudent(Color.GREEN);
+        for(int i = 0; i < diningRoom.getMaxStudents(); i++) {
+            try {diningRoom.addStudent(Color.GREEN);}
+            catch(RuntimeException e) {e.printStackTrace();}
+        }
         FullDestinationException e = new FullDestinationException();
         assertThrowsExactly(e.getClass(), () -> diningRoom.addStudent(Color.GREEN));
     }
@@ -35,10 +37,19 @@ class DiningRoomTest {
     @Test
     @DisplayName("Test if method throws exception only when it has to")
     void addStudentExc2Test() throws FullDestinationException {
-        for(int i = 0; i < diningRoom.getMaxStudents(); i++)
-            diningRoom.addStudent(Color.GREEN);
-        FullDestinationException e = new FullDestinationException();
+        for(int i = 0; i < diningRoom.getMaxStudents(); i++) {
+            try {diningRoom.addStudent(Color.GREEN); }
+            catch (RuntimeException e) {e.printStackTrace();}
+        }
         assertDoesNotThrow(() -> diningRoom.addStudent(Color.YELLOW));
-        assertThrowsExactly(e.getClass(), () -> diningRoom.addStudent(Color.GREEN));
+        assertThrowsExactly(FullDestinationException.class, () -> diningRoom.addStudent(Color.GREEN));
+    }
+
+    @Test
+    @DisplayName("Test if method throws RunTimeException properly, when a coin must be given")
+    void addStudentCoinExcTest() throws Exception {
+        diningRoom.addStudent(Color.RED);
+        diningRoom.addStudent(Color.RED);
+        assertThrowsExactly(RuntimeException.class, () -> diningRoom.addStudent(Color.RED));
     }
 }

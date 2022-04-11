@@ -283,7 +283,7 @@ class GameBoardTest {
 
         EnumMap<TowerColor, TowerZone> towerMap = new EnumMap<>(TowerColor.class);
         for (Player player : playerBoards.keySet()){
-            towerMap.put(player.getTowerColor(), playerBoards.get(player).towerZone);
+            towerMap.put(player.getTowerColor(), playerBoards.get(player).getTowerZone());
         }
 
         for (TowerColor color : colors) {
@@ -308,34 +308,29 @@ class GameBoardTest {
     public void checkInfluenceTest() throws Exception {
 
         IslandTile islandToCheck = new IslandTile();
-        Player black = null;
-        Player gray = null;
         //White player has PINK professor
         //Black player has GREEN professor
         //Gray player has YELLOW professor and the tower on the island
         for(Player p : playerBoards.keySet()) {
             if (p.getTowerColor() == TowerColor.WHITE)
                 professors.put(Color.PINK, p);
-            if(p.getTowerColor() == TowerColor.BLACK) {
+            if(p.getTowerColor() == TowerColor.BLACK)
                 professors.put(Color.GREEN, p);
-                black = p;
-            }
             if(p.getTowerColor() == TowerColor.GRAY) {
                 professors.put(Color.YELLOW, p);
                 islandToCheck.swapTower(p.getTowerColor());
-                gray = p;
             }
         }
 
         //Scenario 1: one YELLOW, one PINK, GRAY must win
         islandToCheck.addStudent(Color.PINK);
         islandToCheck.addStudent(Color.YELLOW);
-        assertEquals(gray.getTowerColor(), gb.checkInfluence(islandToCheck));
+        assertEquals(TowerColor.GRAY, gb.checkInfluence(islandToCheck));
 
         //Scenario 2: (previous +) three GREEN students on the island, Black must win
         for(int i = 0; i < 3; i++)
             islandToCheck.addStudent(Color.GREEN);
-        assertEquals(black.getTowerColor(), gb.checkInfluence(islandToCheck));
+        assertEquals(TowerColor.BLACK, gb.checkInfluence(islandToCheck));
     }
 
     @Test
@@ -380,5 +375,31 @@ class GameBoardTest {
             assertThrowsExactly(e.getClass(), () -> gb.checkInfluence(islandToCheck));
     }
 
+    @Test
+    @DisplayName("Test if method addCoin works properly")
+    public void addCoinTest() throws Exception {
+        DiningRoom destination = new DiningRoom();
+        Entrance origin = new Entrance(3);
+        Player player = null;
+        for(Player p : playerBoards.keySet())
+            if(p.getTowerColor() == TowerColor.BLACK) {
+                destination = gb.getPlayerBoard(p).getDiningRoom();
+                origin = gb.getPlayerBoard(p).getEntrance();
+                player = p;
+            }
+        assertEquals(0, gb.getPlayerBoard(player).getCoin()); //At the beginning 0 coin
+
+        for(int i = 0; i < 3; i++) {
+            origin.addStudent(Color.RED);
+            gb.move(Color.RED, origin, destination);
+        }
+        assertEquals(1, gb.getPlayerBoard(player).getCoin()); //1 coin with three red students
+
+        for(int i = 0; i < 6; i++) {
+            origin.addStudent(Color.RED);
+            gb.move(Color.RED, origin, destination);
+        }
+        assertEquals(3, gb.getPlayerBoard(player).getCoin()); //3 coin with nine red students
+    }
 }
 

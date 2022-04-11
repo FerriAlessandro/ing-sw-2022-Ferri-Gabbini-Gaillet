@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.enumerations.TowerColor;
-
 /**This class represents the board personal to each player
  * @author A.G. Gaillet
  * @version 1.0
@@ -10,9 +8,10 @@ import it.polimi.ingsw.model.enumerations.TowerColor;
  * @see TowerZone
  */
 public class PlayerBoard {
-    Entrance entrance;
-    DiningRoom diningRoom;
-    TowerZone towerZone;
+    private final Entrance entrance;
+    private final DiningRoom diningRoom;
+    private final TowerZone towerZone;
+    private int coin;
 
     /**
      * Class constructor.
@@ -22,6 +21,7 @@ public class PlayerBoard {
         entrance = new Entrance(numOfPlayers);
         diningRoom = new DiningRoom();
         towerZone = new TowerZone(numOfPlayers);
+        coin = 0;
     }
 
     public DiningRoom getDiningRoom() {
@@ -35,4 +35,8 @@ public class PlayerBoard {
     public TowerZone getTowerZone() {
         return towerZone;
     }
+
+    public int getCoin() { return coin; }
+
+    public void addCoin() { coin ++; }
 }

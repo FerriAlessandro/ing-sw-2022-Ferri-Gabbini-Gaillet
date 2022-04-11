@@ -210,13 +210,19 @@ public class GameBoard implements Serializable {
 
         try {
             destination.addStudent(color);
-        } catch (FullDestinationException ex) {
+        }
+        catch (FullDestinationException ex) {
             try {
                 bag.addStudents(1, color);
             } catch (InvalidParameterException exc){
                 exc.printStackTrace();
             }
             throw new FullDestinationException();
+        }
+        catch (RuntimeException ex) {
+            for(Player p : playerBoards.keySet())
+                if(getPlayerBoard(p).getDiningRoom() == destination)
+                    getPlayerBoard(p).addCoin();
         }
 
         if (destination.getClass().equals(DiningRoom.class)) {

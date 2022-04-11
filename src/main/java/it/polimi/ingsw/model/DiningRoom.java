@@ -24,11 +24,16 @@ public class DiningRoom extends TileWithStudents {
      * Method overridden because a max of 10 students is allowed per color.
      * @throws FullDestinationException when there are 10 students of a color and someone
      * tries to add another student of that color.
+     * @throws RuntimeException when a coin must be given to the DiningRoom's owner.
      */
     @Override
-    public void addStudent(Color color) throws FullDestinationException {
+    public void addStudent(Color color) throws FullDestinationException, RuntimeException {
         if(getNumStudents(color) == maxStudents)
             throw new FullDestinationException();
         super.addStudent(color);
+        for(int i = 1; i <= 3; i++)
+            if(getNumStudents(color) == 3 * i)
+                throw new RuntimeException("A coin must be added!");
     }
+
 }
