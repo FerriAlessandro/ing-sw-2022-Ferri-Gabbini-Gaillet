@@ -16,6 +16,7 @@ public enum MessageType {
     S_CLOUD,
     R_CLOUD,
     S_NICKNAME,
-    R_NICKNAME
+    R_NICKNAME,
+    R_GAMETYPE
 
 }

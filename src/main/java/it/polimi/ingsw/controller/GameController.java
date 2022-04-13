@@ -18,6 +18,7 @@ import java.util.Map;
 
 public class GameController {
 
+
     private Game game;
     private Phase gamePhase;
     //TODO Add Character cards status
@@ -26,6 +27,7 @@ public class GameController {
     private boolean isLastRound;
     private final int numOfPlayers;
     private int numOfMoves = 0;
+    private boolean playedCharacter;
     private final ArrayList<String> nickNames = new ArrayList<>();
 
     /**
@@ -38,7 +40,22 @@ public class GameController {
         this.isLastRound = false;
         this.numOfPlayers = numOfPlayers;
         this.isExpert = isExpert;
+        this.playedCharacter = false;
 
+
+    }
+
+    /**
+     * @return The current Phase of the Game
+     */
+    public Phase getGamePhase(){return gamePhase;}
+
+    /**
+     * @param nickName Name of the player who's virtual view is requested
+     * @return The Player's virtual view
+     */
+    public VirtualView getVirtualView(String nickName){
+        return playersView.get(nickName);
     }
 
     /**
@@ -120,7 +137,7 @@ public class GameController {
         RMessageAssistant assistantMessage = (RMessageAssistant) message;
         try {
             game.playAssistantCard(assistantMessage.getPlayedAssistant());
-            //TODO CALL ON VIRTUAL VIEW TO ASK THE NEXT PLAYER TO CHOOSE A CARD?
+            //TODO CALL ON VIRTUAL VIEW TO ASK THE NEXT PLAYER TO CHOOSE A CARD
 
         }catch(NoCurrentPlayerException e){  //should only be thrown if a bug happens...
             e.printStackTrace();
@@ -187,10 +204,11 @@ public class GameController {
     private void elaborateMove(Message message){
 
         RMessageMove moveMessage = (RMessageMove) message;
+        TileWithStudents dest;
         if(numOfMoves == numOfPlayers + 1){ //Already moved 3 (or 4) pieces
 
             numOfMoves = 0;
-            if(isExpert){
+            if(isExpert && !playedCharacter){
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_2;
                 // TODO playersView.get(moveMessage.getNickName()).CHIEDI_CARTA_PERSONAGGIO
             }
@@ -201,20 +219,9 @@ public class GameController {
         }
         else { //Can move a piece
 
-            TileWithStudents dest;
-            if (moveMessage.getDestination() == 0) { //Destination is the dining room
-                try {
+            if (moveMessage.getDestination() == 0)  //Destination is the dining room
                     dest = getDiningRoom();
-                } catch (NoCurrentPlayerException e) {
 
-                    e.printStackTrace();
-                    game.getPlayers().get(0).setPlayerTurn(true);  //if it happens assign the turn to a random player
-
-                    broadcastMessage((new SMessageInvalid(e.getMessage() + game.getPlayers().get(0).getNickName() + "is the first player now")));
-                    return;
-
-                }
-            }
             else if (moveMessage.getDestination() > 0 && moveMessage.getDestination() < game.getGameBoard().getIslands().size() + 1)//Destination is an island
                 dest = game.getGameBoard().getIslands().get(moveMessage.getDestination() - 1); //User counts islands from 1, not from 0
 
@@ -223,16 +230,8 @@ public class GameController {
                 return;
             }
 
-            try {
+            try{
                 game.move(moveMessage.getChosenColor(), getEntrance(), dest);
-            } catch (NoCurrentPlayerException e) { //Bug if it happens
-
-                e.printStackTrace();
-                game.getPlayers().get(0).setPlayerTurn(true);  //if it happens assign the turn to a random player
-
-                broadcastMessage((new SMessageInvalid(e.getMessage() + game.getPlayers().get(0).getNickName() + "is the first player now")));
-
-                return;
 
             } catch (FullDestinationException e) { //Destination already full, need to pick another one (don't increment numOfMoves)
 
@@ -242,6 +241,66 @@ public class GameController {
             }
 
             numOfMoves += 1;
+        }
+
+    }
+
+
+    public void elaborateMotherNature(Message message){
+
+        RMessageMotherNature motherNatureMessage = (RMessageMotherNature) message;
+        int lastIslandIndex = game.getGameBoard().getIslands().size()-1;
+        int desiredIslandIndex = motherNatureMessage.getIslandIndex()-1;
+        int currentMotherNatureIndex = game.getGameBoard().getIslands().indexOf(game.getGameBoard().getMotherNature().getCurrentIsland());
+        int playerMaxSteps;
+        int numOfSteps;
+
+        if(isExpert)  //TODO: && LA CARTA GIOCATA E' QUELLA DEI PASSI+2
+                playerMaxSteps = game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement() + 2;
+
+        else playerMaxSteps = game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement();
+
+        if(lastIslandIndex < desiredIslandIndex){
+            playersView.get(motherNatureMessage.getNickName()).showGenericMessage(
+                        new SMessageInvalid("Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1)));
+            return;
+        }
+
+        if(currentMotherNatureIndex < desiredIslandIndex)
+            numOfSteps = desiredIslandIndex - currentMotherNatureIndex;
+
+
+        else numOfSteps = lastIslandIndex - currentMotherNatureIndex + desiredIslandIndex + 1;
+
+
+        if(playerMaxSteps < numOfSteps)
+            playersView.get(motherNatureMessage.getNickName()).showGenericMessage(
+                    new SMessageInvalid("Insufficient number of steps!"));
+
+        else {
+            try {
+                game.moveMotherNature(numOfSteps);
+
+            } catch (TowerWinException e) {
+
+                for (String nickName : nickNames)
+                    playersView.get(nickName).showWinMessage(new SMessageWin(e.getMessage()));
+
+                return;
+
+            }
+            catch (NumOfIslandsException e) {
+
+                //TODO: CHECK WINNER PER MAGGIORANZA TORRI/PROFESSORI
+            }
+
+            //TODO AGGIORNA LA VIEW DEI GIOCATORI
+
+            if(isExpert && !playedCharacter)
+                gamePhase = Phase.CHOOSE_CHARACTER_CARD_3;
+
+            else gamePhase = Phase.CHOOSE_CLOUD;
+
         }
 
     }
