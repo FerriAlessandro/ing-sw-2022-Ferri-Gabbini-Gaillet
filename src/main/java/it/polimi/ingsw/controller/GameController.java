@@ -120,10 +120,15 @@ public class GameController {
      * Utility method to send the same message to each player's virtual view
      * @param message The message that needs to be broadcasted
      */
-    private void broadcastMessage(Message message){
+    private void broadcastMessage(String message){
+        Message m = new SMessageInvalid(message);
         for(VirtualView v : playersView.values()){
-            v.showGenericMessage(message);
+            v.showGenericMessage(m);
         }
+    }
+
+    private void sendErrorMessage(String nickName, String message){
+        playersView.get(nickName).showGenericMessage(new SMessageInvalid(message));
     }
 
 
@@ -144,15 +149,15 @@ public class GameController {
 
             game.getPlayers().get(0).setPlayerTurn(true);  //if it happens assign the turn to a random player
 
-            broadcastMessage((new SMessageInvalid(e.getMessage() + game.getPlayers().get(0).getNickName() + "is the first player now")));
+            broadcastMessage(e.getMessage() + game.getPlayers().get(0).getNickName() + "is the first player now");
 
         }
         catch(CardNotAvailableException | CardNotFoundException e){
-            playersView.get(assistantMessage.getNickName()).showGenericMessage(new SMessageInvalid(e.getMessage()));
+            sendErrorMessage(assistantMessage.getNickName(), e.getMessage());
         }
         catch(EmptyDeckException e){
             if(!isLastRound){
-                broadcastMessage(new SMessageInvalid(e.getMessage()));
+                broadcastMessage(e.getMessage());
                 isLastRound = true;
             }
         }
@@ -226,7 +231,7 @@ public class GameController {
                 dest = game.getGameBoard().getIslands().get(moveMessage.getDestination() - 1); //User counts islands from 1, not from 0
 
             else { //Destination not valid
-                playersView.get(moveMessage.getNickName()).showGenericMessage(new SMessageInvalid("This destination does not exist!"));
+                sendErrorMessage(moveMessage.getNickName(),"This destination does not exist!");
                 return;
             }
 
@@ -235,7 +240,7 @@ public class GameController {
 
             } catch (FullDestinationException e) { //Destination already full, need to pick another one (don't increment numOfMoves)
 
-                playersView.get(moveMessage.getNickName()).showGenericMessage(new SMessageInvalid(e.getMessage() + "Please pick another one"));
+                sendErrorMessage(moveMessage.getNickName(), e.getMessage() + "Please pick another one");
                 return;
 
             }
@@ -261,8 +266,7 @@ public class GameController {
         else playerMaxSteps = game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement();
 
         if(lastIslandIndex < desiredIslandIndex){
-            playersView.get(motherNatureMessage.getNickName()).showGenericMessage(
-                        new SMessageInvalid("Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1)));
+            sendErrorMessage(motherNatureMessage.getNickName(), "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
             return;
         }
 
@@ -274,8 +278,7 @@ public class GameController {
 
 
         if(playerMaxSteps < numOfSteps)
-            playersView.get(motherNatureMessage.getNickName()).showGenericMessage(
-                    new SMessageInvalid("Insufficient number of steps!"));
+            sendErrorMessage(motherNatureMessage.getNickName(), "Insufficient number of steps!");
 
         else {
             try {
@@ -305,9 +308,32 @@ public class GameController {
 
     }
 
+    public void elaborateCloud (Message message){
 
+        RMessageCloud cloudMessage = (RMessageCloud) message;
+        try {
+            game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
+        } catch(CloudNotFullException e){
+            sendErrorMessage(cloudMessage.getNickName(), "This Cloud is Empty, please select another Cloud");
 
+        }
+        catch(FullDestinationException e){
+            sendErrorMessage(cloudMessage.getNickName(), "Your Entrance is full, you can't choose a Cloud");
+        }
+        catch(EndRoundException e){
 
+            if(isLastRound) {
+                //TODO: CHECK WIN
+            }
+            else{
+                game.sortPlayersAssistantTurn();
+                broadcastMessage("A new Round is starting!");
+                gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
+            }
+        }
+
+        //TODO : Aggiorna la virtual view?
+    }
 
 
 

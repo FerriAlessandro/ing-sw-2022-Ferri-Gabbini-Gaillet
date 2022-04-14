@@ -173,8 +173,11 @@ class GameBoardTest {
             } catch (Exception e){
                 fail();
             }
+            int numOrigin = is1.getNumStudents();
+            int numDest = en1.getNumStudents();
             assertThrows(FullDestinationException.class, () -> gb.move(stud.get(0), is1, en1));
-            assertEquals(26*Color.values().length, bg.numRemaining());
+            assertEquals(numOrigin, is1.getNumStudents());
+            assertEquals(numDest, en1.getNumStudents());
         } catch (EmptyBagException e) {
             fail();
         }

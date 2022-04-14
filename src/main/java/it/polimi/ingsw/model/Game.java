@@ -217,6 +217,7 @@ public class Game extends Observable {
      */
     public void sortPlayersAssistantTurn() {
 
+        players.get(numOfPlayers - 1).setPlayerTurn(false);
         ArrayList<Player> p = new ArrayList<>();
         p.add(getFirstPlayer());
         players.remove(getFirstPlayer());
@@ -232,6 +233,7 @@ public class Game extends Observable {
             }
         }
         players = p;
+        getFirstPlayer().setPlayerTurn(true);
     }
 
 }
