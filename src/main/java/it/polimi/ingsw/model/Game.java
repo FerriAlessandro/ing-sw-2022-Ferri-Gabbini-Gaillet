@@ -236,4 +236,62 @@ public class Game extends Observable {
         getFirstPlayer().setPlayerTurn(true);
     }
 
+    /**
+     * Finds the winner at the end of the game by checking the number of towers of each player and, in case of a tie, checks the number of Professors owned
+     * @return the nickName of the winner
+     */
+    public String checkWinner (){
+
+        int minTower;
+        Optional<Integer> maxProfessors;
+        ArrayList<Player> playersCopy = new ArrayList<>(players);
+        HashMap<Player, Integer> sameNumOfTowers = new HashMap<>();
+        Player winner;
+        Boolean tie = true;
+
+        minTower = gameBoard.getPlayerBoard(playersCopy.get(0)).getTowerZone().getNumOfTowers();
+        winner = playersCopy.get(0);
+
+
+        playersCopy.remove(0);
+
+        for(Player p : playersCopy){
+            if(gameBoard.getPlayerBoard(p).getTowerZone().getNumOfTowers() < minTower){
+                minTower = gameBoard.getPlayerBoard(p).getTowerZone().getNumOfTowers();
+                winner = p;
+            }
+            else if(gameBoard.getPlayerBoard(p).getTowerZone().getNumOfTowers() == minTower) {
+                sameNumOfTowers.put(p, 0);
+                if(!sameNumOfTowers.containsKey(winner))
+                    sameNumOfTowers.put(winner, 0);
+            }
+
+        }
+
+        if(!sameNumOfTowers.containsKey(winner))
+            return winner.getNickName();
+
+        else {
+            for(Color c : Color.values()){ //if a professor is owned by a player and the owner is in the "Tie" Map
+                if(gameBoard.getProfessors().containsKey(c) && sameNumOfTowers.containsKey(gameBoard.getProfessorOwnerByColor(c)))
+                    sameNumOfTowers.put(gameBoard.getProfessorOwnerByColor(c), sameNumOfTowers.get(gameBoard.getProfessorOwnerByColor(c)) + 1);
+            }
+
+            maxProfessors = sameNumOfTowers.values().stream().max((p1, p2) -> p1 > p2 ? 1 : p1.equals(p2) ? 0 : -1); //get the max number of prof owned by a player
+
+            if(sameNumOfTowers.values().stream().filter(p -> p.equals(maxProfessors.orElse(-1))).count() > 1) //Checks if someone else has Max professor, if he does it's a tie (2 prof p1, 2 prof p2)
+                return("Tie");
+
+
+
+            return Objects.requireNonNull(sameNumOfTowers.entrySet()
+                    .stream()
+                    .max((p1, p2) -> p1.getValue() > p2.getValue() ? 1 : p1.getValue().equals(p2.getValue()) ? 0 : -1)
+                    .orElse(null)).getKey().getNickName();
+        }
+
+
+    }
+
+
 }

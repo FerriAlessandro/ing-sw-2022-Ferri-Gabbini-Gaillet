@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class GameController {
     private boolean isLastRound;
     private final int numOfPlayers;
     private int numOfMoves = 0;
-    private boolean playedCharacter;
+    private boolean hasPlayedCharacter;
     private final ArrayList<String> nickNames = new ArrayList<>();
 
     /**
@@ -40,7 +41,7 @@ public class GameController {
         this.isLastRound = false;
         this.numOfPlayers = numOfPlayers;
         this.isExpert = isExpert;
-        this.playedCharacter = false;
+        this.hasPlayedCharacter = false;
 
 
     }
@@ -95,7 +96,7 @@ public class GameController {
                 break;
 
             case R_CHARACTER:
-                elaborateCharacter(m);
+               // elaborateCharacter(m);
                 break;
 
             case R_MOVE:
@@ -127,9 +128,39 @@ public class GameController {
         }
     }
 
+    /**
+     * Sends a message to the specified user
+     * @param nickName User that receives the message
+     * @param message Body of the message to send
+     */
+
     private void sendErrorMessage(String nickName, String message){
-        playersView.get(nickName).showGenericMessage(new SMessageInvalid(message));
+        getVirtualView(nickName).showGenericMessage(new SMessageInvalid(message));
     }
+
+
+    /**
+     * Utility method to get the Entrance of the current player
+     * @return The Entrance of the current player
+     * @throws NoCurrentPlayerException Thrown if it's nobody's turn
+     */
+    private Entrance getEntrance() throws NoCurrentPlayerException {
+
+        return game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getEntrance();
+
+    }
+
+    /**
+     * Utility method to get the Dining Room of the current player
+     * @return The Dining Room of the current player
+     * @throws NoCurrentPlayerException Thrown if it's nobody's turn
+     */
+    private DiningRoom getDiningRoom() throws NoCurrentPlayerException {
+
+        return game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getDiningRoom();
+
+    }
+
 
 
     /**
@@ -179,27 +210,6 @@ public class GameController {
         }
     }
 
-    /**
-     * Utility method to get the Entrance of the current player
-     * @return The Entrance of the current player
-     * @throws NoCurrentPlayerException Thrown if it's nobody's turn
-     */
-    private Entrance getEntrance() throws NoCurrentPlayerException {
-
-        return game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getEntrance();
-
-    }
-
-    /**
-     * Utility method to get the Dining Room of the current player
-     * @return The Dining Room of the current player
-     * @throws NoCurrentPlayerException Thrown if it's nobody's turn
-     */
-    private DiningRoom getDiningRoom() throws NoCurrentPlayerException {
-
-        return game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getDiningRoom();
-
-    }
 
     /**
      * Maps a message to an action: moves a piece from the Entrance of a player to an Island or the player's Dining Room
@@ -213,7 +223,7 @@ public class GameController {
         if(numOfMoves == numOfPlayers + 1){ //Already moved 3 (or 4) pieces
 
             numOfMoves = 0;
-            if(isExpert && !playedCharacter){
+            if(isExpert && !hasPlayedCharacter){
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_2;
                 // TODO playersView.get(moveMessage.getNickName()).CHIEDI_CARTA_PERSONAGGIO
             }
@@ -250,7 +260,10 @@ public class GameController {
 
     }
 
-
+    /**
+     * Maps a message to an action: Moves mother nature on the selected island
+     * @param message The message containing the index of the island selected by the User
+     */
     public void elaborateMotherNature(Message message){
 
         RMessageMotherNature motherNatureMessage = (RMessageMotherNature) message;
@@ -299,7 +312,7 @@ public class GameController {
 
             //TODO AGGIORNA LA VIEW DEI GIOCATORI
 
-            if(isExpert && !playedCharacter)
+            if(isExpert && !hasPlayedCharacter)
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_3;
 
             else gamePhase = Phase.CHOOSE_CLOUD;
@@ -307,6 +320,11 @@ public class GameController {
         }
 
     }
+
+    /**
+     * Maps a message to an action: Puts the students from the selected Cloud Tile to the User's entrance
+     * @param message Message containing the index of the chosen Cloud Tile
+     */
 
     public void elaborateCloud (Message message){
 
