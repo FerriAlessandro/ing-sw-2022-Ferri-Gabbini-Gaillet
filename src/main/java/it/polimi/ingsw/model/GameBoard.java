@@ -213,7 +213,7 @@ public class GameBoard implements Serializable {
         }
         catch (FullDestinationException ex) {
             try {
-                bag.addStudents(1, color);
+                origin.addStudent(color);
             } catch (InvalidParameterException exc){
                 exc.printStackTrace();
             }
@@ -240,29 +240,14 @@ public class GameBoard implements Serializable {
      */
     public void chooseCloud(CloudTile cloud, Player player) throws FullDestinationException, CloudNotFullException {
         Entrance entrance = playerBoards.get(player).getEntrance();
+        if (entrance.getMaxStudents() - entrance.getNumStudents() < cloud.getMaxStudents())
+            throw new FullDestinationException();
+
         ArrayList<Color> students = cloud.removeAllStudents();
-        boolean fullDestFlag = false;
         for (Color student : students) {
-            if (!fullDestFlag) {
-                try {
-                    entrance.addStudent(student);
-                } catch (FullDestinationException ex) {
-                    try {
-                        bag.addStudents(1, student);
-                    } catch (InvalidParameterException e) {
-                        //Ignore this exception, it is due to the structure of the test
-                    }
-                    fullDestFlag = true;
-                }
-            } else {
-                try {
-                    bag.addStudents(1, student);
-                } catch (InvalidParameterException e) {
-                    //Ignore this exception, it is due to the structure of the test
-                }
-            }
+            entrance.addStudent(student);
+
         }
-        if (fullDestFlag) throw new FullDestinationException();
     }
 
     /**

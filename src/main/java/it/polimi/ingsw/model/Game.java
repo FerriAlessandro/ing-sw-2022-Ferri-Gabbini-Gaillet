@@ -92,7 +92,7 @@ public class Game extends Observable {
         gameBoard.swapTowers(islandToCheck, influenceWinner);
         gameBoard.checkForArchipelago(islandToCheck);
 
-        if (oldIsland == gameBoard.getMotherNature().getCurrentIsland()){
+        if (oldIsland != gameBoard.getMotherNature().getCurrentIsland()){
             notifyObservers();
         }
     }
@@ -189,12 +189,15 @@ public class Game extends Observable {
     // (if p1 plays cheetah and p2 plays cheetah,
     // p1 should play before p2, the test works but keep an eye on that).
     public void sortPlayersActionTurn() {
+
+        players.get(numOfPlayers-1).setPlayerTurn(false);
         players = players.stream()
                 .sorted(Comparator.comparingInt((p) -> p.getPlayedCard().getCardValue()))
                 .collect(Collectors.toCollection(ArrayList :: new));
 
         Objects.requireNonNull(getFirstPlayer()).setFirst(false);
         players.get(0).setFirst(true);
+        players.get(0).setPlayerTurn(true);
 
     }
 
@@ -214,6 +217,7 @@ public class Game extends Observable {
      */
     public void sortPlayersAssistantTurn() {
 
+        players.get(numOfPlayers - 1).setPlayerTurn(false);
         ArrayList<Player> p = new ArrayList<>();
         p.add(getFirstPlayer());
         players.remove(getFirstPlayer());
@@ -229,6 +233,7 @@ public class Game extends Observable {
             }
         }
         players = p;
+        getFirstPlayer().setPlayerTurn(true);
     }
 
 }

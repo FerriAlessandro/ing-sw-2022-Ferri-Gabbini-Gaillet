@@ -43,10 +43,6 @@ public class VirtualView implements ViewInterface, Observer {
 
     }
 
-    @Override
-    public void showAssistantChoice(SMessage message) {
-
-    }
 
     @Override
     public void showLobby(SMessageLobby message) {
