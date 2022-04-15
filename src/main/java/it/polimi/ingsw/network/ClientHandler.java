@@ -23,13 +23,13 @@ public class ClientHandler extends Thread{
     ObjectInputStream in;
     ObjectOutputStream out;
     final InputController controller;
+    String playerNickname = null;
 
     /**
      * Constructor to be used for players that are not first.
      * @param socket to be used for communication
      * @param controller of the current game
-     */
-    public ClientHandler(Socket socket, InputController controller){
+     */ ClientHandler(Socket socket, InputController controller){
         this.clientSocket = socket;
         this.controller = controller;
         try {
@@ -71,14 +71,15 @@ public class ClientHandler extends Thread{
             Message inMessage = (Message) in.readObject();
             do {
                 if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
-                    Thread.currentThread().interrupt();
                     clientSocket.close();
                     System.out.println("Thread interrupted, closing connection");
+                    Thread.currentThread().interrupt();
                     break;
                 }else {
                     if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
                         RMessageNickname nickMessage= (RMessageNickname) inMessage;
                         System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                        this.playerNickname = nickMessage.nickname;
 
                         VirtualView virtualView = new VirtualView(this);
                         try {
@@ -90,8 +91,12 @@ public class ClientHandler extends Thread{
                 }
             } while(!inMessage.getType().equals(MessageType.R_NICKNAME));
         } catch (Exception e){
-            System.out.println("Invalid input or corrupted input stream");
-            e.printStackTrace();
+            if(!e.getClass().equals(EOFException.class)) {
+                System.out.println("Invalid input or corrupted input stream");
+                e.printStackTrace();
+            }else{
+                disconnect();
+            }
         }
 
         //Receive messages
@@ -101,8 +106,8 @@ public class ClientHandler extends Thread{
                 //System.out.println("Message received, type: " + inMessage.getType());
 
                 if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
-                    Thread.currentThread().interrupt();
                     clientSocket.close();
+                    Thread.currentThread().interrupt();
                     System.out.println("Thread interrupted, closing connection");
                 }else if(!inMessage.getType().equals(MessageType.PING)){
                     try{
@@ -131,4 +136,18 @@ public class ClientHandler extends Thread{
         }
     }
 
+    /**
+     * Handles disconnection of the client closing the socket and interrupting the current Thread. Notifies the controller of the disconnection.
+     */
+    private void disconnect(){
+        try{
+            clientSocket.close();
+            if (playerNickname != null) {
+                controller.playerDisconnected(playerNickname);
+            }
+            Thread.currentThread().interrupt();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

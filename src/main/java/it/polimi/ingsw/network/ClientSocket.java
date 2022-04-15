@@ -5,13 +5,11 @@ import it.polimi.ingsw.network.messages.MessageType;
 import it.polimi.ingsw.network.messages.PingMessage;
 import it.polimi.ingsw.network.messages.SMessage;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -31,26 +29,28 @@ public class ClientSocket extends Thread {
     ObjectInputStream in;
     ObjectOutputStream out;
     ScheduledExecutorService heartbeat = newScheduledThreadPool(1);
-    boolean kill;
     Adapter adapter;
+    final Object sendLock = new Object();
 
     /**
-     * Constructor for the {@link ClientSocket}; creates a {@link Socket} and gets the {@link ObjectInputStream} and {@link ObjectOutputStream}.
+     * Constructor for the {@link ClientSocket}.
      * @param ip the ip address of the desired server
      * @param port the port number of the desired server
      * @throws IOException when unable to connect
      */
-    public ClientSocket(String ip, int port, Adapter adapter) throws IOException {
+    public ClientSocket(String ip, int port, Adapter adapter){
         this.adapter = adapter;
         this.ip = ip;
         this.port = port;
-        socket = new Socket(ip, port);
-        try{
-            in = new ObjectInputStream(socket.getInputStream());
-            out = new ObjectOutputStream(socket.getOutputStream());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    }
+
+    /**
+     * Default constructor for the {@link ClientSocket}; sets the default ip and port number.
+     */
+    public ClientSocket(Adapter adapter) {
+        this.adapter = adapter;
+        this.ip = "localhost";
+        this.port = 2351;
     }
 
     /**
@@ -58,24 +58,34 @@ public class ClientSocket extends Thread {
      */
     @Override
     public void run() {
-        kill = false;
-        startHeartbeat();
-        while (!kill){
-            try {
-                Message inMessage = (Message) in.readObject();
+        try{
+            socket = new Socket(ip, port);
 
-                try{
-                    adapter.elaborateMessage(inMessage);}
-                catch (UnsupportedOperationException e){
-                    sendMessage(new SMessage(MessageType.S_ERROR));
+            in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
+
+            while (!Thread.currentThread().isInterrupted()){
+                try {
+                    Message inMessage = (Message) in.readObject();
+
+                    try{
+                        adapter.elaborateMessage(inMessage);
+                    }catch (UnsupportedOperationException e){
+                        sendMessage(new SMessage(MessageType.S_ERROR));
+                    }
+                } catch (Exception e){
+                    if(!Thread.currentThread().isInterrupted() && !e.getClass().equals(EOFException.class)){
+                        System.out.println("Invalid input or corrupted input stream\n");
+                        e.printStackTrace();
+                        closeConnection();
+                    }else if(e.getClass().equals(EOFException.class)){
+                        closeConnection();
+                    }
+                    break;
                 }
-
-            } catch (Exception e){
-                System.out.println("Invalid input or corrupted input stream\n");
-                e.printStackTrace();
-                closeConnection();
-                break;
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
@@ -86,26 +96,26 @@ public class ClientSocket extends Thread {
      * @throws IOException when unable to send the message
      */
     public void sendMessage(Message message) throws IOException{
-        if (message.getType().equals(MessageType.R_DISCONNECT)) {
-            kill = true;
-            stopHeartbeat();
-            closeConnection();
+        synchronized (sendLock){
+            out.writeObject(message);
+            if(message.getType().equals(MessageType.R_DISCONNECT)){
+                Thread.currentThread().interrupt();
+            }
         }
-        out.writeObject(message);
     }
 
     /**
      * This method starts an executor which sends {@link PingMessage} at a fixed interval.
      */
-    private void startHeartbeat(){
+    public void startHeartbeat(){
+        System.out.println("Starting heartbeat");
         heartbeat.scheduleWithFixedDelay( () -> {
             try {
                 sendMessage(new PingMessage());
-            } catch (IOException e) {
-                System.out.println("Lost connection to server\n");
+            } catch (Exception e) {
+                System.out.println("Lost connection to server");
                 adapter.elaborateMessage(new SMessage(MessageType.DISCONNECTED));
                 closeConnection();
-                e.printStackTrace();
             }
         }, 0, 1, TimeUnit.SECONDS );
     }
@@ -113,8 +123,11 @@ public class ClientSocket extends Thread {
     /**
      * This method stops the ping executor.
      */
-    private void stopHeartbeat(){
-        heartbeat.shutdownNow();
+    public void stopHeartbeat(){
+        if (!heartbeat.isShutdown()) {
+            heartbeat.shutdownNow();
+            System.out.println("Stopping heartbeat");
+        }
     }
 
     /**
@@ -122,9 +135,12 @@ public class ClientSocket extends Thread {
      */
     private void closeConnection(){
         try {
+            stopHeartbeat();
             socket.close();
+            System.out.println("Closed client socket");
+            Thread.currentThread().interrupt();
         } catch (IOException ex) {
-            System.out.println("Unable to close socket\n");
+            System.out.println("Unable to close socket");
             ex.printStackTrace();
         }
     }
