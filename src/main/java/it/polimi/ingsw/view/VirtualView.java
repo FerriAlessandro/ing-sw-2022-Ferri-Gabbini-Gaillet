@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.enumerations.Color;
+import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
 import it.polimi.ingsw.observers.Observer;
@@ -18,24 +19,24 @@ import java.util.*;
  * @version 1.0
  */
 public class VirtualView implements ViewInterface, Observer {
-    //TODO: reference to socket
+    ClientHandler clientHandler;
 
-    public VirtualView(/* TODO: receive socket reference */){
-        //TODO: assign param to attribute
+    public VirtualView(ClientHandler clientHandler){
+        this.clientHandler = clientHandler;
     }
     @Override
     public void askNickName(SMessage message) {
-
+        clientHandler.sendMessage(message);
     }
 
     @Override
     public void askNumOfPlayers(SMessage message) {
-
+        clientHandler.sendMessage(message);
     }
 
     @Override
     public void askMotherNatureMove(SMessage message) {
-
+        clientHandler.sendMessage(message);
     }
 
     @Override
@@ -44,13 +45,8 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     @Override
-    public void showAssistantChoice(SMessage message) {
-
-    }
-
-    @Override
     public void showLobby(SMessageLobby message) {
-
+        clientHandler.sendMessage(message);
     }
 
     @Override
@@ -60,12 +56,12 @@ public class VirtualView implements ViewInterface, Observer {
 
     @Override
     public void showWinMessage(SMessageWin message) {
-
+        clientHandler.sendMessage(message);
     }
 
     @Override
     public void showBoard(SMessageGameState message) {
-        //TODO: send message
+        clientHandler.sendMessage(message);
     }
 
     public void showGenericMessage(Message m){

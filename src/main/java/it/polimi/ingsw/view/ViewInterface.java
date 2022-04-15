@@ -2,8 +2,6 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.network.messages.*;
 
-import java.util.ArrayList;
-
 /**
  * Generic interface to be implemented by every View.
  *
@@ -19,8 +17,6 @@ public interface ViewInterface {
     void askMotherNatureMove(SMessage message);
 
     void showAssistantChoice();
-
-    void showAssistantChoice(SMessage message);
 
     void showLobby (SMessageLobby message);
 
