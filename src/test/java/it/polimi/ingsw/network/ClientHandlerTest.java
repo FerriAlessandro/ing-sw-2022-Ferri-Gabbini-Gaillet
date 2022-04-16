@@ -2,13 +2,16 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.network.messages.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +22,9 @@ class ClientHandlerTest {
     Socket socket = null;
     MockClientSocket mockClient;
 
-    @Test
-    void run() {
+
+    @BeforeEach
+    void SetUp(){
         try {
             ServerSocket svSock = new ServerSocket(2351);
             mockClient = new MockClientSocket();
@@ -34,7 +38,10 @@ class ClientHandlerTest {
             fail();
         }
         clientHandler.start();
+    }
 
+    @Test
+    void run() {
         try {
             clientHandler.sendMessage(new RMessageNickname("Pippo"));
             clientHandler.sendMessage(new SMessage(MessageType.S_LOBBY));
@@ -50,6 +57,17 @@ class ClientHandlerTest {
         }
     }
 
+    @Test
+    void disconnection(){
+        try{
+            TimeUnit.SECONDS.sleep(1);
+        } catch (Exception e){
+            e.printStackTrace();
+            fail();
+        }
+        mockClient.disconnect();
+    }
+
 }
 
 
@@ -62,6 +80,7 @@ class MockClientSocket extends Thread{
     Socket socket;
     ObjectOutputStream out;
     ObjectInputStream in;
+    boolean disconnected = false;
 
     public MockClientSocket() {
 
@@ -86,11 +105,25 @@ class MockClientSocket extends Thread{
                     break;
                 }
             } catch (Exception e){
-                fail();
+                if(!Thread.currentThread().isInterrupted() && !disconnected){
+                    e.printStackTrace();
+                    fail();
+                }
             }
         }
     }
 
+    public void disconnect() {
+        try {
+            socket.close();
+            disconnected = true;
+            System.out.println("Closed client socket");
+            Thread.currentThread().interrupt();
+        } catch (IOException ex) {
+            System.out.println("Unable to close socket");
+            ex.printStackTrace();
+        }
+    }
 }
 
 /**
