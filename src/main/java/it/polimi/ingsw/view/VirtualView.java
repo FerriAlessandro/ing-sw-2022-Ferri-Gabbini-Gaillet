@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.enumerations.Color;
+import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
@@ -60,7 +61,9 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     @Override
-    public void showGenericMessage(SMessageInvalid message){clientHandler.sendMessage(message);}
+    public void showGenericMessage(SMessageInvalid message){
+        clientHandler.sendMessage(message);
+    }
 
     @Override
     public void showCharacterChoice() {
@@ -91,9 +94,11 @@ public class VirtualView implements ViewInterface, Observer {
         Map<String, Map<Color, Integer>> studEntrance = new HashMap<>();
         Map<String, Map<Color, Integer>> studDining = new HashMap<>();
         Map<Integer, Map<Color, Integer>> studIslands = new HashMap<>();
-        Map<Integer, Integer> towerIslands = new HashMap<>();
+        Map<Integer, Integer> numTowersIslands = new HashMap<>();
+        Map<Integer, TowerColor> colorTowersIslands = new HashMap<>();
         Map<Integer, Integer> forbiddenTokens = new HashMap<>();
         Map<Integer, Map<Color, Integer>> studClouds = new HashMap<>();
+        Map<Color, String> professors = new HashMap<>();
 
 
         List<Player> players = g.getPlayers();
@@ -107,7 +112,8 @@ public class VirtualView implements ViewInterface, Observer {
 
         for(IslandTile isl : islands){
             studIslands.put(islands.indexOf(isl), isl.getState());
-            towerIslands.put(islands.indexOf(isl), isl.getNumTowers());
+            numTowersIslands.put(islands.indexOf(isl), isl.getNumTowers());
+            colorTowersIslands.put(islands.indexOf(isl), isl.getTowerColor());
             forbiddenTokens.put(islands.indexOf(isl), isl.getNumOfNoEntryTiles());
         }
 
@@ -116,9 +122,13 @@ public class VirtualView implements ViewInterface, Observer {
             studClouds.put(clouds.indexOf(cloud), cloud.getState());
         }
 
+        for (Color color: g.getGameBoard().getProfessors().keySet()){
+            professors.put(color, g.getGameBoard().getProfessors().get(color).getNickName());
+        }
+
         int motherNaturePosition = islands.indexOf(g.getGameBoard().getMotherNature().getCurrentIsland());
 
-        SMessageGameState message = new SMessageGameState(studEntrance, studDining, studIslands, towerIslands, forbiddenTokens, studClouds, motherNaturePosition);
+        SMessageGameState message = new SMessageGameState(studEntrance, studDining, studIslands, numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition);
 
         showBoard(message);
     }
