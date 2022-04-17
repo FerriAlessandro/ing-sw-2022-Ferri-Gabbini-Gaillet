@@ -10,11 +10,11 @@ import it.polimi.ingsw.network.messages.*;
  */
 public interface ViewInterface {
 
-    void askNickName(SMessage message);
+    void askNickName();
 
-    void askNumOfPlayers(SMessage message);
+    void askGameSettings();
 
-    void askMotherNatureMove(SMessage message);
+    void askMotherNatureMove();
 
     void showAssistantChoice();
 
@@ -26,4 +26,5 @@ public interface ViewInterface {
 
     void showWinMessage(SMessageWin message);
 
+    void showGenericMessage(SMessageInvalid message);
 }

@@ -6,7 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessageWin extends Message{
-    String winner;
+    public String winner;
     SMessageWin(String winnerNickname){
         this.type = MessageType.S_WIN;
         winner = winnerNickname;

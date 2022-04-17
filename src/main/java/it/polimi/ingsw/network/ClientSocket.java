@@ -139,6 +139,7 @@ public class ClientSocket extends Thread {
             socket.close();
             System.out.println("Closed client socket");
             Thread.currentThread().interrupt();
+            adapter.elaborateMessage(new SMessage(MessageType.DISCONNECTED));
         } catch (IOException ex) {
             System.out.println("Unable to close socket");
             ex.printStackTrace();

@@ -24,25 +24,22 @@ public class VirtualView implements ViewInterface, Observer {
     public VirtualView(ClientHandler clientHandler){
         this.clientHandler = clientHandler;
     }
+
     @Override
-    public void askNickName(SMessage message) {
-        clientHandler.sendMessage(message);
+    public void askNickName() { clientHandler.sendMessage(new SMessage(MessageType.S_NICKNAME)); }
+
+    @Override
+    public void askGameSettings() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_GAMESETTINGS));
     }
 
     @Override
-    public void askNumOfPlayers(SMessage message) {
-        clientHandler.sendMessage(message);
+    public void askMotherNatureMove() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_MOTHERNATURE));
     }
 
     @Override
-    public void askMotherNatureMove(SMessage message) {
-        clientHandler.sendMessage(message);
-    }
-
-    @Override
-    public void showAssistantChoice() {
-
-    }
+    public void showAssistantChoice() {}
 
     @Override
     public void showLobby(SMessageLobby message) {
@@ -50,9 +47,7 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     @Override
-    public void showDisconnectionMessage() {
-
-    }
+    public void showDisconnectionMessage() {}
 
     @Override
     public void showWinMessage(SMessageWin message) {
@@ -64,9 +59,8 @@ public class VirtualView implements ViewInterface, Observer {
         clientHandler.sendMessage(message);
     }
 
-    public void showGenericMessage(Message m){
-        //TODO: send message
-    }
+    @Override
+    public void showGenericMessage(SMessageInvalid message){clientHandler.sendMessage(message);}
 
 
     /**

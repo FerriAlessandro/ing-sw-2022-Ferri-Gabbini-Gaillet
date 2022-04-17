@@ -8,8 +8,8 @@ import java.util.List;
  * @version 1.0
  */
 public class SMessageLobby extends Message{
-    List<String> currentPlayers;
-    int numPlayersTotal;
+    public List<String> currentPlayers;
+    public int numPlayersTotal;
 
     SMessageLobby(List<String> currentPlayers, int numPlayersTotal){
         this.type = MessageType.S_LOBBY;

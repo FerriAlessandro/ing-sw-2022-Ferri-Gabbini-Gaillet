@@ -2,10 +2,7 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.exceptions.FullGameException;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.MessageType;
-import it.polimi.ingsw.network.messages.RMessageNickname;
-import it.polimi.ingsw.network.messages.SMessage;
+import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
 import java.io.*;
@@ -65,11 +62,13 @@ public class ClientHandler extends Thread{
      */
     public void run() {
         if (in == null) return;
+        boolean validNickName = false;
 
         //Wait for nickname message
         try {
-            Message inMessage = (Message) in.readObject();
+            Message inMessage;
             do {
+                inMessage = (Message) in.readObject();
                 if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
                     clientSocket.close();
                     System.out.println("Thread interrupted, closing connection");
@@ -78,9 +77,14 @@ public class ClientHandler extends Thread{
                 }else {
                     if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
                         RMessageNickname nickMessage= (RMessageNickname) inMessage;
-                        System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                        this.playerNickname = nickMessage.nickname;
-
+                        if (!controller.getNicknames().contains(nickMessage.nickname)) {
+                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                            this.playerNickname = nickMessage.nickname;
+                            validNickName = true;
+                        } else {
+                            sendMessage(new SMessageInvalid("Nickname already taken"));
+                            sendMessage(new SMessage(MessageType.S_NICKNAME));
+                        }
                         VirtualView virtualView = new VirtualView(this);
                         try {
                             controller.addPlayer(nickMessage.nickname, virtualView);
@@ -89,7 +93,7 @@ public class ClientHandler extends Thread{
                         }
                     }
                 }
-            } while(!inMessage.getType().equals(MessageType.R_NICKNAME));
+            } while(!inMessage.getType().equals(MessageType.R_NICKNAME) || !validNickName);
         } catch (Exception e){
             if(!e.getClass().equals(EOFException.class)) {
                 System.out.println("Invalid input or corrupted input stream");

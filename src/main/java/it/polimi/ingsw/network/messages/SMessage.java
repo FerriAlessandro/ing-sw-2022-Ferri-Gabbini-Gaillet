@@ -6,6 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessage extends Message{
+    private static final long serialVersionUID = 1L;
     public SMessage(MessageType type){
         this.type = type;
     }
