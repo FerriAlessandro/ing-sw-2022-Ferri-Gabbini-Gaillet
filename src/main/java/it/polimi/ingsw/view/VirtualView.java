@@ -62,7 +62,22 @@ public class VirtualView implements ViewInterface, Observer {
     @Override
     public void showGenericMessage(SMessageInvalid message){clientHandler.sendMessage(message);}
 
+    @Override
+    public void showCharacterChoice() {
 
+    }
+
+    @Override
+    public void askCloud(){
+
+    }
+
+    @Override
+    public void askMove(){
+
+    }
+
+    
     /**
      * When this method is called by the observed {@link Game} it creates a {@link SMessageGameState} containing the game state
      * and calls the {@link VirtualView#showBoard(SMessageGameState)} method

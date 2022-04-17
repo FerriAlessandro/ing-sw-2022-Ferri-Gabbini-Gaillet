@@ -27,4 +27,10 @@ public interface ViewInterface {
     void showWinMessage(SMessageWin message);
 
     void showGenericMessage(SMessageInvalid message);
+
+    void showCharacterChoice();
+
+    void askMove();
+
+    void askCloud();
 }

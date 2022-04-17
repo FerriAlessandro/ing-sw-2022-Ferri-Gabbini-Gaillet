@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 /**
  * {@link java.util.Enumeration} for the types of {@link Message}.
- * @author A.G. Gaillet, AlessandroF, AlessandroG
+ * @author A.G. Gaillet, Alessandro F., AlessandroG
  */
 public enum MessageType {
     PING,
@@ -23,10 +23,8 @@ public enum MessageType {
     R_CLOUD,
     S_NICKNAME,
     R_NICKNAME,
-    S_NUMPLAYERS,
     R_DISCONNECT,
     R_GAMESETTINGS,
     S_GAMESETTINGS,
     S_ERROR,
-    R_GAMETYPE,
 }

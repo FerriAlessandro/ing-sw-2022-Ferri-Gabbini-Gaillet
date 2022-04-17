@@ -1,10 +1,10 @@
 package it.polimi.ingsw.network;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.VirtualView;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 
 /**
  * This class masks the network implementation to the {@link ViewInterface} on the client side.
@@ -16,7 +16,7 @@ public class Adapter {
     ClientSocket socket;
 
     /**
-     * Constructor used for mock classes that extend this one. To be used for testing.
+     * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
      */
     public Adapter(){}
 
@@ -47,7 +47,50 @@ public class Adapter {
      * @param message received by the {@link ClientSocket}
      */
     public void elaborateMessage(Message message){
-
+        switch (message.getType()) {
+            case DISCONNECTED:
+                view.showDisconnectionMessage();
+                break;
+            case S_GAMESTATE:
+                view.showBoard((SMessageGameState) message);
+                break;
+            case S_WIN:
+                view.showWinMessage((SMessageWin) message);
+                break;
+            case S_LOBBY:
+                view.showLobby((SMessageLobby) message);
+                break;
+            case S_INVALID:
+                view.showGenericMessage((SMessageInvalid) message);
+                break;
+            case S_ASSISTANT:
+                view.showAssistantChoice();
+                break;
+            case S_CHARACTER:
+                view.showCharacterChoice();
+                break;
+            case S_MOVE:
+                view.askMove();
+                break;
+            case S_MOTHERNATURE:
+                view.askMotherNatureMove();
+                break;
+            case S_CLOUD:
+                view.askCloud();
+                break;
+            case S_NICKNAME:
+                view.askNickName();
+                break;
+            case S_GAMESETTINGS:
+                view.askGameSettings();
+                break;
+            case S_ERROR:
+                view.showGenericMessage(new SMessageInvalid("A generic error occurred"));
+                break;
+            default:
+                new InvalidParameterException().printStackTrace();
+                break;
+        }
     }
 
     /**
