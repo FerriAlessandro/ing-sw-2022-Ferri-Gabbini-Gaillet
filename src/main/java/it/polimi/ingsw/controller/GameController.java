@@ -173,7 +173,7 @@ public class GameController {
         RMessageAssistant assistantMessage = (RMessageAssistant) message;
         try {
             game.playAssistantCard(assistantMessage.getPlayedAssistant());
-            //TODO CALL ON VIRTUAL VIEW TO ASK THE NEXT PLAYER TO CHOOSE A CARD
+            //TODO CALL ON VIRTUAL VIEW TO ASK THE NEXT PLAYER TO CHOOSE A CARD (usare ShowAssistantChoice e passare il suo deck + il player corrente)
 
         }catch(NoCurrentPlayerException e){  //should only be thrown if a bug happens...
             e.printStackTrace();
@@ -346,6 +346,7 @@ public class GameController {
             else{
                 game.sortPlayersAssistantTurn();
                 broadcastMessage("A new Round is starting!");
+                hasPlayedCharacter = false;
                 gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
             }
         }

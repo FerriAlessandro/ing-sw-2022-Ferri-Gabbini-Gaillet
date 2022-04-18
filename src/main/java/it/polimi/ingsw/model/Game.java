@@ -287,7 +287,8 @@ public class Game extends Observable {
             return Objects.requireNonNull(sameNumOfTowers.entrySet()
                     .stream()
                     .max((p1, p2) -> p1.getValue() > p2.getValue() ? 1 : p1.getValue().equals(p2.getValue()) ? 0 : -1)
-                    .orElse(null)).getKey().getNickName();
+                    .orElse(null))
+                    .getKey().getNickName();
         }
 
 

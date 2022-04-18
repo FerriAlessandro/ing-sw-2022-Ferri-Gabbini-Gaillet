@@ -24,17 +24,17 @@ public class VirtualView implements ViewInterface, Observer {
         //TODO: assign param to attribute
     }
     @Override
-    public void askNickName(SMessage message) {
+    public void askNickName() {
 
     }
 
     @Override
-    public void askNumOfPlayers(SMessage message) {
+    public void askNumOfPlayers() {
 
     }
 
     @Override
-    public void askMotherNatureMove(SMessage message) {
+    public void askMotherNatureMove() {
 
     }
 

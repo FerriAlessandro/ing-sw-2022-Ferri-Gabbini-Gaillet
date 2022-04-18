@@ -12,11 +12,11 @@ import java.util.ArrayList;
  */
 public interface ViewInterface {
 
-    void askNickName(SMessage message);
+    void askNickName();
 
-    void askNumOfPlayers(SMessage message);
+    void askNumOfPlayers();
 
-    void askMotherNatureMove(SMessage message);
+    void askMotherNatureMove();
 
     void showAssistantChoice();
 
