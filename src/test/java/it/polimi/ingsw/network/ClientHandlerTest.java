@@ -48,7 +48,7 @@ class ClientHandlerTest {
             clientHandler.sendMessage(new SMessage(MessageType.S_WIN));
             clientHandler.sendMessage(new PingMessage());
             clientHandler.sendMessage(new SMessage(MessageType.R_DISCONNECT));
-            while(Thread.activeCount() > 2){ assert true; }
+            while(Thread.activeCount() > 3){ assert true; } //One for Maven?
             assertEquals(MessageType.S_LOBBY, contMess.get(0));
             assertEquals(MessageType.S_WIN, contMess.get(1));
             assertEquals(2, contMess.size());
@@ -146,3 +146,4 @@ class MockController extends InputController {
     }
 
 }
+
