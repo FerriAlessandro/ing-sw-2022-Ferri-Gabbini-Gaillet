@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.model.enumerations.Wizard;
@@ -19,6 +20,7 @@ class GameBoardTest {
     MotherNature mn;
     ArrayList<IslandTile> islands = new ArrayList<>();
     ArrayList<CloudTile> clouds = new ArrayList<>();
+    ArrayList<CharacterCard> characters = new ArrayList<>();
     HashMap<Player, PlayerBoard> playerBoards = new HashMap<>();
     EnumMap<Color, Player> professors = new EnumMap<>(Color.class);
     int numPlayers = 3;
@@ -53,7 +55,7 @@ class GameBoardTest {
             PlayerBoard pb1 = new PlayerBoard(numPlayers);
             playerBoards.put(pl1, pb1);
         }
-        gb = new GameBoard(clouds, islands, mn, playerBoards, professors, bg);
+        gb = new GameBoard(clouds, islands, characters, mn, playerBoards, professors, bg);
     }
 
     @Test
@@ -173,8 +175,11 @@ class GameBoardTest {
             } catch (Exception e){
                 fail();
             }
+            int numOrigin = is1.getNumStudents();
+            int numDest = en1.getNumStudents();
             assertThrows(FullDestinationException.class, () -> gb.move(stud.get(0), is1, en1));
-            assertEquals(26*Color.values().length, bg.numRemaining());
+            assertEquals(numOrigin, is1.getNumStudents());
+            assertEquals(numDest, en1.getNumStudents());
         } catch (EmptyBagException e) {
             fail();
         }
@@ -400,6 +405,25 @@ class GameBoardTest {
             gb.move(Color.RED, origin, destination);
         }
         assertEquals(3, gb.getPlayerBoard(player).getCoin()); //3 coin with nine red students
+    }
+
+    @Test
+    @DisplayName("Tests if the method addCharacterCard works properly")
+    public void addCharacterTest() throws EmptyBagException {
+
+        int oldSize = bg.numRemaining();
+
+        gb.addCharacterCard(Characters.JESTER, 1);
+
+        assertEquals(oldSize, bg.numRemaining() + gb.getCharacters().get(0).getNumStudents()); //Old bag size == new bag size + number of students on the card
+
+        oldSize = bg.numRemaining();
+        gb.addCharacterCard(Characters.ROGUE, 1);
+
+        assertEquals(oldSize, bg.numRemaining()); //After adding a non-students-containing card, the size of the bag remains the same
+
+
+
     }
 }
 

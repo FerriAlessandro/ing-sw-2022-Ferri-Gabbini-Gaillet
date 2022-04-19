@@ -21,7 +21,7 @@ public class TowerZone {
                 this.towers = 8;
                 break;
             case 3:
-                this.towers = 9;
+                this.towers = 6;
                 break;
             default:
                 throw new IllegalArgumentException("Illegal number of players!");

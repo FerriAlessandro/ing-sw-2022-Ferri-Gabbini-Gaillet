@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
+import it.polimi.ingsw.model.enumerations.Color;
 import org.junit.jupiter.api.*;
 
 
@@ -118,6 +119,11 @@ class GameTest {
     @DisplayName("Tests the ChooseCloud method")
     public void ChooseCloudTest() throws NoCurrentPlayerException, EndRoundException, CloudNotFullException, FullDestinationException, EmptyBagException {
 
+        for(Player p : game.getPlayers()){
+            for(Color c : Color.values()){
+                game.getGameBoard().getPlayerBoard(p).getEntrance().getState().put(c, 0);
+            }
+        }
         assertTrue(p1.isPlayerTurn());
         game.getGameBoard().fillClouds();
         game.chooseCloud(game.getGameBoard().getClouds().get(0));
@@ -131,6 +137,11 @@ class GameTest {
     @DisplayName("Tests the ChooseCloud method when the player that is choosing the Cloud is the last player")
     public void ChooseCloudTestCorner() throws EmptyBagException {
 
+        for(Player p : game.getPlayers()){
+            for(Color c : Color.values()){
+                game.getGameBoard().getPlayerBoard(p).getEntrance().getState().put(c, 0);
+            }
+        }
         p1.setPlayerTurn(false);
         p3.setPlayerTurn(true);
         game.getGameBoard().fillClouds();
