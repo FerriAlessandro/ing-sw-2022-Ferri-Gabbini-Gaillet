@@ -132,7 +132,7 @@ public class ClientHandler extends Thread{
      * Method to be called to send a message to the linked client.
      * @param message the {@link Message} to be sent
      */
-    public void sendMessage(Message message){
+    public void sendMessage(SMessage message){
         try {
             out.writeObject(message);
         } catch (IOException e){

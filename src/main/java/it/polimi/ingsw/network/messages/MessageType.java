@@ -28,4 +28,5 @@ public enum MessageType {
     S_GAMESETTINGS,
     S_ERROR,
     S_TRYAGAIN,
+    S_PLAYER,
 }

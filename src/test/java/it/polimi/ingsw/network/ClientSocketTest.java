@@ -25,7 +25,7 @@ class ClientSocketTest {
     void SetUp(){
         try {
             ServerSocket svSock = new ServerSocket(2351);
-            clientSocket = new ClientSocket(adapter);
+            clientSocket = new ClientSocket("localhost", 2351, adapter);
             clientSocket.start();
 
             clientHandlerSocket =  svSock.accept();

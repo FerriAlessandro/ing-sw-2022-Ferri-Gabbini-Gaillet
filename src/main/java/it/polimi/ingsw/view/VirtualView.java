@@ -54,9 +54,11 @@ public class VirtualView implements ViewInterface, Observer {
 
     /**
      * Ask the player to pick an assistant card from provided available cards.
+     *
+     * @param messageShowDeck containing available assistants
      */
     @Override
-    public void showAssistantChoice() {}
+    public void showAssistantChoice(SMessageShowDeck messageShowDeck) {}
 
     /**
      * Display lobby.
@@ -102,10 +104,11 @@ public class VirtualView implements ViewInterface, Observer {
 
     /**
      * Ask player to pick a character card among provided available options.
-     */
+     *
+     *///TODO: fix javadoc
     @Override
-    public void showCharacterChoice() {
-
+    public void showCharacterChoice(SMessageCharacter messageCharacter) {
+        clientHandler.sendMessage(messageCharacter);
     }
 
     /**

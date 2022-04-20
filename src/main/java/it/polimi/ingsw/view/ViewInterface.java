@@ -26,11 +26,6 @@ public interface ViewInterface {
     void askMotherNatureMove();
 
     /**
-     * Ask the player to pick an assistant card from provided available cards.
-     */
-    void showAssistantChoice();
-
-    /**
      * Display lobby.
      * @param message containing information on connected and desired players.
      */
@@ -60,9 +55,18 @@ public interface ViewInterface {
     void showGenericMessage(SMessageInvalid message);
 
     /**
-     * Ask player to pick a character card among provided available options.
+     * Ask the player to pick an assistant card from provided available cards.
+     *
+     * @param message message containing available assistants
      */
-    void showCharacterChoice();
+    void showAssistantChoice(SMessageShowDeck message);
+
+    /**
+     * Ask player to pick a character card among provided available options.
+     *
+     * @param messageCharacter message containing available characters
+     */ //TODO: fix javadoc
+    void showCharacterChoice(SMessageCharacter messageCharacter);
 
     /**
      * Ask the player to move a student.

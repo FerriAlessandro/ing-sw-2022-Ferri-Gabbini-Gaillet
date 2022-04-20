@@ -5,10 +5,10 @@ package it.polimi.ingsw.network.messages;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class SMessageWin extends Message{
+public class SMessageWin extends SMessage{
     public String winner;
     SMessageWin(String winnerNickname){
-        this.type = MessageType.S_WIN;
+        super(MessageType.S_WIN);
         winner = winnerNickname;
     }
 }

@@ -12,25 +12,15 @@ import java.security.InvalidParameterException;
  * @version 1.0
  */
 public class Adapter {
-    ViewInterface view;
-    ClientSocket socket;
-    Message previousMessage = new SMessage(MessageType.S_ERROR);
-    String currentPlayer;
+    private ViewInterface view;
+    private ClientSocket socket;
+    private Message previousMessage = new SMessage(MessageType.S_ERROR);
+    private String currentPlayer;
 
     /**
      * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
      */
     public Adapter(){}
-
-    /**
-     * Default constructor. Used in testing.
-     * @param view the {@link ViewInterface} linked to this {@link Adapter}
-     */
-    public Adapter(ViewInterface view){
-        this.view = view;
-        socket = new ClientSocket(this);
-        socket.start();
-    }
 
     /**
      * Constructor that allows for overriding of default ip and port values.
@@ -69,10 +59,10 @@ public class Adapter {
                 view.showGenericMessage((SMessageInvalid) message);
                 break;
             case S_ASSISTANT:
-                view.showAssistantChoice();
+                view.showAssistantChoice((SMessageShowDeck) message);
                 break;
             case S_CHARACTER:
-                view.showCharacterChoice();
+                view.showCharacterChoice((SMessageCharacter) message);
                 break;
             case S_MOVE:
                 view.askMove();
@@ -98,7 +88,9 @@ public class Adapter {
                 elaborateMessage(previousMessage);
                 break;
             case S_PLAYER:
-                currentPlayer = ((SMessageCurrentPlayer) message).nickname;
+                SMessageCurrentPlayer messageCurrentPlayer = (SMessageCurrentPlayer) message;
+                currentPlayer = messageCurrentPlayer.nickname;
+                view.showCurrentPlayer(messageCurrentPlayer);
                 break;
             default:
                 new InvalidParameterException().printStackTrace();
