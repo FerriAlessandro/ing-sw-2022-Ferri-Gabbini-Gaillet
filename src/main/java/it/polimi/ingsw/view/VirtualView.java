@@ -126,6 +126,26 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
+     * Update current player.
+     *
+     * @param messageCurrentPlayer
+     */
+    @Override
+    public void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer) {
+        clientHandler.sendMessage(messageCurrentPlayer);
+    }
+
+    /**
+     * Getter method for the nickname of the associated player
+     *
+     * @return {@link String} nickname of the associated player
+     */
+    @Override
+    public String getNickName() {
+        return clientHandler.getPlayerNickname();
+    }
+
+    /**
      * Ask the player to move a student.
      */
     @Override

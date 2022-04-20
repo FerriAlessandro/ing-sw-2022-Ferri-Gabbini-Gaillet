@@ -154,4 +154,12 @@ public class ClientHandler extends Thread{
             e.printStackTrace();
         }
     }
+
+    /**
+     * Getter method for the nickname of the associated player.
+     * @return {@link String} nickname of the associated player
+     */
+    public String getPlayerNickname(){
+        return playerNickname;
+    }
 }

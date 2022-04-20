@@ -43,12 +43,14 @@ class ClientHandlerTest {
     @Test
     void run() {
         try {
+            int threadCount = Thread.activeCount();
+            System.out.println(threadCount);
             clientHandler.sendMessage(new RMessageNickname("Pippo"));
             clientHandler.sendMessage(new SMessage(MessageType.S_LOBBY));
             clientHandler.sendMessage(new SMessage(MessageType.S_WIN));
             clientHandler.sendMessage(new PingMessage());
             clientHandler.sendMessage(new SMessage(MessageType.R_DISCONNECT));
-            while(Thread.activeCount() > 3){ assert true; } //One for Maven?
+            while(Thread.activeCount() > threadCount - 2){ assert true; } //One for Maven?
             assertEquals(MessageType.S_LOBBY, contMess.get(0));
             assertEquals(MessageType.S_WIN, contMess.get(1));
             assertEquals(2, contMess.size());

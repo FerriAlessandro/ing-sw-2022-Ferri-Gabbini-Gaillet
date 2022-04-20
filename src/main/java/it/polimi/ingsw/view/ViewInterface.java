@@ -79,4 +79,15 @@ public interface ViewInterface {
      * In client implementations this method only shows an error message. The adapter is responsible for error handling.
      */
     void askAgain();
+
+    /**
+     * Update current player.
+     */
+    void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer);
+
+    /**
+     * Getter method for the nickname of the associated player
+     * @return {@link String} nickname of the associated player
+     */
+    String getNickName();
 }

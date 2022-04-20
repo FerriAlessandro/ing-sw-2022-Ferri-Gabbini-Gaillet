@@ -14,8 +14,8 @@ import java.security.InvalidParameterException;
 public class Adapter {
     ViewInterface view;
     ClientSocket socket;
-
     Message previousMessage = new SMessage(MessageType.S_ERROR);
+    String currentPlayer;
 
     /**
      * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
@@ -84,7 +84,8 @@ public class Adapter {
                 view.askCloud();
                 break;
             case S_NICKNAME:
-                view.askNickName();
+                if(view.getNickName() == null) view.askNickName();
+                else sendMessage(new RMessageNickname(view.getNickName()));
                 break;
             case S_GAMESETTINGS:
                 view.askGameSettings();
@@ -95,6 +96,9 @@ public class Adapter {
             case S_TRYAGAIN:
                 view.askAgain();
                 elaborateMessage(previousMessage);
+                break;
+            case S_PLAYER:
+                currentPlayer = ((SMessageCurrentPlayer) message).nickname;
                 break;
             default:
                 new InvalidParameterException().printStackTrace();
@@ -107,6 +111,11 @@ public class Adapter {
      * @param message to be sent
      */
     public void sendMessage(Message message){
+        if(!currentPlayer.equals(view.getNickName())){
+            view.showGenericMessage(new SMessageInvalid("Not your turn"));
+            return;
+        }
+
         try {
             socket.sendMessage(message);
         } catch (IOException e){
