@@ -56,7 +56,7 @@ public class VirtualView implements ViewInterface, Observer {
      * Ask the player to pick an assistant card from provided available cards.
      */
     @Override
-    public void showAssistantChoice() {
+    public void showAssistantChoice(SMessageShowDeck message) {
 
     }
 

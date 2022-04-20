@@ -69,7 +69,7 @@ public class Adapter {
                 view.showGenericMessage((SMessageInvalid) message);
                 break;
             case S_ASSISTANT:
-                view.showAssistantChoice();
+                view.showAssistantChoice((SMessageShowDeck) message);
                 break;
             case S_CHARACTER:
                 view.showCharacterChoice();

@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 public class SMessageInvalid extends Message{
 
-    String error;
+    private final String error;
 
     public SMessageInvalid(String error){
 

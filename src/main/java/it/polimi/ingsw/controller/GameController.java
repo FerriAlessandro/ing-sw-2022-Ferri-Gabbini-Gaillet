@@ -121,12 +121,23 @@ public class GameController {
      * Utility method to send the same message to each player's virtual view
      * @param message The message that needs to be broadcasted
      */
-    private void broadcastMessage(String message){
-        SMessageInvalid m = new SMessageInvalid(message);
-        for(VirtualView v : playersView.values()){
-            v.showGenericMessage(m);
+    private void broadcastMessage(String message, MessageType type) {
+        switch (type) {
+            case S_INVALID: {
+                SMessageInvalid m = new SMessageInvalid(message);
+                for (VirtualView v : playersView.values())
+                    v.showGenericMessage(m);
+                break;
+            }
+            case S_PLAYER: {
+                SMessageCurrentPlayer m = new SMessageCurrentPlayer(message);
+                for (VirtualView v : playersView.values())
+                    v.showCurrentPlayer(m);
+                    break;
+            }
         }
     }
+
 
     /**
      * Sends a message to the specified user
@@ -161,6 +172,38 @@ public class GameController {
 
     }
 
+    /**
+     * Utility method to check who is the winner
+     */
+    private void checkWin(){
+        String winner = game.checkWinner();
+
+        if(winner.equals("Tie")){
+            for (String nickName : nickNames)
+                playersView.get(nickName).showWinMessage(new SMessageWin("It's a tie"));
+        }
+        else {
+            for (String nickName : nickNames)
+                playersView.get(nickName).showWinMessage(new SMessageWin(winner + "has won!"));
+        }
+
+    }
+
+    /**
+     * Utility method to prepare the controller for a new round
+     */
+    private void setupNewRound(){
+        game.sortPlayersAssistantTurn();
+        broadcastMessage("A new Round is starting!", MessageType.S_INVALID);
+        hasPlayedCharacter = false;
+        try {
+            game.getGameBoard().fillClouds();
+        }catch(EmptyBagException exc){
+            isLastRound = true;
+            broadcastMessage("The bag is empty, this is the last round!", MessageType.S_INVALID);
+        }
+    }
+
 
 
     /**
@@ -173,39 +216,43 @@ public class GameController {
         RMessageAssistant assistantMessage = (RMessageAssistant) message;
         try {
             game.playAssistantCard(assistantMessage.getPlayedAssistant());
-            //TODO CALL ON VIRTUAL VIEW TO ASK THE NEXT PLAYER TO CHOOSE A CARD (usare ShowAssistantChoice e passare il suo deck + il player corrente)
+            broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+            getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
+
 
         }catch(NoCurrentPlayerException e){  //should only be thrown if a bug happens...
             e.printStackTrace();
 
             game.getPlayers().get(0).setPlayerTurn(true);  //if it happens assign the turn to a random player
 
-            broadcastMessage(e.getMessage() + game.getPlayers().get(0).getNickName() + "is the first player now");
+            broadcastMessage(e.getMessage() + game.getPlayers().get(0).getNickName() + "is the first player now", MessageType.S_INVALID);
 
         }
         catch(CardNotAvailableException | CardNotFoundException e){
             sendErrorMessage(assistantMessage.getNickName(), e.getMessage());
+            getVirtualView(assistantMessage.getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck())); //Re-Ask the player to pick a card
         }
         catch(EmptyDeckException e){
             if(!isLastRound){
-                broadcastMessage(e.getMessage());
+                broadcastMessage(e.getMessage(), MessageType.S_INVALID);
                 isLastRound = true;
             }
+            broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+            getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
+
         }
         catch(EndRoundException e){
             game.sortPlayersActionTurn();
-
+            broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             if(isExpert) {
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
-                //TODO NOTIFICA LA VIEW PER I TURNI DEI GIOCATORI
+
                 // TODO playersView.get(game.getPlayers().get(0)).CHIEDI_CARTA_PERSONAGGIO
             }
 
             else {
-                //TODO NOTIFICA LA VIEW PER I TURNI DEI GIOCATORI
-
                 gamePhase = Phase.MOVE_STUDENTS;
-                //TODO playersView.get(game.getPlayers().get(0)).CHIEDI_MOVE
+                getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
             }
         }
     }
@@ -215,11 +262,35 @@ public class GameController {
      * Maps a message to an action: moves a piece from the Entrance of a player to an Island or the player's Dining Room
      * @param message The message containing the color of the piece that is being moved and the chosen destination (Island or DiningRoom)
      */
-
     private void elaborateMove(Message message){
 
         RMessageMove moveMessage = (RMessageMove) message;
         TileWithStudents dest;
+        if (moveMessage.getDestination() == 0)  //Destination is the dining room
+            dest = getDiningRoom();
+
+        else if (moveMessage.getDestination() > 0 && moveMessage.getDestination() < game.getGameBoard().getIslands().size() + 1)//Destination is an island
+            dest = game.getGameBoard().getIslands().get(moveMessage.getDestination() - 1); //User counts islands from 1, not from 0
+
+        else { //Destination not valid
+            sendErrorMessage(moveMessage.getNickName(),"This destination does not exist!");
+            getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
+            return;
+        }
+
+        try{
+            game.move(moveMessage.getChosenColor(), getEntrance(), dest);
+
+        } catch (FullDestinationException e) { //Destination already full, need to pick another one (don't increment numOfMoves)
+
+            sendErrorMessage(moveMessage.getNickName(), e.getMessage() + "Please pick another one");
+            getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
+            return;
+
+        }
+        //TODO : MESSAGGIO PER REFRESH VIEW?
+        numOfMoves += 1;
+
         if(numOfMoves == numOfPlayers + 1){ //Already moved 3 (or 4) pieces
 
             numOfMoves = 0;
@@ -229,36 +300,14 @@ public class GameController {
             }
             else{
                 gamePhase = Phase.MOVE_MOTHERNATURE;
-                //TODO CHIEDI A PLAYER MADRENATURA
+                getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
             }
         }
-        else { //Can move a piece
 
-            if (moveMessage.getDestination() == 0)  //Destination is the dining room
-                    dest = getDiningRoom();
-
-            else if (moveMessage.getDestination() > 0 && moveMessage.getDestination() < game.getGameBoard().getIslands().size() + 1)//Destination is an island
-                dest = game.getGameBoard().getIslands().get(moveMessage.getDestination() - 1); //User counts islands from 1, not from 0
-
-            else { //Destination not valid
-                sendErrorMessage(moveMessage.getNickName(),"This destination does not exist!");
-                return;
-            }
-
-            try{
-                game.move(moveMessage.getChosenColor(), getEntrance(), dest);
-
-            } catch (FullDestinationException e) { //Destination already full, need to pick another one (don't increment numOfMoves)
-
-                sendErrorMessage(moveMessage.getNickName(), e.getMessage() + "Please pick another one");
-                return;
-
-            }
-
-            numOfMoves += 1;
-        }
+        else getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
 
     }
+
 
     /**
      * Maps a message to an action: Moves mother nature on the selected island
@@ -280,6 +329,7 @@ public class GameController {
 
         if(lastIslandIndex < desiredIslandIndex){
             sendErrorMessage(motherNatureMessage.getNickName(), "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
+            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
             return;
         }
 
@@ -290,8 +340,10 @@ public class GameController {
         else numOfSteps = lastIslandIndex - currentMotherNatureIndex + desiredIslandIndex + 1;
 
 
-        if(playerMaxSteps < numOfSteps)
+        if(playerMaxSteps < numOfSteps) {
             sendErrorMessage(motherNatureMessage.getNickName(), "Insufficient number of steps!");
+            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
+        }
 
         else {
             try {
@@ -301,21 +353,30 @@ public class GameController {
 
                 for (String nickName : nickNames)
                     playersView.get(nickName).showWinMessage(new SMessageWin(e.getMessage()));
-
                 return;
+                //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
 
             }
             catch (NumOfIslandsException e) {
 
-                //TODO: CHECK WINNER PER MAGGIORANZA TORRI/PROFESSORI
+                checkWin();
+                //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
+                return;
+
             }
 
             //TODO AGGIORNA LA VIEW DEI GIOCATORI
 
-            if(isExpert && !hasPlayedCharacter)
+            if(isExpert && !hasPlayedCharacter) {
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_3;
+                //TODO ASK CHARACTER CARD
+            }
 
-            else gamePhase = Phase.CHOOSE_CLOUD;
+            else {
+                gamePhase = Phase.CHOOSE_CLOUD;
+                getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
+            }
+
 
         }
 
@@ -331,27 +392,45 @@ public class GameController {
         RMessageCloud cloudMessage = (RMessageCloud) message;
         try {
             game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
+            broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+            //TODO Aggiorna virtual view
+            hasPlayedCharacter = false; //Next player can play a character
+
+            if(isExpert){
+                gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
+                //TODO CHIEDI CARTA PERSONAGGIO
+            }
+            else {
+                gamePhase = Phase.MOVE_STUDENTS;
+                getVirtualView(game.getCurrentPlayer().getNickName()).askMove(); //Asks move to next player (chooseCloud method
+                                                                                 //manages the turn)
+            }
+
         } catch(CloudNotFullException e){
             sendErrorMessage(cloudMessage.getNickName(), "This Cloud is Empty, please select another Cloud");
+            getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
 
         }
         catch(FullDestinationException e){
             sendErrorMessage(cloudMessage.getNickName(), "Your Entrance is full, you can't choose a Cloud");
+            getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
         }
         catch(EndRoundException e){
 
             if(isLastRound) {
-                //TODO: CHECK WIN
+                checkWin();
+                //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
+
             }
             else{
-                game.sortPlayersAssistantTurn();
-                broadcastMessage("A new Round is starting!");
-                hasPlayedCharacter = false;
+                setupNewRound();
+                broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
                 gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
+                //TODO AGGIORNA VIEW
+                getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
             }
         }
 
-        //TODO : Aggiorna la virtual view?
     }
 
 

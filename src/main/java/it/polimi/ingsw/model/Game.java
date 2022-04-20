@@ -294,5 +294,12 @@ public class Game extends Observable {
 
     }
 
+    /**
+     * @return The available cards of a player
+     */
+    public ArrayList<AssistantCard> getPlayerDeck(){
+        return new ArrayList<>(getCurrentPlayer().getDeck().getCards());
+    }
+
 
 }

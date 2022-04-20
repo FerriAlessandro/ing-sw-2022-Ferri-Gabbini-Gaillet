@@ -28,7 +28,7 @@ public interface ViewInterface {
     /**
      * Ask the player to pick an assistant card from provided available cards.
      */
-    void showAssistantChoice();
+    void showAssistantChoice(SMessageShowDeck message);
 
     /**
      * Display lobby.
