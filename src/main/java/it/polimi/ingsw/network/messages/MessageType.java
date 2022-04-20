@@ -27,4 +27,5 @@ public enum MessageType {
     R_GAMESETTINGS,
     S_GAMESETTINGS,
     S_ERROR,
+    S_TRYAGAIN,
 }

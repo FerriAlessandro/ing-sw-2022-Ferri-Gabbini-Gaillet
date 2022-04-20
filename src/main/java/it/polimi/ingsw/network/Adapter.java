@@ -15,6 +15,8 @@ public class Adapter {
     ViewInterface view;
     ClientSocket socket;
 
+    Message previousMessage = new SMessage(MessageType.S_ERROR);
+
     /**
      * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
      */
@@ -47,6 +49,9 @@ public class Adapter {
      * @param message received by the {@link ClientSocket}
      */
     public void elaborateMessage(Message message){
+        if(!message.getType().equals(MessageType.S_TRYAGAIN)){
+            previousMessage = message;
+        }
         switch (message.getType()) {
             case DISCONNECTED:
                 view.showDisconnectionMessage();
@@ -86,6 +91,10 @@ public class Adapter {
                 break;
             case S_ERROR:
                 view.showGenericMessage(new SMessageInvalid("A generic error occurred"));
+                break;
+            case S_TRYAGAIN:
+                view.askAgain();
+                elaborateMessage(previousMessage);
                 break;
             default:
                 new InvalidParameterException().printStackTrace();

@@ -22,59 +22,112 @@ import java.util.*;
 public class VirtualView implements ViewInterface, Observer {
     ClientHandler clientHandler;
 
+    /**
+     * Constructor.
+     * @param clientHandler to be linked to this {@link VirtualView}
+     */
     public VirtualView(ClientHandler clientHandler){
         this.clientHandler = clientHandler;
     }
 
+    /**
+     * Ask the user to provide a valid nickname.
+     */
     @Override
     public void askNickName() { clientHandler.sendMessage(new SMessage(MessageType.S_NICKNAME)); }
 
+    /**
+     * Ask the user to provide the number of desired players and the desired game mode.
+     */
     @Override
     public void askGameSettings() {
         clientHandler.sendMessage(new SMessage(MessageType.S_GAMESETTINGS));
     }
 
+    /**
+     * Ask the player to move mother nature.
+     */
     @Override
     public void askMotherNatureMove() {
         clientHandler.sendMessage(new SMessage(MessageType.S_MOTHERNATURE));
     }
 
+    /**
+     * Ask the player to pick an assistant card from provided available cards.
+     */
     @Override
     public void showAssistantChoice() {}
 
+    /**
+     * Display lobby.
+     * @param message containing information on connected and desired players.
+     */
     @Override
     public void showLobby(SMessageLobby message) {
         clientHandler.sendMessage(message);
     }
 
+    /**
+     * Display a disconnection message.
+     */
     @Override
     public void showDisconnectionMessage() {}
 
+    /**
+     * Display a "someone has won" message.
+     * @param message containing information on who won.
+     */
     @Override
     public void showWinMessage(SMessageWin message) {
         clientHandler.sendMessage(message);
     }
 
+    /**
+     * Shows the game status displaying the board.
+     * @param message message containing game status.
+     */
     @Override
     public void showBoard(SMessageGameState message) {
         clientHandler.sendMessage(message);
     }
 
+    /**
+     * Display a generic text message.
+     * @param message containing the {@link String} to be displayed.
+     */
     @Override
     public void showGenericMessage(SMessageInvalid message){
         clientHandler.sendMessage(message);
     }
 
+    /**
+     * Ask player to pick a character card among provided available options.
+     */
     @Override
     public void showCharacterChoice() {
 
     }
 
+    /**
+     * Ask the player to pick a cloud.
+     */
     @Override
     public void askCloud(){
 
     }
 
+    /**
+     * To be used to re-execute the last prompt.
+     * In client implementations this method only shows an error message. The adapter is responsible for error handling.
+     */
+    @Override
+    public void askAgain() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_TRYAGAIN));
+    }
+
+    /**
+     * Ask the player to move a student.
+     */
     @Override
     public void askMove(){
 
