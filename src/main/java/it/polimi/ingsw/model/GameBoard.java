@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.exceptions.*;
@@ -20,16 +21,20 @@ import java.util.*;
  * @see PlayerBoard
  * @see Color
  * @see TowerColor
+ * @see CharacterCard
  */
 public class GameBoard implements Serializable {
     private final ArrayList<CloudTile> clouds;
     private final ArrayList<IslandTile> islands;
+    private final ArrayList<CharacterCard> characters;
     private final MotherNature motherNature;
     private final HashMap<Player, PlayerBoard> playerBoards;
     private final EnumMap<Color, Player> professors;
     private final Bag bag;
+    private final int maxCharacters = 3;
     private static final int maxNumIslands = 12;
     private static final long serialVersionUID = 1L;
+
 
     /**
      * Constructor of the class; requires an {@link ArrayList} containing all {@link Player} (players).
@@ -86,14 +91,16 @@ public class GameBoard implements Serializable {
         }
 
         professors = new EnumMap<>(Color.class);
+        characters = new ArrayList<>();
     }
 
     /**
      * Alternative Constructor, useful in testing. Allows for external initialization of all non-static attributes.
      */
-    public GameBoard(ArrayList<CloudTile> clouds, ArrayList<IslandTile> islands, MotherNature motherNature, HashMap<Player, PlayerBoard> playerBoards, EnumMap<Color, Player> professors, Bag bag) {
+    public GameBoard(ArrayList<CloudTile> clouds, ArrayList<IslandTile> islands, ArrayList<CharacterCard> characters, MotherNature motherNature, HashMap<Player, PlayerBoard> playerBoards, EnumMap<Color, Player> professors, Bag bag) {
         this.clouds = clouds;
         this.islands = islands;
+        this.characters = characters;
         this.motherNature = motherNature;
         this.playerBoards = playerBoards;
         this.professors = professors;
@@ -458,5 +465,26 @@ public class GameBoard implements Serializable {
      */
     private Optional<Player> getPlayerByTowerColor(TowerColor color){
         return playerBoards.keySet().stream().filter(player -> player.getTowerColor().equals(color)).findFirst();
+    }
+
+    /**
+     * Adds the chosen Character Card to the Board
+     * @param name Name of the chosen Character
+     * @param cost Cost of the chosen Character
+     */
+    public void addCharacterCard(Characters name, int cost) throws EmptyBagException {
+        if(characters.size() < maxCharacters) {
+            CharacterCard card = new CharacterCard(name, cost);
+            if (card.containsStudents())
+                card.setStudents(bag);
+            characters.add(card);
+        }
+    }
+
+    /**
+     * @return The Character Cards of the Match
+     */
+    public ArrayList<CharacterCard> getCharacters() {
+        return characters;
     }
 }

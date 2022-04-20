@@ -122,7 +122,7 @@ public class GameController {
      * @param message The message that needs to be broadcasted
      */
     private void broadcastMessage(String message){
-        Message m = new SMessageInvalid(message);
+        SMessageInvalid m = new SMessageInvalid(message);
         for(VirtualView v : playersView.values()){
             v.showGenericMessage(m);
         }
