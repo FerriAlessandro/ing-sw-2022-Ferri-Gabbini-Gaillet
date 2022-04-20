@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.enumerations.Color;
+import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
@@ -21,54 +22,118 @@ import java.util.*;
 public class VirtualView implements ViewInterface, Observer {
     ClientHandler clientHandler;
 
+    /**
+     * Constructor.
+     * @param clientHandler to be linked to this {@link VirtualView}
+     */
     public VirtualView(ClientHandler clientHandler){
         this.clientHandler = clientHandler;
     }
+
+    /**
+     * Ask the user to provide a valid nickname.
+     */
     @Override
-    public void askNickName(SMessage message) {
-        clientHandler.sendMessage(message);
+    public void askNickName() { clientHandler.sendMessage(new SMessage(MessageType.S_NICKNAME)); }
+
+    /**
+     * Ask the user to provide the number of desired players and the desired game mode.
+     */
+    @Override
+    public void askGameSettings() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_GAMESETTINGS));
     }
 
+    /**
+     * Ask the player to move mother nature.
+     */
     @Override
-    public void askNumOfPlayers(SMessage message) {
-        clientHandler.sendMessage(message);
+    public void askMotherNatureMove() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_MOTHERNATURE));
     }
 
+    /**
+     * Ask the player to pick an assistant card from provided available cards.
+     */
     @Override
-    public void askMotherNatureMove(SMessage message) {
-        clientHandler.sendMessage(message);
-    }
+    public void showAssistantChoice() {}
 
-    @Override
-    public void showAssistantChoice() {
-
-    }
-
+    /**
+     * Display lobby.
+     * @param message containing information on connected and desired players.
+     */
     @Override
     public void showLobby(SMessageLobby message) {
         clientHandler.sendMessage(message);
     }
 
+    /**
+     * Display a disconnection message.
+     */
     @Override
-    public void showDisconnectionMessage() {
+    public void showDisconnectionMessage() {}
 
-    }
-
+    /**
+     * Display a "someone has won" message.
+     * @param message containing information on who won.
+     */
     @Override
     public void showWinMessage(SMessageWin message) {
         clientHandler.sendMessage(message);
     }
 
+    /**
+     * Shows the game status displaying the board.
+     * @param message message containing game status.
+     */
     @Override
     public void showBoard(SMessageGameState message) {
         clientHandler.sendMessage(message);
     }
 
-    public void showGenericMessage(Message m){
-        //TODO: send message
+    /**
+     * Display a generic text message.
+     * @param message containing the {@link String} to be displayed.
+     */
+    @Override
+    public void showGenericMessage(SMessageInvalid message){
+        clientHandler.sendMessage(message);
     }
 
+    /**
+     * Ask player to pick a character card among provided available options.
+     */
+    @Override
+    public void showCharacterChoice() {
 
+    }
+
+    /**
+     * Ask the player to pick a cloud.
+     */
+    @Override
+    public void askCloud(){
+
+    }
+
+    /**
+     * To be used to re-execute the last prompt.
+     * In client implementations this method only shows an error message. The adapter is responsible for error handling.
+     */
+    @Override
+    public void askAgain() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_TRYAGAIN));
+    }
+
+    /**
+     * Ask the player to move a student.
+     */
+    @Override
+    public void askMove(){
+
+    }
+
+    
     /**
      * When this method is called by the observed {@link Game} it creates a {@link SMessageGameState} containing the game state
      * and calls the {@link VirtualView#showBoard(SMessageGameState)} method
@@ -82,9 +147,11 @@ public class VirtualView implements ViewInterface, Observer {
         Map<String, Map<Color, Integer>> studEntrance = new HashMap<>();
         Map<String, Map<Color, Integer>> studDining = new HashMap<>();
         Map<Integer, Map<Color, Integer>> studIslands = new HashMap<>();
-        Map<Integer, Integer> towerIslands = new HashMap<>();
+        Map<Integer, Integer> numTowersIslands = new HashMap<>();
+        Map<Integer, TowerColor> colorTowersIslands = new HashMap<>();
         Map<Integer, Integer> forbiddenTokens = new HashMap<>();
         Map<Integer, Map<Color, Integer>> studClouds = new HashMap<>();
+        Map<Color, String> professors = new HashMap<>();
 
 
         List<Player> players = g.getPlayers();
@@ -98,7 +165,8 @@ public class VirtualView implements ViewInterface, Observer {
 
         for(IslandTile isl : islands){
             studIslands.put(islands.indexOf(isl), isl.getState());
-            towerIslands.put(islands.indexOf(isl), isl.getNumTowers());
+            numTowersIslands.put(islands.indexOf(isl), isl.getNumTowers());
+            colorTowersIslands.put(islands.indexOf(isl), isl.getTowerColor());
             forbiddenTokens.put(islands.indexOf(isl), isl.getNumOfNoEntryTiles());
         }
 
@@ -107,9 +175,13 @@ public class VirtualView implements ViewInterface, Observer {
             studClouds.put(clouds.indexOf(cloud), cloud.getState());
         }
 
+        for (Color color: g.getGameBoard().getProfessors().keySet()){
+            professors.put(color, g.getGameBoard().getProfessors().get(color).getNickName());
+        }
+
         int motherNaturePosition = islands.indexOf(g.getGameBoard().getMotherNature().getCurrentIsland());
 
-        SMessageGameState message = new SMessageGameState(studEntrance, studDining, studIslands, towerIslands, forbiddenTokens, studClouds, motherNaturePosition);
+        SMessageGameState message = new SMessageGameState(studEntrance, studDining, studIslands, numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition);
 
         showBoard(message);
     }

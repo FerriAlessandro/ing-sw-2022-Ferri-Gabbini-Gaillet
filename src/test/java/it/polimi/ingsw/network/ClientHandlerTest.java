@@ -83,7 +83,6 @@ class MockClientSocket extends Thread{
     boolean disconnected = false;
 
     public MockClientSocket() {
-
     }
 
     public void run(){

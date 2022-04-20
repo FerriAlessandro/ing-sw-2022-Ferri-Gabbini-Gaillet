@@ -1,8 +1,6 @@
 package it.polimi.ingsw.network;
 
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.MessageType;
-import it.polimi.ingsw.network.messages.SMessage;
+import it.polimi.ingsw.network.messages.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -114,10 +112,12 @@ class MockClientHandler extends Thread {
 }
 
 class MockAdapter extends Adapter{
+    public MockAdapter(){
+        super();
+    }
     public final ArrayList<MessageType> messageTypes = new ArrayList<>();
     @Override
     public void elaborateMessage(Message mess) {
         messageTypes.add(mess.getType());
     }
 }
-
