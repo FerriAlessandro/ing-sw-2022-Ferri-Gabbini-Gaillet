@@ -227,8 +227,11 @@ public class GameBoard implements Serializable {
             throw new FullDestinationException();
         }
         catch (RuntimeException ex) {
+            int totalCoin = 0;
             for(Player p : playerBoards.keySet())
-                if(getPlayerBoard(p).getDiningRoom() == destination)
+                totalCoin += getPlayerBoard(p).getCoin();
+            for(Player p : playerBoards.keySet())
+                if ((getPlayerBoard(p).getDiningRoom() == destination) && (totalCoin < 20)) // 20 coins max at the same time in the entire game
                     getPlayerBoard(p).addCoin();
         }
 

@@ -405,6 +405,16 @@ class GameBoardTest {
             gb.move(Color.RED, origin, destination);
         }
         assertEquals(3, gb.getPlayerBoard(player).getCoin()); //3 coin with nine red students
+
+        for(int i = 0; i < 17; i++)
+            gb.getPlayerBoard(player).addCoin();
+        assertEquals(20, gb.getPlayerBoard(player).getCoin()); //must have 20 coins now
+
+        for(int i = 0; i < 3; i++) {
+            origin.addStudent(Color.GREEN);
+            gb.move(Color.GREEN, origin, destination);
+        }
+        assertEquals(20, gb.getPlayerBoard(player).getCoin()); //must have again 20 coins
     }
 
     @Test
