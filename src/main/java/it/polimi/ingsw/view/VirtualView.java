@@ -58,13 +58,7 @@ public class VirtualView implements ViewInterface, Observer {
      * @param messageShowDeck containing available assistants
      */
     @Override
-<<<<<<< HEAD
-    public void showAssistantChoice(SMessageShowDeck message) {
-
-    }
-=======
     public void showAssistantChoice(SMessageShowDeck messageShowDeck) {}
->>>>>>> main
 
     /**
      * Display lobby.

@@ -26,14 +26,6 @@ public interface ViewInterface {
     void askMotherNatureMove();
 
     /**
-<<<<<<< HEAD
-     * Ask the player to pick an assistant card from provided available cards.
-     */
-    void showAssistantChoice(SMessageShowDeck message);
-
-    /**
-=======
->>>>>>> main
      * Display lobby.
      * @param message containing information on connected and desired players.
      */
