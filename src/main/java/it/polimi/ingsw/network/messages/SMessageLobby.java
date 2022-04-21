@@ -7,12 +7,12 @@ import java.util.List;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class SMessageLobby extends Message{
+public class SMessageLobby extends SMessage{
     public List<String> currentPlayers;
     public int numPlayersTotal;
 
     SMessageLobby(List<String> currentPlayers, int numPlayersTotal){
-        this.type = MessageType.S_LOBBY;
+        super(MessageType.S_LOBBY);
         this.currentPlayers = currentPlayers;
         this.numPlayersTotal = numPlayersTotal;
 

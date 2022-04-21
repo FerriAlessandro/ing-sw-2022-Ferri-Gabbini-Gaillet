@@ -43,12 +43,14 @@ class ClientHandlerTest {
     @Test
     void run() {
         try {
-            clientHandler.sendMessage(new RMessageNickname("Pippo"));
+            int threadCount = Thread.activeCount();
+            System.out.println(threadCount);
+            mockClient.sendMessage(new RMessageNickname("Pippo"));
             clientHandler.sendMessage(new SMessage(MessageType.S_LOBBY));
             clientHandler.sendMessage(new SMessage(MessageType.S_WIN));
-            clientHandler.sendMessage(new PingMessage());
+            mockClient.sendMessage(new PingMessage());
             clientHandler.sendMessage(new SMessage(MessageType.R_DISCONNECT));
-            while(Thread.activeCount() > 3){ assert true; } //One for Maven?
+            while(Thread.activeCount() > threadCount - 2){ assert true; } //One for Maven?
             assertEquals(MessageType.S_LOBBY, contMess.get(0));
             assertEquals(MessageType.S_WIN, contMess.get(1));
             assertEquals(2, contMess.size());
@@ -81,6 +83,7 @@ class MockClientSocket extends Thread{
     ObjectOutputStream out;
     ObjectInputStream in;
     boolean disconnected = false;
+    final Object lock = new Object();
 
     public MockClientSocket() {
     }
@@ -97,7 +100,7 @@ class MockClientSocket extends Thread{
         while (!Thread.currentThread().isInterrupted()){
             try {
                 Message message = (Message) in.readObject();
-                out.writeObject(message);
+                sendMessage(message);
                 if (message.getType().equals(MessageType.R_DISCONNECT)){
                     socket.close();
                     Thread.currentThread().interrupt();
@@ -121,6 +124,16 @@ class MockClientSocket extends Thread{
         } catch (IOException ex) {
             System.out.println("Unable to close socket");
             ex.printStackTrace();
+        }
+    }
+
+    public void sendMessage(Message message){
+        synchronized (lock) {
+            try {
+                out.writeObject(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -54,11 +54,17 @@ public class VirtualView implements ViewInterface, Observer {
 
     /**
      * Ask the player to pick an assistant card from provided available cards.
+     *
+     * @param messageShowDeck containing available assistants
      */
     @Override
+<<<<<<< HEAD
     public void showAssistantChoice(SMessageShowDeck message) {
 
     }
+=======
+    public void showAssistantChoice(SMessageShowDeck messageShowDeck) {}
+>>>>>>> main
 
     /**
      * Display lobby.
@@ -104,10 +110,11 @@ public class VirtualView implements ViewInterface, Observer {
 
     /**
      * Ask player to pick a character card among provided available options.
-     */
+     *
+     *///TODO: fix javadoc
     @Override
-    public void showCharacterChoice() {
-
+    public void showCharacterChoice(SMessageCharacter messageCharacter) {
+        clientHandler.sendMessage(messageCharacter);
     }
 
     /**
@@ -125,6 +132,26 @@ public class VirtualView implements ViewInterface, Observer {
     @Override
     public void askAgain() {
         clientHandler.sendMessage(new SMessage(MessageType.S_TRYAGAIN));
+    }
+
+    /**
+     * Update current player.
+     *
+     * @param messageCurrentPlayer
+     */
+    @Override
+    public void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer) {
+        clientHandler.sendMessage(messageCurrentPlayer);
+    }
+
+    /**
+     * Getter method for the nickname of the associated player
+     *
+     * @return {@link String} nickname of the associated player
+     */
+    @Override
+    public String getNickName() {
+        return clientHandler.getPlayerNickname();
     }
 
     /**

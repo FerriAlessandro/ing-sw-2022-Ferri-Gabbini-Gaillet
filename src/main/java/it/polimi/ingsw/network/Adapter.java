@@ -12,25 +12,15 @@ import java.security.InvalidParameterException;
  * @version 1.0
  */
 public class Adapter {
-    ViewInterface view;
-    ClientSocket socket;
-
-    Message previousMessage = new SMessage(MessageType.S_ERROR);
+    private ViewInterface view;
+    private ClientSocket socket;
+    private Message previousMessage = new SMessage(MessageType.S_ERROR);
+    private String currentPlayer;
 
     /**
      * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
      */
     public Adapter(){}
-
-    /**
-     * Default constructor. Used in testing.
-     * @param view the {@link ViewInterface} linked to this {@link Adapter}
-     */
-    public Adapter(ViewInterface view){
-        this.view = view;
-        socket = new ClientSocket(this);
-        socket.start();
-    }
 
     /**
      * Constructor that allows for overriding of default ip and port values.
@@ -72,7 +62,7 @@ public class Adapter {
                 view.showAssistantChoice((SMessageShowDeck) message);
                 break;
             case S_CHARACTER:
-                view.showCharacterChoice();
+                view.showCharacterChoice((SMessageCharacter) message);
                 break;
             case S_MOVE:
                 view.askMove();
@@ -84,7 +74,8 @@ public class Adapter {
                 view.askCloud();
                 break;
             case S_NICKNAME:
-                view.askNickName();
+                if(view.getNickName() == null) view.askNickName();
+                else sendMessage(new RMessageNickname(view.getNickName()));
                 break;
             case S_GAMESETTINGS:
                 view.askGameSettings();
@@ -95,6 +86,11 @@ public class Adapter {
             case S_TRYAGAIN:
                 view.askAgain();
                 elaborateMessage(previousMessage);
+                break;
+            case S_PLAYER:
+                SMessageCurrentPlayer messageCurrentPlayer = (SMessageCurrentPlayer) message;
+                currentPlayer = messageCurrentPlayer.nickname;
+                view.showCurrentPlayer(messageCurrentPlayer);
                 break;
             default:
                 new InvalidParameterException().printStackTrace();
@@ -107,6 +103,11 @@ public class Adapter {
      * @param message to be sent
      */
     public void sendMessage(Message message){
+        if(!currentPlayer.equals(view.getNickName())){
+            view.showGenericMessage(new SMessageInvalid("Not your turn"));
+            return;
+        }
+
         try {
             socket.sendMessage(message);
         } catch (IOException e){

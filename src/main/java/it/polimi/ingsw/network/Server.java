@@ -21,16 +21,18 @@ import java.net.Socket;
  * @see ClientHandler
  */
 public class Server {
-    int port = 2351;
-    int numCurrentGame = 0;
-    int numRequiredGame = 0;
-    InputController controller;
 
     /**
      * Main function
      * @param args port value to override default value
      */
-    public void main(String[] args){
+    public static void main(String[] args){
+        int port = 2351;
+        int numCurrentGame = 0;
+        int numRequiredGame = 0;
+        InputController controller = null;
+
+
         if (args.length == 1){
             port = Integer.parseInt(args[0]);
         }else if (args.length > 1){
@@ -38,14 +40,12 @@ public class Server {
             return;
         }
 
-        try{
-            ServerSocket serverSocket = new ServerSocket(port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server listening - port: " + port);
-
-            while (true){
+            while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected - address: " + socket.getInetAddress().toString());
-                if (numCurrentGame == 0){
+                if (numCurrentGame == 0) {
                     try {
                         ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
                         ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -58,27 +58,27 @@ public class Server {
                                 e.printStackTrace();
                                 break;
                             }
-                        }while (!message.getType().equals(MessageType.R_GAMESETTINGS));
+                        } while (!message.getType().equals(MessageType.R_GAMESETTINGS));
                         if (message != null) {
                             numRequiredGame = ((RMessageGameSettings) message).numPlayers;
                             boolean expertGame = ((RMessageGameSettings) message).expert;
                             controller = new InputController(numRequiredGame, expertGame);
                             new ClientHandler(socket, inputStream, outputStream, controller).start();
+                            numCurrentGame += 1;
                         }
-                    } catch (IOException ioException){
+                    } catch (IOException ioException) {
                         System.out.println("Unable to get the input stream");
                         ioException.printStackTrace();
                     }
 
-                }else {
+                } else {
                     new ClientHandler(socket, controller).start();
-                    numCurrentGame = numCurrentGame + 1;
-                    if (numRequiredGame == numCurrentGame){
+                    numCurrentGame += 1;
+                    if (numRequiredGame == numCurrentGame) {
                         numCurrentGame = 0;
                     }
                 }
-            }
-
+             }
         } catch (IOException e){
             System.out.println("Unable to create the socket\n");
             e.printStackTrace();

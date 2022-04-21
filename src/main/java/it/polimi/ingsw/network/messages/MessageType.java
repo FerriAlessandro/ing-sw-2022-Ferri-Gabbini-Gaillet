@@ -29,5 +29,9 @@ public enum MessageType {
     S_GAMESETTINGS,
     S_ERROR,
     S_TRYAGAIN,
+<<<<<<< HEAD
     S_PLAYER
+=======
+    S_PLAYER,
+>>>>>>> main
 }

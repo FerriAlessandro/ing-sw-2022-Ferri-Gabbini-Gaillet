@@ -10,7 +10,7 @@ import java.util.Map;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class SMessageGameState extends Message {
+public class SMessageGameState extends SMessage {
     public Map<String, Map<Color, Integer>> studEntrance;
     public Map<String, Map<Color, Integer>> studDining;
     public Map<Integer, Map<Color, Integer>> studIslands;
@@ -26,6 +26,8 @@ public class SMessageGameState extends Message {
                              Map<Integer, Map<Color, Integer>> studClouds, Map<Color, String> professors,
                              int motherNaturePosition){
 
+        super(MessageType.S_GAMESTATE);
+
         this.studEntrance = studEntrance;
         this.studDining = studDining;
         this.studIslands = studIslands;
@@ -34,7 +36,6 @@ public class SMessageGameState extends Message {
         this.forbiddenTokens = forbiddenTokens;
         this.motherNaturePosition = motherNaturePosition;
         this.studClouds = studClouds;
-        this.type = MessageType.S_GAMESTATE;
         this.professors = professors;
     }
 

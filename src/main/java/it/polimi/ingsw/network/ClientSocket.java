@@ -25,11 +25,10 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
 public class ClientSocket extends Thread {
     String ip;
     int port;
-    Socket socket;
-    ObjectInputStream in;
-    ObjectOutputStream out;
-    ScheduledExecutorService heartbeat = newScheduledThreadPool(1);
-    Adapter adapter;
+    private Socket socket;
+    private ObjectOutputStream out;
+    private final ScheduledExecutorService heartbeat = newScheduledThreadPool(1);
+    private final Adapter adapter;
     final Object sendLock = new Object();
 
     /**
@@ -45,15 +44,6 @@ public class ClientSocket extends Thread {
     }
 
     /**
-     * Default constructor for the {@link ClientSocket}; sets the default ip and port number.
-     */
-    public ClientSocket(Adapter adapter) {
-        this.adapter = adapter;
-        this.ip = "localhost";
-        this.port = 2351;
-    }
-
-    /**
      * This method runs the thread that receives the incoming messages.
      */
     @Override
@@ -61,7 +51,7 @@ public class ClientSocket extends Thread {
         try{
             socket = new Socket(ip, port);
 
-            in = new ObjectInputStream(socket.getInputStream());
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             out = new ObjectOutputStream(socket.getOutputStream());
 
             while (!Thread.currentThread().isInterrupted()){
