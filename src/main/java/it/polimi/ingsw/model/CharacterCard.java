@@ -85,6 +85,13 @@ public class CharacterCard extends TileWithStudents{
     }
 
     /**
+     * @return Number of No Entry Tiles
+     */
+    public int getNoEntryTiles(){
+        return this.noEntryTiles;
+    }
+
+    /**
      * This method fills certain Character Cards with students
      * @param bag The bag from which students are drawn
      * @throws EmptyBagException Thrown if the bag is empty
