@@ -2,6 +2,8 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.enumerations.AssistantCard;
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
@@ -22,7 +24,7 @@ public class GameController {
 
     private Game game;
     private Phase gamePhase;
-    //TODO Add Character cards status
+    private Characters characterPlayed;
     private final Map<String, VirtualView > playersView = new HashMap<>();
     private final boolean isExpert;
     private boolean isLastRound;
@@ -149,6 +151,10 @@ public class GameController {
         getVirtualView(nickName).showGenericMessage(new SMessageInvalid(message));
     }
 
+    private SMessageCharacter createCharacterMessage(){
+        return new SMessageCharacter(game.getGameBoard().getCharacters());
+    }
+
 
     /**
      * Utility method to get the Entrance of the current player
@@ -243,11 +249,13 @@ public class GameController {
         }
         catch(EndRoundException e){
             game.sortPlayersActionTurn();
+            for(AssistantCard assistant : AssistantCard.values())
+                assistant.resetPlayed();  //Reset the already played assistants
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             if(isExpert) {
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
+                getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
 
-                // TODO playersView.get(game.getPlayers().get(0)).CHIEDI_CARTA_PERSONAGGIO
             }
 
             else {
@@ -296,7 +304,7 @@ public class GameController {
             numOfMoves = 0;
             if(isExpert && !hasPlayedCharacter){
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_2;
-                // TODO playersView.get(moveMessage.getNickName()).CHIEDI_CARTA_PERSONAGGIO
+                getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
             }
             else{
                 gamePhase = Phase.MOVE_MOTHERNATURE;
@@ -369,7 +377,7 @@ public class GameController {
 
             if(isExpert && !hasPlayedCharacter) {
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_3;
-                //TODO ASK CHARACTER CARD
+                getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
             }
 
             else {
@@ -395,10 +403,11 @@ public class GameController {
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             //TODO Aggiorna virtual view
             hasPlayedCharacter = false; //Next player can play a character
+            //TODO Character state = default
 
             if(isExpert){
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
-                //TODO CHIEDI CARTA PERSONAGGIO
+                getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
             }
             else {
                 gamePhase = Phase.MOVE_STUDENTS;
@@ -432,6 +441,25 @@ public class GameController {
         }
 
     }
+
+    public void elaborateCharacter(Message message){
+
+        RMessageCharacter characterMessage = (RMessageCharacter) message;
+
+        if(characterMessage.character != null){
+            hasPlayedCharacter = true;
+            characterPlayed = characterMessage.character;
+
+            switch(characterPlayed){
+
+                case MONK:
+
+
+            }
+        }
+    }
+
+
 
 
 

@@ -23,7 +23,8 @@ public class SMessageCharacter extends SMessage{
             effects.add(characterCard.getName());
             students.put(characterCard.getName(), new EnumMap<>(characterCard.getState())); //Copy of the current Map
             cardCost.put(characterCard.getName(), characterCard.getCost());
-            noEntryTiles = characterCard.getNoEntryTiles();
+            if(characterCard.getName().equals(Characters.GRANDMA_HERB))
+                noEntryTiles = characterCard.getNoEntryTiles();
         }
     }
 }
