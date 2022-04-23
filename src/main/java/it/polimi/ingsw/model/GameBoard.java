@@ -490,4 +490,20 @@ public class GameBoard implements Serializable {
     public ArrayList<CharacterCard> getCharacters() {
         return characters;
     }
+
+    /**
+     * Puts a student from the bag to the character card
+     * @param character Card to put the student on
+     * @throws EmptyBagException Thrown if the Bag is empty
+     */
+
+    public void fillCharacter(CharacterCard character) throws EmptyBagException {
+
+        ArrayList<Color> student = bag.getStudents(1);
+        try {
+            character.addStudent(student.get(0));
+        } catch (FullDestinationException ignored) {}
+    }
 }
+
+

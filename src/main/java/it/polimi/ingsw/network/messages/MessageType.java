@@ -29,5 +29,9 @@ public enum MessageType {
     S_GAMESETTINGS,
     S_ERROR,
     S_TRYAGAIN,
-    S_PLAYER
+    S_PLAYER,
+    S_MONKPRINCESSROGUE,
+    R_MONKPRINCESSROGUE,
+    S_JESTERBARD,
+    R_JESTERBARD
 }

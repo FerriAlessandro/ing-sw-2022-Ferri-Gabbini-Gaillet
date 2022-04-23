@@ -4,12 +4,14 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Characters;
+import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -208,6 +210,18 @@ public class GameController {
             isLastRound = true;
             broadcastMessage("The bag is empty, this is the last round!", MessageType.S_INVALID);
         }
+    }
+
+    /**
+     * @param characterName Name of the character needed
+     * @return The CharacterCard with the specified name
+     */
+    private CharacterCard getCharacterByName(Characters characterName){
+        for(CharacterCard character : game.getGameBoard().getCharacters()){
+            if(character.getName().equals(characterName))
+                return character;
+        }
+        throw new RuntimeException("Character not found");
     }
 
 
@@ -446,17 +460,129 @@ public class GameController {
 
         RMessageCharacter characterMessage = (RMessageCharacter) message;
 
-        if(characterMessage.character != null){
+        if(characterMessage.character != null){ //if the player selected a character
+            //TODO game.CheckCoin(Player, characterPlayed)
             hasPlayedCharacter = true;
             characterPlayed = characterMessage.character;
 
             switch(characterPlayed){
 
-                case MONK:
+                case MONK: {
+                    getVirtualView(characterMessage.nickname).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(characterPlayed).getState()), characterPlayed));
+                    break;
+                }
+
+                case SPOILED_PRINCESS: {
+                    //First we check if the player can play the card (if the card has at least 1 color that the player can choose)
+                    DiningRoom dining = getDiningRoom();
+                    boolean playable = false;
+                    for (Color color : getCharacterByName(Characters.SPOILED_PRINCESS).getState().keySet()) {
+                        if (dining.getNumStudents(color) < dining.getMaxStudents())
+                            playable = true;
+                    }
+                    if(playable) //if the player can play the card ask for the color
+                        getVirtualView(characterMessage.nickname).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(characterPlayed).getState()), characterPlayed));
+                    else { //if the player cannot play the card, ask if he wants to play another card
+                        sendErrorMessage(characterMessage.nickname, "You cannot play this card, you already filled the Dining Rooms corresponding to this card's colors");
+                        getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
+                        return;
+                    }
+                    break;
+                }
+
+                case ROGUE:
+                    getVirtualView(characterMessage.nickname).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getDiningRoom().getState()), characterPlayed));
+                    break;
+
+                case HERALD:
+
+
+
 
 
             }
         }
+    }
+
+    private void elaborateMonkPrincessRogue(Message message){
+
+        RMessageMonkPrincessRogue characterMessage = (RMessageMonkPrincessRogue) message;
+        boolean emptyDiningRoom = false;
+        switch(characterMessage.characterName){
+
+            case ROGUE:{
+
+                for(Player p : game.getPlayers()){
+                    DiningRoom dining = game.getGameBoard().getPlayerBoard(p).getDiningRoom();
+                    emptyDiningRoom = false;
+                    for(int i=0; i<3 && !emptyDiningRoom; i++){
+                        try{
+                            dining.removeStudent(characterMessage.chosenColor);
+                        }catch(RuntimeException e){
+                            emptyDiningRoom = true;
+                        }
+                    }
+
+                }
+                broadcastMessage("ROGUE was played, 3 "+characterMessage.chosenColor+"Students have been removed from each player's Dining Room", MessageType.S_INVALID);
+
+                break;
+            }
+
+            case MONK:{
+
+                int desiredIslandIndex = characterMessage.islandIndex-1;
+                int lastIslandIndex = game.getGameBoard().getIslands().size()-1;
+                if(lastIslandIndex < desiredIslandIndex){
+                    sendErrorMessage(characterMessage.nickName, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
+                    getVirtualView(characterMessage.nickName.askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(Characters.MONK).getState()), Characters.MONK)));
+                    return;
+                }
+                try {
+                    //TODO RIMUOVERE COIN E AUMENTARE COSTO CARTA
+                    game.getGameBoard().move(characterMessage.chosenColor, getCharacterByName(Characters.MONK), game.getGameBoard().getIslands().get(desiredIslandIndex));
+                }catch(FullDestinationException ignored){} //Islands can't be full
+
+                try{
+                    game.getGameBoard().fillCharacter(getCharacterByName(characterMessage.characterName));
+                }catch(EmptyBagException ignored){} //it's going to be handled after the clouds are chosen
+
+                break;
+            }
+
+            case SPOILED_PRINCESS:{
+
+                try{
+                    game.getGameBoard().move(characterMessage.chosenColor, getCharacterByName(Characters.SPOILED_PRINCESS), game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getDiningRoom());
+                    //TODO RIMUVOERE COIN E AUMENTARE COSTO CARTA
+                    game.getGameBoard().fillCharacter(getCharacterByName(characterMessage.characterName));
+
+                } catch(FullDestinationException e){
+
+                    DiningRoom dining = getDiningRoom();
+                    boolean playable = false;
+                    for(Color color : getCharacterByName(Characters.SPOILED_PRINCESS).getState().keySet()){
+                        if(dining.getNumStudents(color) < dining.getMaxStudents())
+                            playable=true;
+                    }
+
+                    if(playable) { //If the player chose a color that cannot be added to its dining room and there's another color on the card that can be added
+                        sendErrorMessage(characterMessage.nickName, "Your " + characterMessage.chosenColor + "Dining Room is full, please selected another color");
+                        getVirtualView(characterMessage.nickName.askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS)));
+                        return;
+                    }
+                    else{
+                        sendErrorMessage(characterMessage.nickName, "You cannot play this card, you already filled the Dining Rooms corresponding to this card's colors");
+
+                    }
+                }
+                catch(EmptyBagException ignored){} //it's going to be handled after the clouds are chosen
+
+
+
+            }
+        }
+        //TODO CAMBIA FASE GIOCO
     }
 
 
