@@ -25,8 +25,8 @@ public class GameController {
 
 
     private Game game;
-    private Phase gamePhase;
-    private Characters characterPlayed;
+    public Phase gamePhase;
+    private CharacterController characterController;
     private final Map<String, VirtualView > playersView = new HashMap<>();
     private final boolean isExpert;
     private boolean isLastRound;
@@ -61,6 +61,10 @@ public class GameController {
      */
     public VirtualView getVirtualView(String nickName){
         return playersView.get(nickName);
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     /**
@@ -125,7 +129,7 @@ public class GameController {
      * Utility method to send the same message to each player's virtual view
      * @param message The message that needs to be broadcasted
      */
-    private void broadcastMessage(String message, MessageType type) {
+    public void broadcastMessage(String message, MessageType type) {
         switch (type) {
             case S_INVALID: {
                 SMessageInvalid m = new SMessageInvalid(message);
@@ -149,11 +153,11 @@ public class GameController {
      * @param message Body of the message to send
      */
 
-    private void sendErrorMessage(String nickName, String message){
+    public void sendErrorMessage(String nickName, String message){
         getVirtualView(nickName).showGenericMessage(new SMessageInvalid(message));
     }
 
-    private SMessageCharacter createCharacterMessage(){
+    public SMessageCharacter createCharacterMessage(){
         return new SMessageCharacter(game.getGameBoard().getCharacters());
     }
 
@@ -163,7 +167,7 @@ public class GameController {
      * @return The Entrance of the current player
      * @throws NoCurrentPlayerException Thrown if it's nobody's turn
      */
-    private Entrance getEntrance() throws NoCurrentPlayerException {
+    public Entrance getEntrance() throws NoCurrentPlayerException {
 
         return game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getEntrance();
 
@@ -174,7 +178,7 @@ public class GameController {
      * @return The Dining Room of the current player
      * @throws NoCurrentPlayerException Thrown if it's nobody's turn
      */
-    private DiningRoom getDiningRoom() throws NoCurrentPlayerException {
+    public DiningRoom getDiningRoom() throws NoCurrentPlayerException {
 
         return game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getDiningRoom();
 
@@ -213,10 +217,24 @@ public class GameController {
     }
 
     /**
+     * Switches the Phase of the Game after a Character Card is used (or after no Character Card is chosen)
+     */
+
+    public void switchPhase(){
+        if(gamePhase.equals(Phase.CHOOSE_CHARACTER_CARD_1))
+            gamePhase = Phase.MOVE_STUDENTS;
+
+        else if(gamePhase.equals(Phase.CHOOSE_CHARACTER_CARD_2))
+            gamePhase = Phase.MOVE_MOTHERNATURE;
+
+        else gamePhase = Phase.CHOOSE_CLOUD;
+    }
+
+    /**
      * @param characterName Name of the character needed
      * @return The CharacterCard with the specified name
      */
-    private CharacterCard getCharacterByName(Characters characterName){
+    public CharacterCard getCharacterByName(Characters characterName){
         for(CharacterCard character : game.getGameBoard().getCharacters()){
             if(character.getName().equals(characterName))
                 return character;
@@ -413,11 +431,12 @@ public class GameController {
 
         RMessageCloud cloudMessage = (RMessageCloud) message;
         try {
+            //TODO Character state = default
+            hasPlayedCharacter = false; //Next player can play a character
             game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             //TODO Aggiorna virtual view
-            hasPlayedCharacter = false; //Next player can play a character
-            //TODO Character state = default
+
 
             if(isExpert){
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
@@ -456,138 +475,44 @@ public class GameController {
 
     }
 
-    public void elaborateCharacter(Message message){
+    /**
+     * Elaborates the Character Card chosen by the player (if one is chosen), instantiate the Controller responsible for managing Character Cards
+     * and asks the parameters required by the card to the Player
+     * @param message The message containing the chosen Character Card
+     */
+
+    private void elaborateCharacter(Message message) {
 
         RMessageCharacter characterMessage = (RMessageCharacter) message;
-
-        if(characterMessage.character != null){ //if the player selected a character
-            //TODO game.CheckCoin(Player, characterPlayed)
-            hasPlayedCharacter = true;
-            characterPlayed = characterMessage.character;
-
-            switch(characterPlayed){
-
-                case MONK: {
-                    getVirtualView(characterMessage.nickname).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(characterPlayed).getState()), characterPlayed));
-                    break;
-                }
-
-                case SPOILED_PRINCESS: {
-                    //First we check if the player can play the card (if the card has at least 1 color that the player can choose)
-                    DiningRoom dining = getDiningRoom();
-                    boolean playable = false;
-                    for (Color color : getCharacterByName(Characters.SPOILED_PRINCESS).getState().keySet()) {
-                        if (dining.getNumStudents(color) < dining.getMaxStudents())
-                            playable = true;
-                    }
-                    if(playable) //if the player can play the card ask for the color
-                        getVirtualView(characterMessage.nickname).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(characterPlayed).getState()), characterPlayed));
-                    else { //if the player cannot play the card, ask if he wants to play another card
-                        sendErrorMessage(characterMessage.nickname, "You cannot play this card, you already filled the Dining Rooms corresponding to this card's colors");
-                        getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
-                        return;
-                    }
-                    break;
-                }
-
-                case ROGUE:
-                    getVirtualView(characterMessage.nickname).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getDiningRoom().getState()), characterPlayed));
-                    break;
-
-                case HERALD:
-
-
-
-
-
-            }
+        if(characterMessage.character != null) {
+            characterController = CharacterFactory.create(this, characterMessage.character);
+            characterController.use(characterMessage.nickname);
         }
+        else switchPhase();
+
     }
 
-    private void elaborateMonkPrincessRogue(Message message){
-
-        RMessageMonkPrincessRogue characterMessage = (RMessageMonkPrincessRogue) message;
-        boolean emptyDiningRoom = false;
-        switch(characterMessage.characterName){
-
-            case ROGUE:{
-
-                for(Player p : game.getPlayers()){
-                    DiningRoom dining = game.getGameBoard().getPlayerBoard(p).getDiningRoom();
-                    emptyDiningRoom = false;
-                    for(int i=0; i<3 && !emptyDiningRoom; i++){
-                        try{
-                            dining.removeStudent(characterMessage.chosenColor);
-                        }catch(RuntimeException e){
-                            emptyDiningRoom = true;
-                        }
-                    }
-
-                }
-                broadcastMessage("ROGUE was played, 3 "+characterMessage.chosenColor+"Students have been removed from each player's Dining Room", MessageType.S_INVALID);
-
+    /**
+     * Activates the effect of the chosen Character Card
+     * @param message The message containing the parameters needed for the card activation (if any)
+     */
+    public void elaborateActivation(Message message){
+        characterController.activate(message);
+        switch(gamePhase){
+            case MOVE_STUDENTS: {
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMove();
                 break;
             }
-
-            case MONK:{
-
-                int desiredIslandIndex = characterMessage.islandIndex-1;
-                int lastIslandIndex = game.getGameBoard().getIslands().size()-1;
-                if(lastIslandIndex < desiredIslandIndex){
-                    sendErrorMessage(characterMessage.nickName, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
-                    getVirtualView(characterMessage.nickName.askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(Characters.MONK).getState()), Characters.MONK)));
-                    return;
-                }
-                try {
-                    //TODO RIMUOVERE COIN E AUMENTARE COSTO CARTA
-                    game.getGameBoard().move(characterMessage.chosenColor, getCharacterByName(Characters.MONK), game.getGameBoard().getIslands().get(desiredIslandIndex));
-                }catch(FullDestinationException ignored){} //Islands can't be full
-
-                try{
-                    game.getGameBoard().fillCharacter(getCharacterByName(characterMessage.characterName));
-                }catch(EmptyBagException ignored){} //it's going to be handled after the clouds are chosen
-
+            case MOVE_MOTHERNATURE:{
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove();
                 break;
             }
-
-            case SPOILED_PRINCESS:{
-
-                try{
-                    game.getGameBoard().move(characterMessage.chosenColor, getCharacterByName(Characters.SPOILED_PRINCESS), game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getDiningRoom());
-                    //TODO RIMUVOERE COIN E AUMENTARE COSTO CARTA
-                    game.getGameBoard().fillCharacter(getCharacterByName(characterMessage.characterName));
-
-                } catch(FullDestinationException e){
-
-                    DiningRoom dining = getDiningRoom();
-                    boolean playable = false;
-                    for(Color color : getCharacterByName(Characters.SPOILED_PRINCESS).getState().keySet()){
-                        if(dining.getNumStudents(color) < dining.getMaxStudents())
-                            playable=true;
-                    }
-
-                    if(playable) { //If the player chose a color that cannot be added to its dining room and there's another color on the card that can be added
-                        sendErrorMessage(characterMessage.nickName, "Your " + characterMessage.chosenColor + "Dining Room is full, please selected another color");
-                        getVirtualView(characterMessage.nickName.askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS)));
-                        return;
-                    }
-                    else{
-                        sendErrorMessage(characterMessage.nickName, "You cannot play this card, you already filled the Dining Rooms corresponding to this card's colors");
-
-                    }
-                }
-                catch(EmptyBagException ignored){} //it's going to be handled after the clouds are chosen
-
-
-
+            case CHOOSE_CLOUD:{
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
+                break;
             }
+            default:
         }
-        //TODO CAMBIA FASE GIOCO
     }
-
-
-
-
-
 
 }

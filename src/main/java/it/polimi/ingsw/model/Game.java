@@ -209,7 +209,7 @@ public class Game extends Observable {
             if(p.isFirst())
                 return p;
         }
-        return null;
+        throw new RuntimeException("First player not found"); //If a bug happens
     }
 
     /**
@@ -247,7 +247,6 @@ public class Game extends Observable {
         ArrayList<Player> playersCopy = new ArrayList<>(players);
         HashMap<Player, Integer> sameNumOfTowers = new HashMap<>();
         Player winner;
-        Boolean tie = true;
 
         minTower = gameBoard.getPlayerBoard(playersCopy.get(0)).getTowerZone().getNumOfTowers();
         winner = playersCopy.get(0);

@@ -164,6 +164,12 @@ public class GameBoard implements Serializable {
     }
 
     /**
+     * Returns the reference to the memorized {@link Bag}
+     * @return {@link Bag} object linked to this instance
+     */
+    public Bag getBag(){return bag;}
+
+    /**
      * Moves {@link MotherNature} by a given number of positions and returns final {@link IslandTile}. Merges islands if necessary.
      *
      * @param pos number of positions
