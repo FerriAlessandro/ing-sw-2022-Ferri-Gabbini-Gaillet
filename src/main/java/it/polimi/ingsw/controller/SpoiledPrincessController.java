@@ -11,18 +11,28 @@ import it.polimi.ingsw.network.messages.RMessageMonkPrincessRogue;
 import it.polimi.ingsw.network.messages.SMessageMonkPrincessRogue;
 
 import java.util.EnumMap;
-
+/**
+ * This class represents the Character Controller when the Spoiled Princess Character Card is played
+ * @author Alessandro F.
+ * @version 1.0
+ */
 public class SpoiledPrincessController extends CharacterController{
+
 
     public SpoiledPrincessController(GameController gameController, Characters characterName){
         super(gameController, characterName);
     }
 
+    /**
+     * This Method sends the player the Students present on the Card for him to choose, if the player doesn't have enough coins he's asked to choose another card.
+     * If the player cannot play this card (if for each Color present on the card the corresponding player's Dining Room are full) he's asked to choose another card.
+     * @param nickName The NickName of the Player
+     */
     @Override
     public void use(String nickName){
         if(checkCoin()) {
             //First we check if the player can play the card (if the card has at least 1 color that the player can choose)
-            DiningRoom dining = gameController.getDiningRoom();
+            DiningRoom dining = getCurrentPlayerBoard().getDiningRoom();
             boolean playable = false;
             for (Color color : gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState().keySet()) {
                 if (dining.getNumStudents(color) < dining.getMaxStudents() && gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState().get(color) > 0)
@@ -41,6 +51,13 @@ public class SpoiledPrincessController extends CharacterController{
         }
     }
 
+    /**
+     * This method is invoked when the card's effect is activated (after receiving the right parameters).
+     * If the player chose a color and its corresponding Dining Room is already full, he's asked to choose another color.
+     * If the chosen color is valid, the card is correctly played, the coins are removed from the Player and the card's cost is incremented.
+     * The Phase of the Game is changed at the end of the method's call
+     * @param message The Message containing the parameters to activate the card
+     */
     @Override
     public void activate(Message message){
 

@@ -67,6 +67,10 @@ public class GameController {
         return game;
     }
 
+    public ArrayList<String> getNickNames() {
+        return nickNames;
+    }
+
     /**
      * This method adds players in the game and starts it if the chosen number of players is reached
      * @param nickName Nickname of the player to add
@@ -120,7 +124,7 @@ public class GameController {
                 break;
 
             default:
-                throw new UnsupportedOperationException();
+                 new UnsupportedOperationException().printStackTrace();
 
         }
     }
@@ -209,7 +213,7 @@ public class GameController {
         broadcastMessage("A new Round is starting!", MessageType.S_INVALID);
         hasPlayedCharacter = false;
         try {
-            game.getGameBoard().fillClouds();
+            game.fillClouds();
         }catch(EmptyBagException exc){
             isLastRound = true;
             broadcastMessage("The bag is empty, this is the last round!", MessageType.S_INVALID);

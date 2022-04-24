@@ -10,14 +10,26 @@ import it.polimi.ingsw.network.messages.SMessageMonkPrincessRogue;
 
 import java.util.EnumMap;
 
+/**
+ * This class represents the Character Controller when the Rogue Character Card is played
+ * @author Alessandro F.
+ * @version 1.0
+ */
+
 public class RogueController extends CharacterController{
 
-    private final int rogueRemovals = 3;
+    private final int rogueRemovals;
+
 
     public RogueController(GameController gameController, Characters characterName){
         super(gameController, characterName);
+        this.rogueRemovals = 3;
     }
 
+    /**
+     * This Method shows the player the Colors and lets him choose one, if the player doesn't have enough coins he's asked to choose another card
+     * @param nickName The NickName of the Player
+     */
     @Override
     public void use(String nickName){
 
@@ -31,7 +43,12 @@ public class RogueController extends CharacterController{
 
     }
 
-
+    /**
+     * This method is invoked when the card's effect is activated (after receiving the right parameters).
+     * 3 Students of the decided Color are removed from each Player's Dining Room.
+     * The Phase of the Game is changed at the end of the method's call
+     * @param message
+     */
     @Override
     public void activate(Message message){
 

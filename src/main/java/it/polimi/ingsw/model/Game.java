@@ -83,8 +83,6 @@ public class Game extends Observable {
      */
 
     public void moveMotherNature(int num) throws TowerWinException, NumOfIslandsException {
-        IslandTile oldIsland = gameBoard.getMotherNature().getCurrentIsland();
-
         IslandTile islandToCheck;
         TowerColor influenceWinner;
         islandToCheck = gameBoard.moveMotherNature(num);
@@ -92,9 +90,7 @@ public class Game extends Observable {
         gameBoard.swapTowers(islandToCheck, influenceWinner);
         gameBoard.checkForArchipelago(islandToCheck);
 
-        if (oldIsland != gameBoard.getMotherNature().getCurrentIsland()){
-            notifyObservers();
-        }
+        notifyObservers();
     }
 
     /**
@@ -298,6 +294,15 @@ public class Game extends Observable {
      */
     public ArrayList<AssistantCard> getPlayerDeck(){
         return new ArrayList<>(getCurrentPlayer().getDeck().getCards());
+    }
+
+    /**
+     * Fills the Clouds after they are chosen
+     * @throws EmptyBagException Thrown if the bag is empty
+     */
+    public void fillClouds() throws EmptyBagException {
+        gameBoard.fillClouds();
+        notifyObservers();
     }
 
 

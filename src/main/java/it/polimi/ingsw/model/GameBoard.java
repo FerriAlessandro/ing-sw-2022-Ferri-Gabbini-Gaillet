@@ -511,5 +511,5 @@ public class GameBoard implements Serializable {
         } catch (FullDestinationException ignored) {}
     }
 }
-
+//TODO TEST FILL CHARACTER
 
