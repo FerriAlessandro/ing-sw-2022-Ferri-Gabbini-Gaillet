@@ -65,5 +65,6 @@ public class MonkController extends CharacterController{
         }catch(FullDestinationException | EmptyBagException ignored){} //Islands can't be full and empty bag is handled when the clouds are chosen
 
         switchPhase();
+        gameController.hasPlayedCharacter = true;
     }
 }

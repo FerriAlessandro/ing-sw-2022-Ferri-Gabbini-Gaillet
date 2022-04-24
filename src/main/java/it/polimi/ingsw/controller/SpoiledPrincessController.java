@@ -77,6 +77,7 @@ public class SpoiledPrincessController extends CharacterController{
         catch(EmptyBagException ignored){} //already handled in the ChooseCloud method
 
         switchPhase();
+        gameController.hasPlayedCharacter = true;
 
     }
 

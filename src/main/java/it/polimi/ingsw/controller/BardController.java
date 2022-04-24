@@ -96,6 +96,7 @@ public class BardController extends CharacterController{
             removeCoins();
             gameController.getCharacterByName(Characters.BARD).use();
             switchPhase();
+            gameController.hasPlayedCharacter = true;
 
         }
 

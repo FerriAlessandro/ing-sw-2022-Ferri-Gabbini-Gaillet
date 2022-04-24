@@ -86,9 +86,15 @@ public class Game extends Observable {
         IslandTile islandToCheck;
         TowerColor influenceWinner;
         islandToCheck = gameBoard.moveMotherNature(num);
-        influenceWinner = gameBoard.checkInfluence(islandToCheck);
-        gameBoard.swapTowers(islandToCheck, influenceWinner);
-        gameBoard.checkForArchipelago(islandToCheck);
+        if(!islandToCheck.isForbidden()) {
+            influenceWinner = gameBoard.checkInfluence(islandToCheck);
+            gameBoard.swapTowers(islandToCheck, influenceWinner);
+            gameBoard.checkForArchipelago(islandToCheck);
+        }
+        else {
+            getCharacterByName(Characters.GRANDMA_HERB).addNoEntryTile();
+            islandToCheck.removeNoEntry();
+        }
 
         notifyObservers();
     }
@@ -303,6 +309,18 @@ public class Game extends Observable {
     public void fillClouds() throws EmptyBagException {
         gameBoard.fillClouds();
         notifyObservers();
+    }
+
+    /**
+     * @param characterName Name of the character needed
+     * @return The CharacterCard with the specified name
+     */
+    public CharacterCard getCharacterByName(Characters characterName){
+        for(CharacterCard character : getGameBoard().getCharacters()){
+            if(character.getName().equals(characterName))
+                return character;
+        }
+        throw new RuntimeException("Character not found");
     }
 
 

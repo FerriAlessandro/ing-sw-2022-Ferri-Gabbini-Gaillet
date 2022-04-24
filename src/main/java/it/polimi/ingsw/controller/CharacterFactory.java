@@ -1,6 +1,11 @@
 package it.polimi.ingsw.controller;
-
 import it.polimi.ingsw.model.enumerations.Characters;
+
+/**
+ * Factory Class to delegate the CharacterControllers' creation
+ * @author Alessandro F.
+ * @version 1.0
+ */
 
 public class CharacterFactory {
 

@@ -32,7 +32,7 @@ public class GameController {
     private boolean isLastRound;
     private final int numOfPlayers;
     private int numOfMoves = 0;
-    private boolean hasPlayedCharacter;
+    public boolean hasPlayedCharacter;
     private final ArrayList<String> nickNames = new ArrayList<>();
 
     /**
@@ -239,11 +239,7 @@ public class GameController {
      * @return The CharacterCard with the specified name
      */
     public CharacterCard getCharacterByName(Characters characterName){
-        for(CharacterCard character : game.getGameBoard().getCharacters()){
-            if(character.getName().equals(characterName))
-                return character;
-        }
-        throw new RuntimeException("Character not found");
+        return game.getCharacterByName(characterName);
     }
 
 

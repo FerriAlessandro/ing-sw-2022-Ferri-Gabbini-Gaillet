@@ -75,8 +75,8 @@ public class JesterController extends CharacterController{
 
         removeCoins();
         gameController.getCharacterByName(Characters.JESTER).use();
-
         switchPhase();
+        gameController.hasPlayedCharacter = true;
 
     }
 

@@ -73,6 +73,7 @@ public class RogueController extends CharacterController{
         removeCoins();
         gameController.getCharacterByName(Characters.ROGUE).use();
         switchPhase();
+        gameController.hasPlayedCharacter = true;
     }
 
 
