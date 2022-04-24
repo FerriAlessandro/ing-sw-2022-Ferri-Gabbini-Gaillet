@@ -57,12 +57,8 @@ public class ClientSocket extends Thread {
             while (!Thread.currentThread().isInterrupted()){
                 try {
                     Message inMessage = (Message) in.readObject();
+                    adapter.elaborateMessage(inMessage);
 
-                    try{
-                        adapter.elaborateMessage(inMessage);
-                    }catch (UnsupportedOperationException e){
-                        sendMessage(new SMessage(MessageType.S_ERROR));
-                    }
                 } catch (Exception e){
                     if(!Thread.currentThread().isInterrupted() && !e.getClass().equals(EOFException.class)){
                         System.out.println("Invalid input or corrupted input stream\n");

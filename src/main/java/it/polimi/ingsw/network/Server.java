@@ -56,23 +56,27 @@ public class Server {
                                 message = (Message) inputStream.readObject();
                             } catch (ClassNotFoundException e) {
                                 e.printStackTrace();
-                                break;
                             }
-                        } while (!message.getType().equals(MessageType.R_GAMESETTINGS));
-                        if (message != null) {
-                            numRequiredGame = ((RMessageGameSettings) message).numPlayers;
-                            boolean expertGame = ((RMessageGameSettings) message).expert;
-                            controller = new InputController(numRequiredGame, expertGame);
-                            new ClientHandler(socket, inputStream, outputStream, controller).start();
-                            numCurrentGame += 1;
-                        }
+                        } while (message == null || !message.getType().equals(MessageType.R_GAMESETTINGS));
+
+                        numRequiredGame = ((RMessageGameSettings) message).numPlayers;
+                        boolean expertGame = ((RMessageGameSettings) message).expert;
+                        controller = new InputController(numRequiredGame, expertGame);
+                        new ClientHandler(socket, inputStream, outputStream, controller).start();
+                        numCurrentGame += 1;
+
                     } catch (IOException ioException) {
                         System.out.println("Unable to get the input stream");
                         ioException.printStackTrace();
                     }
 
                 } else {
-                    new ClientHandler(socket, controller).start();
+                    try {
+                        new ClientHandler(socket, controller).start();
+                    }catch (IOException e){
+                        e.printStackTrace();
+                        System.out.println("Unable to create clientHandler");
+                    }
                     numCurrentGame += 1;
                     if (numRequiredGame == numCurrentGame) {
                         numCurrentGame = 0;

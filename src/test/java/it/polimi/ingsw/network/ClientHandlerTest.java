@@ -70,6 +70,16 @@ class ClientHandlerTest {
         mockClient.disconnect();
     }
 
+    @Test
+    void disconnectFirst(){
+        int threadCount = Thread.activeCount();
+        System.out.println(threadCount);
+        mockClient.sendMessage(new RMessageDisconnect());
+        while(Thread.activeCount() > threadCount - 1){ assert true; }
+        clientHandler.sendMessage(new SMessageInvalid(""));
+        assertEquals(0, contMess.size());
+    }
+
 }
 
 
@@ -131,6 +141,9 @@ class MockClientSocket extends Thread{
         synchronized (lock) {
             try {
                 out.writeObject(message);
+                if(message.getType().equals(MessageType.R_DISCONNECT)){
+                    disconnect();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
