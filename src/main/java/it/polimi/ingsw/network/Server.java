@@ -46,11 +46,14 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected - address: " + socket.getInetAddress().toString());
                 if (numCurrentGame == 0) {
+                    //IF PLAYER IS FIRST PLAYER OF CURRENT GAME:
                     try {
                         ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
                         ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
                         Message message = null;
+
                         do {
+                            //Ask for number of players and type of game
                             outputStream.writeObject(new SMessage(MessageType.S_GAMESETTINGS));
                             try {
                                 message = (Message) inputStream.readObject();
@@ -59,9 +62,11 @@ public class Server {
                             }
                         } while (message == null || !message.getType().equals(MessageType.R_GAMESETTINGS));
 
+                        //Initialize game (via creation of new controller)
                         numRequiredGame = ((RMessageGameSettings) message).numPlayers;
                         boolean expertGame = ((RMessageGameSettings) message).expert;
                         controller = new InputController(numRequiredGame, expertGame);
+
                         new ClientHandler(socket, inputStream, outputStream, controller).start();
                         numCurrentGame += 1;
 
@@ -71,7 +76,9 @@ public class Server {
                     }
 
                 } else {
+                    //IF AT LEAST ONE OTHER PLAYER IS ALREADY CONNECTED
                     try {
+                        //Use existing game settings (using existing controller)
                         new ClientHandler(socket, controller).start();
                     }catch (IOException e){
                         e.printStackTrace();
@@ -79,6 +86,9 @@ public class Server {
                     }
                     numCurrentGame += 1;
                     if (numRequiredGame == numCurrentGame) {
+                        //Reset for new game
+                        //PLEASE NOTE THAT MULTIPLE GAMES ARE CURRENTLY UNSUPPORTED!!
+                        //TODO: add support for multiple concurrent games or for multiple consecutive games
                         numCurrentGame = 0;
                     }
                 }

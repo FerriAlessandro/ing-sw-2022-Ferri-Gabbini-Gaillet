@@ -81,10 +81,7 @@ public class Game extends Observable {
      * @throws TowerWinException Thrown if a player placed all of his towers
      * @throws NumOfIslandsException Thrown if there are only 3 islands left
      */
-
     public void moveMotherNature(int num) throws TowerWinException, NumOfIslandsException {
-        IslandTile oldIsland = gameBoard.getMotherNature().getCurrentIsland();
-
         IslandTile islandToCheck;
         TowerColor influenceWinner;
         islandToCheck = gameBoard.moveMotherNature(num);
@@ -92,9 +89,7 @@ public class Game extends Observable {
         gameBoard.swapTowers(islandToCheck, influenceWinner);
         gameBoard.checkForArchipelago(islandToCheck);
 
-        if (oldIsland == gameBoard.getMotherNature().getCurrentIsland()){
-            notifyObservers();
-        }
+        notifyObservers();
     }
 
     /**
@@ -179,6 +174,7 @@ public class Game extends Observable {
         gameBoard.chooseCloud(cloud, getCurrentPlayer());
         endPlayerTurn(getCurrentPlayer());
 
+        notifyObservers();
     }
 
     /**
