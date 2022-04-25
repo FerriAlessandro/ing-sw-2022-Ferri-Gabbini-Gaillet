@@ -132,25 +132,25 @@ public class TestCli implements ViewInterface {
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter){
         int choice;
-        int index = 0;
-        do{
-            System.out.println("These are the available character cards: ");
-            for(Characters character : messageCharacter.effects){
-                index = messageCharacter.effects.indexOf(character) + 1;
-                System.out.print(index);
-                System.out.print(" " + character + "\n");
-                System.out.println(character.getEffect());
-                System.out.println("\t This card costs " + messageCharacter.cardCost.get(character) + " coins");
-                if(messageCharacter.students.get(character)!=null){
-                    System.out.println("\t Students on the card: ");
-                    for(Color color : messageCharacter.students.get(character).keySet()){
-                        System.out.println("\t " + messageCharacter.students.get(character).get(color) + " x " + color);
-                    }
-                }else if (character.equals(Characters.GRANDMA_HERB) && messageCharacter.noEntryTiles!=null){
-                    System.out.println("\t " + messageCharacter.noEntryTiles + " no entry tiles");
+        int index;
+
+        System.out.println("These are the available character cards: ");
+        for(Characters character : messageCharacter.effects){
+            index = messageCharacter.effects.indexOf(character) + 1;
+            System.out.print(index);
+            System.out.print(" " + character + "\n");
+            System.out.println(character.getEffect());
+            System.out.println("\t This card costs " + messageCharacter.cardCost.get(character) + " coins");
+            if(messageCharacter.students.get(character)!=null){
+                System.out.println("\t Students on the card: ");
+                for(Color color : messageCharacter.students.get(character).keySet()){
+                    System.out.println("\t " + messageCharacter.students.get(character).get(color) + " x " + color);
                 }
+            }else if (character.equals(Characters.GRANDMA_HERB) && messageCharacter.noEntryTiles!=null){
+                System.out.println("\t " + messageCharacter.noEntryTiles + " no entry tiles");
             }
         }
+
         do {
             System.out.println("Please pick a character card by providing its id (use 0 to discard the choice)");
             choice = in.nextInt();
@@ -249,7 +249,7 @@ public class TestCli implements ViewInterface {
     @Override
     public void showWinMessage(SMessageWin message) {
         if(message.getType().equals(MessageType.S_WIN)){
-            System.out.println(message.winner + "won the game!!!");
+            System.out.println(message.winner);
         }else{
             new InvalidParameterException().printStackTrace();
         }
@@ -339,5 +339,15 @@ public class TestCli implements ViewInterface {
     @Override
     public String getNickName() {
         return nickname;
+    }
+
+    /**
+     * Ask additional information on chosen character effect when necessary.
+     *
+     * @param message
+     */
+    @Override
+    public void askCharacterMove(SMessage message) {
+       //TODO: implementation
     }
 }

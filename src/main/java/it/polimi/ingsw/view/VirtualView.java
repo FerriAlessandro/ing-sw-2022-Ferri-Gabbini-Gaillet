@@ -73,7 +73,7 @@ public class VirtualView implements ViewInterface, Observer {
      * Display a disconnection message.
      */
     @Override
-    public void showDisconnectionMessage() {}
+    public void showDisconnectionMessage() {} //TODO: check?
 
     /**
      * Display a "someone has won" message.
@@ -116,7 +116,7 @@ public class VirtualView implements ViewInterface, Observer {
      */
     @Override
     public void askCloud(){
-
+        //TODO: implementation
     }
 
     /**
@@ -149,11 +149,21 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
+     * Ask additional information on chosen character effect when necessary.
+     *
+     * @param message
+     */
+    @Override
+    public void askCharacterMove(SMessage message) {
+        //TODO: implementation
+    }
+
+    /**
      * Ask the player to move a student.
      */
     @Override
     public void askMove(){
-
+        //TODO: implementation
     }
 
     
