@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @version 1.0
  */
 
-public class RMessageGrandmaHerb extends Message{
+public class RMessageGrandmaherbHerald extends Message{
 
     public int islandIndex;
     public Characters characterName;
@@ -20,9 +20,9 @@ public class RMessageGrandmaHerb extends Message{
      * @param nickName NickName of the player
      * @param islandIndex Index of the Island on which to place the no entry tile
      */
-    public RMessageGrandmaHerb(Characters characterName, String nickName, int islandIndex){
+    public RMessageGrandmaherbHerald(Characters characterName, String nickName, int islandIndex){
 
-        this.type = MessageType.R_GRANDMAHERB;
+        this.type = MessageType.R_GRANDMAHERBHERALD;
         this.characterName = characterName;
         this.nickName = nickName;
         this.islandIndex = islandIndex;

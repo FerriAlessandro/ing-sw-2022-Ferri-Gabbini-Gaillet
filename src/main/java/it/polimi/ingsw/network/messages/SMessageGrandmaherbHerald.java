@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @version 1.0
  */
 
-public class SMessageGrandmaHerb extends SMessage{
+public class SMessageGrandmaherbHerald extends SMessage{
 
     public Characters characterName;
 
@@ -16,9 +16,9 @@ public class SMessageGrandmaHerb extends SMessage{
      * Constructor
      */
 
-    public SMessageGrandmaHerb(){
-        super(MessageType.S_GRANDMAHERB);
-        this.characterName = Characters.GRANDMA_HERB;
+    public SMessageGrandmaherbHerald(Characters characterName){
+        super(MessageType.S_GRANDMAHERBHERALD);
+        this.characterName = characterName;
     }
 
 }

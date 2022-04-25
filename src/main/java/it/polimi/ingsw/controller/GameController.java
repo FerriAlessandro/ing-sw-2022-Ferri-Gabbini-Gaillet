@@ -4,14 +4,10 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Characters;
-import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -191,7 +187,7 @@ public class GameController {
     /**
      * Utility method to check who is the winner
      */
-    private void checkWin(){
+    void checkWin(){
         String winner = game.checkWinner();
 
         if(winner.equals("Tie")){
@@ -362,7 +358,7 @@ public class GameController {
         int playerMaxSteps;
         int numOfSteps;
 
-        if(isExpert)  //TODO: && LA CARTA GIOCATA E' QUELLA DEI PASSI+2
+        if(isExpert && characterController.characterName.equals(Characters.MAGIC_MAILMAN))
                 playerMaxSteps = game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement() + 2;
 
         else playerMaxSteps = game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement();
@@ -392,7 +388,7 @@ public class GameController {
             } catch (TowerWinException e) {
 
                 for (String nickName : nickNames)
-                    playersView.get(nickName).showWinMessage(new SMessageWin(e.getMessage()));
+                   getVirtualView(nickName).showWinMessage(new SMessageWin(e.getMessage()));
                 return;
                 //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
 
@@ -431,8 +427,11 @@ public class GameController {
 
         RMessageCloud cloudMessage = (RMessageCloud) message;
         try {
-            //TODO Character state = default
+            characterController = new CharacterController(this, Characters.NONE); //Reset character controller
             hasPlayedCharacter = false; //Next player can play a character
+            for(CharacterCard c : game.getGameBoard().getCharacters()) //Reset every character card
+                c.setActive(false);
+
             game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             //TODO Aggiorna virtual view
@@ -484,11 +483,28 @@ public class GameController {
     private void elaborateCharacter(Message message) {
 
         RMessageCharacter characterMessage = (RMessageCharacter) message;
-        if(characterMessage.character != null) {
-            characterController = CharacterFactory.create(this, characterMessage.character);
-            characterController.use(characterMessage.nickname);
+
+        characterController = CharacterFactory.create(this, characterMessage.character);
+        characterController.use(characterMessage.nickname);
+
+        switch(gamePhase){ //If the card sent was 'NONE' the phase has been changed and this switch activates, if there was a valid Card the phase hasn't been changed and this switch does Default
+            case MOVE_STUDENTS: {
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMove();
+                break;
+            }
+            case MOVE_MOTHERNATURE:{
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove();
+                break;
+            }
+            case CHOOSE_CLOUD:{
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
+                break;
+            }
+
+            default:
         }
-        else switchPhase();
+
+
 
     }
 
@@ -509,6 +525,10 @@ public class GameController {
             }
             case CHOOSE_CLOUD:{
                 getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
+                break;
+            }
+            case WINNER:{
+                //TODO CHIUDERE TUTTO, C'E' UN VINCITORE ED E' GIA' STATO NOTIFICATO
                 break;
             }
             default:

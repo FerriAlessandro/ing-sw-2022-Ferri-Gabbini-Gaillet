@@ -21,7 +21,9 @@ public enum Characters {
             "put the No Entry tile back onto this card and do not calculate influence on that Island, or place any Towers."),
     MAGIC_MAILMAN("You may move Mother Nature up to 2 additional Islands than is indicated by the Assistant card you've played"),
     SPOILED_PRINCESS("Take 1 Student form this card and place it in your Dining Room. Then, draw a new Student from the" +
-            "Bag and place it on this card");
+            "Bag and place it on this card"),
+
+    NONE("");
 
     private final String effect;
 

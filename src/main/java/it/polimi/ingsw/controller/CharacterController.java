@@ -26,16 +26,13 @@ public class CharacterController {
     }
 
     public void use(String nickName){
-
+        switchPhase();
     }
 
     public void activate(Message message){
 
     }
 
-    public void activate(){
-
-    }
 
     /**
      * Utility method to check if the player using the card has the necessary coins

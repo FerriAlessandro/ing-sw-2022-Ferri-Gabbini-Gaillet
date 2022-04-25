@@ -88,8 +88,18 @@ public class Game extends Observable {
         islandToCheck = gameBoard.moveMotherNature(num);
         if(!islandToCheck.isForbidden()) {
             influenceWinner = gameBoard.checkInfluence(islandToCheck);
-            gameBoard.swapTowers(islandToCheck, influenceWinner);
-            gameBoard.checkForArchipelago(islandToCheck);
+            try {
+                gameBoard.swapTowers(islandToCheck, influenceWinner);
+            } catch(TowerWinException e){
+                notifyObservers();
+                throw e;
+            }
+            try {
+                gameBoard.checkForArchipelago(islandToCheck);
+            }catch(NumOfIslandsException e){
+                notifyObservers();
+                throw e;
+            }
         }
         else {
             getCharacterByName(Characters.GRANDMA_HERB).addNoEntryTile();
@@ -321,6 +331,46 @@ public class Game extends Observable {
                 return character;
         }
         throw new RuntimeException("Character not found");
+    }
+
+    /**
+     * Checks the FULL influence (All students' colors + Towers) on the desired Island and swaps the Towers accordingly to the winner
+     * @param islandToCheck The Island on which to calculate the influence
+     * @return The Color of the Influence-Winner's tower
+     */
+    public void checkInfluence(IslandTile islandToCheck) throws TowerWinException {
+
+        TowerColor winner = gameBoard.checkInfluence(islandToCheck);
+        try {
+            gameBoard.swapTowers(islandToCheck, winner);
+
+        }catch(TowerWinException e){
+            notifyObservers();
+            throw e;
+        }
+        notifyObservers();
+    }
+
+    /**
+     * Checks if an Archipelago has to be created between adjacent Islands
+     * @param currentIsland The island on which the method starts checking
+     */
+    public void checkForArchipelago (IslandTile currentIsland) throws NumOfIslandsException {
+        try {
+            gameBoard.checkForArchipelago(currentIsland);
+        } catch (NumOfIslandsException e) {
+            notifyObservers();
+            throw e;
+        }
+        notifyObservers();
+    }
+
+    /**
+     * Checks the Ownership of the Professors after a student is moved
+     */
+    public void checkProfessorsOwnership(){
+        gameBoard.checkProfessorOwnership();
+        notifyObservers();
     }
 
 

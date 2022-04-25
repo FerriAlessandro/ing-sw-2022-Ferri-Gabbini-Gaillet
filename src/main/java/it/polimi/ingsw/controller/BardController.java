@@ -69,7 +69,7 @@ public class BardController extends CharacterController{
         for(Color color : bardMessage.origin){
             if(diningRoom.getNumStudents(color) < Collections.frequency(bardMessage.origin, color)) //if the user wants to swap more students than he has in the Dining Room
                 ok = false;
-        }
+        }//TODO REMOVE
 
         if(ok){
 
@@ -89,6 +89,7 @@ public class BardController extends CharacterController{
             for(Color student : bardMessage.entrance)
                 try{
                     diningRoom.addStudent(student);
+                    getGame().checkProfessorsOwnership();
                 }catch(FullDestinationException e){
                     e.printStackTrace(); //only if a bug happens
                 }
@@ -97,6 +98,7 @@ public class BardController extends CharacterController{
             gameController.getCharacterByName(Characters.BARD).use();
             switchPhase();
             gameController.hasPlayedCharacter = true;
+            gameController.getCharacterByName(Characters.BARD).setActive(true);
 
         }
 

@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.enumerations.Color;
  * @version 1.0
  */
 
-public class RMessageMonkPrincessRogue extends Message{
+public class RMessageMonkPrincess extends Message{
 
     public Color chosenColor;
     public Characters characterName;
@@ -23,9 +23,9 @@ public class RMessageMonkPrincessRogue extends Message{
      * @param nickName NickName of the Player
      * @param islandIndex Index of the Island on which to move the chosen Student (Case Monk)
      */
-    public RMessageMonkPrincessRogue(Characters characterName, String nickName, int islandIndex, Color color){
+    public RMessageMonkPrincess(Characters characterName, String nickName, int islandIndex, Color color){
 
-        this.type = MessageType.R_MONKPRINCESSROGUE;
+        this.type = MessageType.R_MONKPRINCESS;
         this.chosenColor = color;
         this.characterName = characterName;
         this.nickName = nickName;

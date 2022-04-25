@@ -9,7 +9,7 @@ import java.util.EnumMap;
  * @version 1.0
  */
 
-public class SMessageMonkPrincessRogue extends SMessage{
+public class SMessageMonkPrincess extends SMessage{
 
     public Characters characterName;
     public EnumMap <Color, Integer> colors;
@@ -20,8 +20,8 @@ public class SMessageMonkPrincessRogue extends SMessage{
      *               player's Dining Room (case Rogue)
      * @param characterName Name of the Character Card
      */
-    public SMessageMonkPrincessRogue(EnumMap<Color, Integer> colors, Characters characterName){
-        super(MessageType.S_MONKPRINCESSROGUE);
+    public SMessageMonkPrincess(EnumMap<Color, Integer> colors, Characters characterName){
+        super(MessageType.S_MONKPRINCESS);
         this.colors = new EnumMap<>(colors);
         this.characterName = characterName;
     }

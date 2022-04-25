@@ -5,10 +5,9 @@ import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.DiningRoom;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
-import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.RMessageMonkPrincessRogue;
-import it.polimi.ingsw.network.messages.SMessageMonkPrincessRogue;
+import it.polimi.ingsw.network.messages.RMessageMonkPrincess;
+import it.polimi.ingsw.network.messages.SMessageMonkPrincess;
 
 import java.util.EnumMap;
 /**
@@ -40,7 +39,7 @@ public class SpoiledPrincessController extends CharacterController{
             }
             if (playable) //if the player can play the card ask for the color
                 gameController.getVirtualView(nickName)
-                        .askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
+                        .askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
             else { //if the player cannot play the card, ask if he wants to play another card
                 gameController.sendErrorMessage(nickName, "You cannot play this card, you already filled the Dining Rooms corresponding to this card's colors");
                 gameController.getVirtualView(nickName).showCharacterChoice(gameController.createCharacterMessage());
@@ -61,23 +60,24 @@ public class SpoiledPrincessController extends CharacterController{
     @Override
     public void activate(Message message){
 
-        RMessageMonkPrincessRogue princessMessage = (RMessageMonkPrincessRogue) message;
+        RMessageMonkPrincess princessMessage = (RMessageMonkPrincess) message;
         try{
             getGameBoard().move(princessMessage.chosenColor, gameController.getCharacterByName(Characters.SPOILED_PRINCESS), getGameBoard().getPlayerBoard(getGame().getCurrentPlayer()).getDiningRoom());
-            removeCoins();
-            gameController.getCharacterByName(Characters.SPOILED_PRINCESS).use();
-            getGameBoard().fillCharacter(gameController.getCharacterByName(princessMessage.characterName));
-
+            getGame().checkProfessorsOwnership();
+            getGameBoard().fillCharacter(gameController.getCharacterByName(Characters.SPOILED_PRINCESS));
 
         } catch(FullDestinationException e){
             gameController.sendErrorMessage(princessMessage.nickName, "Your " + princessMessage.chosenColor + "Dining Room is full, please selected another color");
-            gameController.getVirtualView(princessMessage.nickName).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
+            gameController.getVirtualView(princessMessage.nickName).askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
             return;
         }
         catch(EmptyBagException ignored){} //already handled in the ChooseCloud method
 
+        removeCoins();
+        gameController.getCharacterByName(Characters.SPOILED_PRINCESS).use();
         switchPhase();
         gameController.hasPlayedCharacter = true;
+        gameController.getCharacterByName(Characters.SPOILED_PRINCESS).setActive(true);
 
     }
 

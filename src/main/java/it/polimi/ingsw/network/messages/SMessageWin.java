@@ -7,9 +7,9 @@ package it.polimi.ingsw.network.messages;
  */
 public class SMessageWin extends SMessage{
 
-    public String winner;
-    public SMessageWin(String winnerNickname){
+    public String winMessagee;
+    public SMessageWin(String winMessage){
         super(MessageType.S_WIN);
-        winner = winnerNickname;
+        this.winMessagee = winMessage;
     }
 }

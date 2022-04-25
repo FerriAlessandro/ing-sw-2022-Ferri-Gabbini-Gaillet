@@ -19,6 +19,8 @@ public class CharacterCard extends TileWithStudents{
     private boolean increased;
     private int noEntryTiles;
     private int maxStudents;
+    private boolean isActive = false;
+    private Color forbiddenColor;
 
     /**
      * Class constructor
@@ -67,12 +69,10 @@ public class CharacterCard extends TileWithStudents{
       * @return True if the remove was successful, false if there were no 'No Entry Tiles' to remove
      */
 
-    public boolean removeNoEntryTile (){ //if there are no tiles return false... we avoid throwing an exception
+    public void removeNoEntryTile (){ //if there are no tiles return false... we avoid throwing an exception
         if(noEntryTiles > 0) {
-        noEntryTiles--;
-        return true;
-    }
-        else return false;
+            noEntryTiles--;
+        }
 }
 
     /**
@@ -128,6 +128,35 @@ public class CharacterCard extends TileWithStudents{
         return name.equals(Characters.MONK) || name.equals(Characters.SPOILED_PRINCESS) || name.equals(Characters.JESTER);
     }
 
+    /**
+     * @return True if the card is currently active, false otherwise
+     */
+    public boolean isActive(){
+        return isActive;
+    }
+
+    /**
+     * Sets the card as active or inactive
+     * @param active True if is active, false if it's not
+     */
+    public void setActive(boolean active){
+        this.isActive = active;
+    }
+
+    /**
+     * Sets the color to ignore in the influence check (only if the card is Mushroom Picker)
+     * @param color The color to ignore in the influence check
+     */
+    public void setForbiddenColor(Color color){
+        this.forbiddenColor = color;
+    }
+
+    /**
+     * @return The color to ignore in the influence check (Only if the card is Mushroom Picker)
+     */
+    public Color getForbiddenColor(){
+        return this.forbiddenColor;
+    }
 
 
 }

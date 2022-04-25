@@ -62,6 +62,11 @@ public class CharacterFactory {
                 characterController = new RogueController(gameController, Characters.ROGUE);
                 break;
             }
+            case NONE:{
+                characterController = new CharacterController(gameController, Characters.NONE);
+                break;
+            }
+
             default: throw new RuntimeException("No corresponding character name");
 
         }

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.RMessageGrandmaHerb;
-import it.polimi.ingsw.network.messages.SMessageGrandmaHerb;
+import it.polimi.ingsw.network.messages.RMessageGrandmaherbHerald;
+import it.polimi.ingsw.network.messages.SMessageGrandmaherbHerald;
 
 /**
  * This class represents the Character Controller when the Grandma Herb Character Card is played
@@ -26,7 +26,7 @@ public class GrandmaHerbController extends CharacterController{
     public void use (String nickName){
         if(checkCoin()){
             if(gameController.getCharacterByName(Characters.GRANDMA_HERB).getNoEntryTiles() > 0)
-                gameController.getVirtualView(nickName).askCharacterMove(new SMessageGrandmaHerb());
+                gameController.getVirtualView(nickName).askCharacterMove(new SMessageGrandmaherbHerald(Characters.GRANDMA_HERB));
             else {
                 gameController.sendErrorMessage(nickName, "There are 0 No Entry Tiles available, please select another Character Card");
                 gameController.getVirtualView(nickName).showCharacterChoice(gameController.createCharacterMessage());
@@ -42,13 +42,13 @@ public class GrandmaHerbController extends CharacterController{
      */
     @Override
     public void activate(Message message){
-        RMessageGrandmaHerb grandmaHerbMessage = (RMessageGrandmaHerb) message;
+        RMessageGrandmaherbHerald grandmaHerbMessage = (RMessageGrandmaherbHerald) message;
 
         int desiredIsland = grandmaHerbMessage.islandIndex - 1;
         int lastIslandIndex = getGameBoard().getIslands().size() - 1;
         if(lastIslandIndex < desiredIsland){
             gameController.sendErrorMessage(grandmaHerbMessage.nickName, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
-            gameController.getVirtualView(grandmaHerbMessage.nickName).askCharacterMove(new SMessageGrandmaHerb());
+            gameController.getVirtualView(grandmaHerbMessage.nickName).askCharacterMove(new SMessageGrandmaherbHerald(Characters.GRANDMA_HERB));
             return;
         }
         getGameBoard().getIslands().get(desiredIsland).addNoEntry();
@@ -57,5 +57,6 @@ public class GrandmaHerbController extends CharacterController{
         gameController.getCharacterByName(Characters.GRANDMA_HERB).use();
         switchPhase();
         gameController.hasPlayedCharacter = true;
+        gameController.getCharacterByName(Characters.GRANDMA_HERB).setActive(true);
     }
 }

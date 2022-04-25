@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Represents the game-board.
  * @author A.G. Gaillet
- * @version 1.3
+ * @version 2.0
  * @serial
  * @see CloudTile
  * @see IslandTile
@@ -31,7 +31,7 @@ public class GameBoard implements Serializable {
     private final HashMap<Player, PlayerBoard> playerBoards;
     private final EnumMap<Color, Player> professors;
     private final Bag bag;
-    private final int maxCharacters = 3;
+    private final int maxCharacters;
     private static final int maxNumIslands = 12;
     private static final long serialVersionUID = 1L;
 
@@ -92,6 +92,7 @@ public class GameBoard implements Serializable {
 
         professors = new EnumMap<>(Color.class);
         characters = new ArrayList<>();
+        maxCharacters = 3;
     }
 
     /**
@@ -105,6 +106,7 @@ public class GameBoard implements Serializable {
         this.playerBoards = playerBoards;
         this.professors = professors;
         this.bag = bag;
+        maxCharacters = 3;
     }
 
     /**
@@ -246,6 +248,8 @@ public class GameBoard implements Serializable {
         }
     }
 
+
+
     /**
      * Moves all students from the selected {@link CloudTile} to the {@link Entrance} of the given {@link Player}.
      *
@@ -384,20 +388,31 @@ public class GameBoard implements Serializable {
     /**
      * Reassigns all professors to their rightful owner.
      */
-    private void checkProfessorOwnership() {
-        for (Color color : Color.values()) {
-            if (professors.containsKey(color)) {
-                Player owner = professors.get(color);
-                for (Player player : playerBoards.keySet()) {
-                    if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > playerBoards.get(owner).getDiningRoom().getNumStudents(color))
-                        owner = player;
+    public void checkProfessorOwnership() {
+        boolean farmerCharacterCardIsActive = false;
+        if (characters != null) {
+            for (CharacterCard c : characters)
+                if (c.getName().equals(Characters.FARMER) && c.isActive()) {
+                    farmerCharacterCardIsActive = true;
+                    break;
                 }
-                professors.put(color, owner);
-            } else {
-                for (Player player : playerBoards.keySet()) {
-                    if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > 0) {
-                        professors.put(color, player);
-                        checkProfessorOwnership();
+
+            for (Color color : Color.values()) {
+                if (professors.containsKey(color)) {
+                    Player owner = professors.get(color);
+                    for (Player player : playerBoards.keySet()) {
+                        if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > playerBoards.get(owner).getDiningRoom().getNumStudents(color) ||
+                                (farmerCharacterCardIsActive && playerBoards.get(player).getDiningRoom().getNumStudents(color) == playerBoards.get(owner).getDiningRoom().getNumStudents(color) &&
+                                        player.isPlayerTurn()))
+                            owner = player;
+                    }
+                    professors.put(color, owner);
+                } else {
+                    for (Player player : playerBoards.keySet()) {
+                        if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > 0) {
+                            professors.put(color, player);
+                            checkProfessorOwnership();
+                        }
                     }
                 }
             }
@@ -453,17 +468,41 @@ public class GameBoard implements Serializable {
      * @return the TowerColor of the owner of the island (can be the previous owner!)
      * @throws RuntimeException when there isn't a player with more influence than any other player.
      */
-    protected TowerColor checkInfluence(IslandTile islandToCheck) throws RuntimeException {
+    public TowerColor checkInfluence(IslandTile islandToCheck) throws RuntimeException {
         //playersInfluence is a map that matches every player with his actual influence on the islandToCheck
         HashMap<Player, Integer> playersInfluence = new HashMap<>();
-        for (Player p : playerBoards.keySet())
-            playersInfluence.put(p, 0); // set each player's influence to 0
+        boolean knightCharacterCardIsActive = false;
+        boolean centaurCharacterCardIsActive = false;
+        boolean mushroomPickerCharacterCardIsActive = false;
+        Color forbiddenColor = null;
+
+        if(characters != null){
+            for(CharacterCard c : characters)
+                if(c.getName().equals(Characters.KNIGHT) && c.isActive())
+                    knightCharacterCardIsActive = true;
+                else if(c.getName().equals(Characters.CENTAUR) && c.isActive())
+                    centaurCharacterCardIsActive = true;
+                else if(c.getName().equals(Characters.MUSHROOM_PICKER) && c.isActive()) {
+                    forbiddenColor = c.getForbiddenColor();
+                    mushroomPickerCharacterCardIsActive = true;
+                }
+        }
+
+        for (Player p : playerBoards.keySet()) {
+            playersInfluence.put(p, 0);// set each player's influence to 0
+            if(knightCharacterCardIsActive && p.isPlayerTurn())
+                playersInfluence.put(p, 2);
+        }
+
 
         for (Color color : Color.values())
-            computeInfByColor(color, islandToCheck, playersInfluence); //compute the first part of the influence
+            if(!mushroomPickerCharacterCardIsActive || (!color.equals(forbiddenColor)))
+                computeInfByColor(color, islandToCheck, playersInfluence); //compute the first part of the influence
+
+        if(centaurCharacterCardIsActive)
+            return computeMaxInfluence(playersInfluence);
 
         computeInfByTower(islandToCheck, playersInfluence); //compute the second part of the influence
-
         return computeMaxInfluence(playersInfluence);
     }
 

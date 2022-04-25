@@ -4,8 +4,8 @@ import it.polimi.ingsw.exceptions.EmptyBagException;
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.RMessageMonkPrincessRogue;
-import it.polimi.ingsw.network.messages.SMessageMonkPrincessRogue;
+import it.polimi.ingsw.network.messages.RMessageMonkPrincess;
+import it.polimi.ingsw.network.messages.SMessageMonkPrincess;
 
 import java.util.EnumMap;
 
@@ -32,7 +32,7 @@ public class MonkController extends CharacterController{
     public void use(String nickName){
         if(checkCoin()) //If the player has enough coin
             gameController.getVirtualView(nickName)
-                .askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK));
+                .askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK));
         else {//else ask for a new character card
             chooseAnotherCard(nickName);
 
@@ -48,13 +48,13 @@ public class MonkController extends CharacterController{
      */
     @Override
     public void activate(Message message){
-        RMessageMonkPrincessRogue monkMessage = (RMessageMonkPrincessRogue) message;
+        RMessageMonkPrincess monkMessage = (RMessageMonkPrincess) message;
 
         int desiredIslandIndex = monkMessage.islandIndex-1;
         int lastIslandIndex = getGameBoard().getIslands().size()-1;
         if(lastIslandIndex < desiredIslandIndex){
             gameController.sendErrorMessage(monkMessage.nickName, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
-            gameController.getVirtualView(monkMessage.nickName).askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK)));
+            gameController.getVirtualView(monkMessage.nickName).askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK));
             return;
         }
         try {
@@ -66,5 +66,6 @@ public class MonkController extends CharacterController{
 
         switchPhase();
         gameController.hasPlayedCharacter = true;
+        gameController.getCharacterByName(Characters.MONK).setActive(true);
     }
 }

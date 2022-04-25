@@ -3,10 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.DiningRoom;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.enumerations.Characters;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.MessageType;
-import it.polimi.ingsw.network.messages.RMessageMonkPrincessRogue;
-import it.polimi.ingsw.network.messages.SMessageMonkPrincessRogue;
+import it.polimi.ingsw.network.messages.*;
 
 import java.util.EnumMap;
 
@@ -35,7 +32,7 @@ public class RogueController extends CharacterController{
 
         if(checkCoin()){
             gameController.getVirtualView(nickName)
-                    .askCharacterMove(new SMessageMonkPrincessRogue(new EnumMap<>(gameController.getCharacterByName(Characters.ROGUE).getState()), Characters.ROGUE));
+                    .askCharacterMove(new SMessageRogueMushroomPicker(Characters.ROGUE));
         }
         else{
             chooseAnotherCard(nickName);
@@ -52,7 +49,7 @@ public class RogueController extends CharacterController{
     @Override
     public void activate(Message message){
 
-        RMessageMonkPrincessRogue rogueMessage = (RMessageMonkPrincessRogue) message;
+        RMessageRogueMushroomPicker rogueMessage = (RMessageRogueMushroomPicker) message;
         DiningRoom diningRoom;
         int numOfRemovals = 0;
         for(Player p : getGame().getPlayers()){
@@ -74,6 +71,7 @@ public class RogueController extends CharacterController{
         gameController.getCharacterByName(Characters.ROGUE).use();
         switchPhase();
         gameController.hasPlayedCharacter = true;
+        gameController.getCharacterByName(Characters.ROGUE).setActive(true);
     }
 
 
