@@ -88,4 +88,15 @@ public class CharacterController {
     public PlayerBoard getCurrentPlayerBoard(){
         return getGameBoard().getPlayerBoard(getCurrentPlayer());
     }
+
+    /**
+     * This method handles the coin removal, cost increase and phase switch after a Character Card is played
+     */
+    public void sideEffects(){
+        removeCoins();
+        gameController.getCharacterByName(characterName).use();
+        switchPhase();
+        gameController.hasPlayedCharacter = true;
+        gameController.getCharacterByName(characterName).setActive(true);
+    }
 }

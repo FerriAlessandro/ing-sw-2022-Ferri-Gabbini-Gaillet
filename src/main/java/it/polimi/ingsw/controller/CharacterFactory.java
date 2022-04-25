@@ -19,7 +19,7 @@ public class CharacterFactory {
                 break;
             }
             case FARMER: {
-                characterController = new FarmerController(gameController, Characters.FARMER);
+                characterController = new InfluenceController(gameController, Characters.FARMER);
                 break;
             }
             case HERALD: {
@@ -27,7 +27,7 @@ public class CharacterFactory {
                 break;
             }
             case MAGIC_MAILMAN: {
-                characterController = new MagicMailmanController(gameController, Characters.MAGIC_MAILMAN);
+                characterController = new InfluenceController(gameController, Characters.MAGIC_MAILMAN);
                 break;
             }
             case GRANDMA_HERB: {
@@ -35,7 +35,7 @@ public class CharacterFactory {
                 break;
             }
             case CENTAUR: {
-                characterController = new CentaurController(gameController, Characters.CENTAUR);
+                characterController = new InfluenceController(gameController, Characters.CENTAUR);
                 break;
             }
             case JESTER: {
@@ -47,7 +47,7 @@ public class CharacterFactory {
                 break;
             }
             case KNIGHT: {
-                characterController = new KnightController(gameController, Characters.KNIGHT);
+                characterController = new InfluenceController(gameController, Characters.KNIGHT);
                 break;
             }
             case SPOILED_PRINCESS: {

@@ -67,11 +67,7 @@ public class RogueController extends CharacterController{
         }
         getGameBoard().getBag().addStudents(numOfRemovals, rogueMessage.chosenColor);
         gameController.broadcastMessage("ROGUE Card has been played, 3 "+rogueMessage.chosenColor+" Students were removed from your Dining Room", MessageType.S_INVALID);
-        removeCoins();
-        gameController.getCharacterByName(Characters.ROGUE).use();
-        switchPhase();
-        gameController.hasPlayedCharacter = true;
-        gameController.getCharacterByName(Characters.ROGUE).setActive(true);
+        sideEffects();
     }
 
 

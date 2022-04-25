@@ -73,11 +73,7 @@ public class SpoiledPrincessController extends CharacterController{
         }
         catch(EmptyBagException ignored){} //already handled in the ChooseCloud method
 
-        removeCoins();
-        gameController.getCharacterByName(Characters.SPOILED_PRINCESS).use();
-        switchPhase();
-        gameController.hasPlayedCharacter = true;
-        gameController.getCharacterByName(Characters.SPOILED_PRINCESS).setActive(true);
+        sideEffects();
 
     }
 

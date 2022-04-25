@@ -58,14 +58,10 @@ public class MonkController extends CharacterController{
             return;
         }
         try {
-            removeCoins();
-            gameController.getCharacterByName(Characters.MONK).use();
             getGameBoard().move(monkMessage.chosenColor, gameController.getCharacterByName(Characters.MONK), getGameBoard().getIslands().get(desiredIslandIndex));
             getGameBoard().fillCharacter(gameController.getCharacterByName(Characters.MONK));
         }catch(FullDestinationException | EmptyBagException ignored){} //Islands can't be full and empty bag is handled when the clouds are chosen
 
-        switchPhase();
-        gameController.hasPlayedCharacter = true;
-        gameController.getCharacterByName(Characters.MONK).setActive(true);
+        sideEffects();
     }
 }

@@ -94,11 +94,7 @@ public class BardController extends CharacterController{
                     e.printStackTrace(); //only if a bug happens
                 }
 
-            removeCoins();
-            gameController.getCharacterByName(Characters.BARD).use();
-            switchPhase();
-            gameController.hasPlayedCharacter = true;
-            gameController.getCharacterByName(Characters.BARD).setActive(true);
+            sideEffects();
 
         }
 

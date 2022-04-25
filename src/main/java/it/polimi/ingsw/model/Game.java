@@ -336,7 +336,6 @@ public class Game extends Observable {
     /**
      * Checks the FULL influence (All students' colors + Towers) on the desired Island and swaps the Towers accordingly to the winner
      * @param islandToCheck The Island on which to calculate the influence
-     * @return The Color of the Influence-Winner's tower
      */
     public void checkInfluence(IslandTile islandToCheck) throws TowerWinException {
 

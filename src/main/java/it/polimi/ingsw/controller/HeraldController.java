@@ -9,6 +9,11 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.RMessageGrandmaherbHerald;
 import it.polimi.ingsw.network.messages.SMessageGrandmaherbHerald;
 import it.polimi.ingsw.network.messages.SMessageWin;
+/**
+ * This class represents the Character Controller when the Herald Character Card is played
+ * @author Alessandro F.
+ * @version 1.0
+ */
 
 public class HeraldController extends CharacterController{
 
@@ -16,7 +21,10 @@ public class HeraldController extends CharacterController{
         super(gameController, characterName);
     }
 
-
+    /**
+     * This method checks if the user has enough coin to play the Herald; if he does, a message requesting for and island index is sent
+     * @param nickName The NickName of the player
+     */
     @Override
     public void use(String nickName){
 
@@ -26,6 +34,11 @@ public class HeraldController extends CharacterController{
         else chooseAnotherCard(nickName);
     }
 
+    /**
+     * This method is invoked when the effect is activated. The influence is calculated on the island selected by the player; if the index sent is incorrect, a message asking
+     * for a new index is sent to the Player
+     * @param message The Message containing the index of the island on which to calculate the influence
+     */
     @Override
     public void activate (Message message){
 
@@ -63,11 +76,7 @@ public class HeraldController extends CharacterController{
 
         }
 
-        removeCoins();
-        gameController.getCharacterByName(Characters.HERALD).use();
-        switchPhase();
-        gameController.hasPlayedCharacter = true;
-        gameController.getCharacterByName(Characters.HERALD).setActive(true);
+        sideEffects();
     }
 }
 

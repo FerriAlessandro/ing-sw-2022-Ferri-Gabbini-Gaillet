@@ -53,10 +53,6 @@ public class GrandmaHerbController extends CharacterController{
         }
         getGameBoard().getIslands().get(desiredIsland).addNoEntry();
         gameController.getCharacterByName(Characters.GRANDMA_HERB).removeNoEntryTile();
-        removeCoins();
-        gameController.getCharacterByName(Characters.GRANDMA_HERB).use();
-        switchPhase();
-        gameController.hasPlayedCharacter = true;
-        gameController.getCharacterByName(Characters.GRANDMA_HERB).setActive(true);
+        sideEffects();
     }
 }
