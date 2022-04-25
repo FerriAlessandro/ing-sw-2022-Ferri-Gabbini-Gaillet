@@ -81,11 +81,11 @@ public class Game extends Observable {
      * @throws TowerWinException Thrown if a player placed all of his towers
      * @throws NumOfIslandsException Thrown if there are only 3 islands left
      */
-
     public void moveMotherNature(int num) throws TowerWinException, NumOfIslandsException {
         IslandTile islandToCheck;
         TowerColor influenceWinner;
         islandToCheck = gameBoard.moveMotherNature(num);
+<<<<<<< HEAD
         if(!islandToCheck.isForbidden()) {
             influenceWinner = gameBoard.checkInfluence(islandToCheck);
             try {
@@ -105,6 +105,11 @@ public class Game extends Observable {
             getCharacterByName(Characters.GRANDMA_HERB).addNoEntryTile();
             islandToCheck.removeNoEntry();
         }
+=======
+        influenceWinner = gameBoard.checkInfluence(islandToCheck);
+        gameBoard.swapTowers(islandToCheck, influenceWinner);
+        gameBoard.checkForArchipelago(islandToCheck);
+>>>>>>> main
 
         notifyObservers();
     }
@@ -191,6 +196,7 @@ public class Game extends Observable {
         gameBoard.chooseCloud(cloud, getCurrentPlayer());
         endPlayerTurn(getCurrentPlayer());
 
+        notifyObservers();
     }
 
     /**

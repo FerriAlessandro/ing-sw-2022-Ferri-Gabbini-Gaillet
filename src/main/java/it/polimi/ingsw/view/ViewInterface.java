@@ -95,4 +95,10 @@ public interface ViewInterface {
      * @return {@link String} nickname of the associated player
      */
     String getNickName();
+
+    /**
+     * Ask additional information on chosen character effect when necessary.
+     */
+    void askCharacterMove(SMessage message);
+
 }

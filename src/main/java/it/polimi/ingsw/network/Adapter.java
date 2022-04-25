@@ -4,7 +4,6 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 
 /**
  * This class masks the network implementation to the {@link ViewInterface} on the client side.
@@ -93,7 +92,7 @@ public class Adapter {
                 view.showCurrentPlayer(messageCurrentPlayer);
                 break;
             default:
-                new InvalidParameterException().printStackTrace();
+                new UnsupportedOperationException().printStackTrace();
                 break;
         }
     }
