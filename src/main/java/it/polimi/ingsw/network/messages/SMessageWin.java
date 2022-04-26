@@ -6,15 +6,10 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessageWin extends SMessage{
-<<<<<<< HEAD
 
-    public String winMessagee;
+    public String winMessage;
     public SMessageWin(String winMessage){
-=======
-    public String winner;
-    public SMessageWin(String winnerNickname){
->>>>>>> main
         super(MessageType.S_WIN);
-        this.winMessagee = winMessage;
+        this.winMessage = winMessage;
     }
 }

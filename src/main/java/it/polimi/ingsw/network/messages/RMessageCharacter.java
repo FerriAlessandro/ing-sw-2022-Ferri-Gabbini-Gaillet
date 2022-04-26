@@ -7,19 +7,14 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class RMessageCharacter extends Message{
+public class RMessageCharacter extends Message {
     public Characters character;
     public String nickname;
-    public RMessageCharacter(Characters character, String nickname){
-<<<<<<< HEAD
+
+    public RMessageCharacter(Characters character, String nickname) {
         this.type = MessageType.R_CHARACTER;
         this.character = character;
         this.nickname = nickname;
     }
 }
-=======
-        this.character = character;
-        this.nickname = nickname;
-    }
-}
->>>>>>> main
+
