@@ -434,7 +434,6 @@ public class GameController {
 
             game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-            //TODO Aggiorna virtual view
 
 
             if(isExpert){
@@ -460,14 +459,12 @@ public class GameController {
 
             if(isLastRound) {
                 checkWin();
-                //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
-
             }
             else{
                 setupNewRound();
                 broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
                 gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
-                //TODO AGGIORNA VIEW
+                game.notifyObservers();
                 getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
             }
         }
@@ -479,7 +476,6 @@ public class GameController {
      * and asks the parameters required by the card to the Player
      * @param message The message containing the chosen Character Card
      */
-
     private void elaborateCharacter(Message message) {
 
         RMessageCharacter characterMessage = (RMessageCharacter) message;

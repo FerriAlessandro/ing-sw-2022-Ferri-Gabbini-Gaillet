@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.MessageType;
 
 /**
  * This class represents the Character Controller, it manages Characters effects in Expert Mode
@@ -98,5 +99,6 @@ public class CharacterController {
         switchPhase();
         gameController.hasPlayedCharacter = true;
         gameController.getCharacterByName(characterName).setActive(true);
+        gameController.broadcastMessage("The "+ characterName +"card has been played!", MessageType.S_INVALID);
     }
 }
