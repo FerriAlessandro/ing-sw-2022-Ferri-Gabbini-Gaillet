@@ -15,6 +15,7 @@ public class Adapter {
     private ClientSocket socket;
     private Message previousMessage = new SMessage(MessageType.S_ERROR);
     private String currentPlayer;
+    private boolean gameEnded = false;
 
     /**
      * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
@@ -43,13 +44,18 @@ public class Adapter {
         }
         switch (message.getType()) {
             case DISCONNECTED:
-                view.showDisconnectionMessage();
+                if(!gameEnded)
+                    view.showDisconnectionMessage();
                 break;
             case S_GAMESTATE:
                 view.showBoard((SMessageGameState) message);
                 break;
             case S_WIN:
                 view.showWinMessage((SMessageWin) message);
+                try{
+                    socket.sendMessage(new RMessageDisconnect());
+                }catch (IOException ignored){}
+                gameEnded = true;
                 break;
             case S_LOBBY:
                 view.showLobby((SMessageLobby) message);

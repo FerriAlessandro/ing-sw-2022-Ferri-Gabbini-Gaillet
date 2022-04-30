@@ -462,8 +462,6 @@ public class GameController {
 
             if(isLastRound) {
                 checkWin();
-                //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
-
             }
             else{
                 setupNewRound();
@@ -481,7 +479,6 @@ public class GameController {
      * and asks the parameters required by the card to the Player
      * @param message The message containing the chosen Character Card
      */
-
     private void elaborateCharacter(Message message) {
 
         RMessageCharacter characterMessage = (RMessageCharacter) message;

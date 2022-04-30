@@ -6,6 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessageWin extends SMessage{
+
     public String winMessage;
     public SMessageWin(String winMessage){
         super(MessageType.S_WIN);

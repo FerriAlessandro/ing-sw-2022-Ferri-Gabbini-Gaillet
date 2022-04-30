@@ -128,14 +128,15 @@ public class ClientHandler extends Thread{
         System.out.println(clientSocket.getInetAddress() + " is being disconnected");
 
         try{
+            out.flush();
             clientSocket.close();
             if (playerNickname != null) {
                 controller.playerDisconnected(playerNickname);
             }
-            Thread.currentThread().interrupt();
         } catch (Exception e){
             e.printStackTrace();
         }
+        Thread.currentThread().interrupt();
     }
 
     /**
