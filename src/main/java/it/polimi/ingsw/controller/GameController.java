@@ -7,9 +7,8 @@ import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 /**
  * This class represents the Game Controller, which is the one that transforms a user message into an action in the Game
@@ -42,7 +41,6 @@ public class GameController {
         this.numOfPlayers = numOfPlayers;
         this.isExpert = isExpert;
         this.hasPlayedCharacter = false;
-
 
     }
 
@@ -84,7 +82,14 @@ public class GameController {
             if (playersView.size() == numOfPlayers) {
                 game = new Game(nickNames);
                 gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
-
+                if(isExpert){
+                    ArrayList<Characters> characters = new ArrayList<>(List.of(Characters.values()));
+                    for(int i=0;i<3;i++){
+                        Collections.shuffle(characters);
+                        game.getGameBoard().addCharacterCard(characters.get(0));
+                        characters.remove(0);
+                    }
+                }
             }
 
         }
@@ -324,7 +329,6 @@ public class GameController {
             return;
 
         }
-        //TODO : MESSAGGIO PER REFRESH VIEW?
         numOfMoves += 1;
 
         if(numOfMoves == numOfPlayers + 1){ //Already moved 3 (or 4) pieces
@@ -401,7 +405,6 @@ public class GameController {
 
             }
 
-            //TODO AGGIORNA LA VIEW DEI GIOCATORI
 
             if(isExpert && !hasPlayedCharacter) {
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_3;
@@ -434,7 +437,6 @@ public class GameController {
 
             game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-            //TODO Aggiorna virtual view
 
 
             if(isExpert){
@@ -467,7 +469,7 @@ public class GameController {
                 setupNewRound();
                 broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
                 gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
-                //TODO AGGIORNA VIEW
+                game.notifyObservers(); //Notifies the view in case the round is over
                 getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
             }
         }

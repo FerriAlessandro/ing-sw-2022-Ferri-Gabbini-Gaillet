@@ -85,7 +85,6 @@ public class Game extends Observable {
         IslandTile islandToCheck;
         TowerColor influenceWinner;
         islandToCheck = gameBoard.moveMotherNature(num);
-<<<<<<< HEAD
         if(!islandToCheck.isForbidden()) {
             influenceWinner = gameBoard.checkInfluence(islandToCheck);
             try {
@@ -105,11 +104,6 @@ public class Game extends Observable {
             getCharacterByName(Characters.GRANDMA_HERB).addNoEntryTile();
             islandToCheck.removeNoEntry();
         }
-=======
-        influenceWinner = gameBoard.checkInfluence(islandToCheck);
-        gameBoard.swapTowers(islandToCheck, influenceWinner);
-        gameBoard.checkForArchipelago(islandToCheck);
->>>>>>> main
 
         notifyObservers();
     }

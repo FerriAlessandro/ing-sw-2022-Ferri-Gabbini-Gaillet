@@ -8,7 +8,6 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.RMessageJesterBard;
 import it.polimi.ingsw.network.messages.SMessageJesterBard;
 
-import java.util.Collections;
 import java.util.EnumMap;
 
 /**
@@ -39,7 +38,7 @@ public class BardController extends CharacterController{
                 if(diningRoom.getNumStudents(color)>0)
                     playable = true;
             }
-            if(playable) {  //If at lest one swap is possible the card is playable
+            if(playable) {  //If at least one swap is possible the card is playable
                 gameController.getVirtualView(nickName)
                         .askCharacterMove(new SMessageJesterBard(
                                 new EnumMap<>(getCurrentPlayerBoard().getDiningRoom().getState()),
@@ -65,49 +64,34 @@ public class BardController extends CharacterController{
 
         RMessageJesterBard bardMessage = (RMessageJesterBard) message;
         DiningRoom diningRoom = getCurrentPlayerBoard().getDiningRoom();
-        boolean ok = true;
-        for(Color color : bardMessage.origin){
-            if(diningRoom.getNumStudents(color) < Collections.frequency(bardMessage.origin, color)) //if the user wants to swap more students than he has in the Dining Room
-                ok = false;
-        }//TODO REMOVE
 
-        if(ok){
 
-            for(Color student : bardMessage.origin)
-                diningRoom.removeStudent(student);
+        for(Color student : bardMessage.origin)
+            diningRoom.removeStudent(student);
 
-            for(Color student : bardMessage.entrance)
-                getCurrentPlayerBoard().getEntrance().removeStudent(student);
+        for(Color student : bardMessage.entrance)
+            getCurrentPlayerBoard().getEntrance().removeStudent(student);
 
-            for(Color student : bardMessage.origin)
-                try{
-                    getCurrentPlayerBoard().getEntrance().addStudent(student);
-                }catch(FullDestinationException e){
-                    e.printStackTrace(); //only if a bug happens
-                }
+        for(Color student : bardMessage.origin)
+            try{
+                getCurrentPlayerBoard().getEntrance().addStudent(student);
+            }catch(FullDestinationException e){
+                e.printStackTrace(); //only if a bug happens
+            }
 
-            for(Color student : bardMessage.entrance)
-                try{
-                    diningRoom.addStudent(student);
-                    getGame().checkProfessorsOwnership();
-                }catch(FullDestinationException e){
-                    e.printStackTrace(); //only if a bug happens
-                }
+        for(Color student : bardMessage.entrance)
+            try{
+                diningRoom.addStudent(student);
+                getGame().checkProfessorsOwnership();
+            }catch(FullDestinationException e){
+                e.printStackTrace(); //only if a bug happens
+            }
 
-            sideEffects();
-
-        }
-
-        else{
-            gameController.sendErrorMessage(bardMessage.nickName, "You don't have enough students in the dining room, please select another color");
-            gameController.getVirtualView(bardMessage.nickName)
-                    .askCharacterMove(new SMessageJesterBard(
-                            new EnumMap<>(getCurrentPlayerBoard().getDiningRoom().getState()),
-                            new EnumMap<>(getCurrentPlayerBoard().getEntrance().getState()),
-                            Characters.BARD));
-
-        }
-
+        sideEffects();
 
     }
+
+
+
 }
+

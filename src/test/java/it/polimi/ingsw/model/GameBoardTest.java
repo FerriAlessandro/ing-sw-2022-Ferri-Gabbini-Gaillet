@@ -423,16 +423,25 @@ class GameBoardTest {
 
         int oldSize = bg.numRemaining();
 
-        gb.addCharacterCard(Characters.JESTER, 1);
+        gb.addCharacterCard(Characters.JESTER);
 
         assertEquals(oldSize, bg.numRemaining() + gb.getCharacters().get(0).getNumStudents()); //Old bag size == new bag size + number of students on the card
 
         oldSize = bg.numRemaining();
-        gb.addCharacterCard(Characters.ROGUE, 1);
+        gb.addCharacterCard(Characters.ROGUE);
 
         assertEquals(oldSize, bg.numRemaining()); //After adding a non-students-containing card, the size of the bag remains the same
 
+    }
 
+    @Test
+    @DisplayName("Tests if the method fillCharacter works properly")
+    public void fillCharacterTest() throws EmptyBagException{
+
+        gb.addCharacterCard(Characters.JESTER);
+        assertEquals(6, characters.get(0).getNumStudents());
+        gb.fillCharacter(characters.get(0));
+        assertEquals(7, characters.get(0).getNumStudents());
 
     }
 }

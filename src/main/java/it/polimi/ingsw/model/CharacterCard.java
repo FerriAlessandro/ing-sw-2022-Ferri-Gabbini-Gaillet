@@ -25,13 +25,12 @@ public class CharacterCard extends TileWithStudents{
     /**
      * Class constructor
      * @param name Name of the chosen Character
-     * @param cost Cost of the Character
      */
-    public CharacterCard(Characters name, int cost){
+    public CharacterCard(Characters name){
 
         super();
         this.name = name;
-        this.cost = cost;
+        this.cost = name.getCost();
         this.increased = false;
         this.maxStudents = 0;
         if(name.equals(Characters.GRANDMA_HERB))
@@ -66,7 +65,6 @@ public class CharacterCard extends TileWithStudents{
 
     /**
      * Removes the No Entry Tiles from the card (if the Character is Grandma Herb)
-      * @return True if the remove was successful, false if there were no 'No Entry Tiles' to remove
      */
 
     public void removeNoEntryTile (){ //if there are no tiles return false... we avoid throwing an exception

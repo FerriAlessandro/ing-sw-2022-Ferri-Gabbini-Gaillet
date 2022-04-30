@@ -518,13 +518,14 @@ public class GameBoard implements Serializable {
     /**
      * Adds the chosen Character Card to the Board
      * @param name Name of the chosen Character
-     * @param cost Cost of the chosen Character
      */
-    public void addCharacterCard(Characters name, int cost) throws EmptyBagException {
+    public void addCharacterCard(Characters name) {
         if(characters.size() < maxCharacters) {
-            CharacterCard card = new CharacterCard(name, cost);
+            CharacterCard card = new CharacterCard(name);
             if (card.containsStudents())
-                card.setStudents(bag);
+                try {
+                    card.setStudents(bag);
+                }catch(EmptyBagException ignored){}; //Can't be empty when initializing the characters
             characters.add(card);
         }
     }
@@ -550,5 +551,4 @@ public class GameBoard implements Serializable {
         } catch (FullDestinationException ignored) {}
     }
 }
-//TODO TEST FILL CHARACTER
 

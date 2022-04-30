@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 import org.junit.jupiter.api.*;
 
@@ -239,10 +240,19 @@ class GameTest {
         assertNotEquals(game.checkWinner(), p1.getNickName());
     }
 
+    @Test
+    @DisplayName("Tests if the method 'GetCharacterByName' works properly")
+    public void TestGetCharacterByName() throws EmptyBagException {
 
+        game.getGameBoard().addCharacterCard(Characters.JESTER);
+        game.getGameBoard().addCharacterCard(Characters.GRANDMA_HERB);
+        game.getGameBoard().addCharacterCard(Characters.MONK);
 
+        assertEquals(game.getCharacterByName(Characters.JESTER), game.getGameBoard().getCharacters().get(0));
+        assertSame(game.getCharacterByName(Characters.JESTER), game.getGameBoard().getCharacters().get(0));
+        assertThrows(RuntimeException.class, ()-> game.getCharacterByName(Characters.ROGUE));
 
-
+    }
 
 
 

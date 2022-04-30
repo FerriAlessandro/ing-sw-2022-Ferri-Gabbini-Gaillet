@@ -11,15 +11,9 @@ public class RMessageCharacter extends Message{
     public Characters character;
     public String nickname;
     public RMessageCharacter(Characters character, String nickname){
-<<<<<<< HEAD
         this.type = MessageType.R_CHARACTER;
         this.character = character;
         this.nickname = nickname;
     }
 }
-=======
-        this.character = character;
-        this.nickname = nickname;
-    }
-}
->>>>>>> main
+
