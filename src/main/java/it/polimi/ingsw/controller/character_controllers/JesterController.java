@@ -1,5 +1,6 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.controller.character_controllers;
 
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
@@ -7,8 +8,6 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.RMessageJesterBard;
 import it.polimi.ingsw.network.messages.SMessageJesterBard;
 
-import javax.management.remote.JMXServerErrorException;
-import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**

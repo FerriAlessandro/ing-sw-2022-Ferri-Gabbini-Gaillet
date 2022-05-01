@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.CloudTile;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.Player;
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.ClientHandler;
@@ -34,7 +35,9 @@ public class VirtualView implements ViewInterface, Observer {
      * Ask the user to provide a valid nickname.
      */
     @Override
-    public void askNickName() { clientHandler.sendMessage(new SMessage(MessageType.S_NICKNAME)); }
+    public void askNickName() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_NICKNAME));
+    }
 
     /**
      * Ask the user to provide the number of desired players and the desired game mode.
@@ -104,8 +107,8 @@ public class VirtualView implements ViewInterface, Observer {
 
     /**
      * Ask player to pick a character card among provided available options.
-     *
-     *///TODO: fix javadoc
+     * @param messageCharacter message containing {@link Characters} available
+     */
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
         clientHandler.sendMessage(messageCharacter);
@@ -116,7 +119,7 @@ public class VirtualView implements ViewInterface, Observer {
      */
     @Override
     public void askCloud(){
-        //TODO: implementation
+        clientHandler.sendMessage(new SMessage(MessageType.S_CLOUD));
     }
 
     /**
@@ -149,13 +152,64 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
+     * This method is deprecated, please use specific character methods instead
+     * (e.g. {@link VirtualView#grandmaHerbHeraldScene(SMessageGrandmaherbHerald)}).
      * Ask additional information on chosen character effect when necessary.
      *
-     * @param message
+     * @param message request message
      */
+    @Deprecated
     @Override
     public void askCharacterMove(SMessage message) {
-        //TODO: implementation
+        clientHandler.sendMessage(message);
+    }
+
+    /**
+     * Asks additional information on chosen caracter effect of
+     * {@link Characters#GRANDMA_HERB} or
+     * {@link Characters#HERALD}.
+     *
+     * @param message request message
+     */
+    @Override
+    public void grandmaHerbHeraldScene(SMessageGrandmaherbHerald message) {
+        clientHandler.sendMessage(message);
+    }
+
+    /**
+     * Asks additional information on chosen caracter effect of
+     * {@link Characters#MONK} or
+     * {@link Characters#SPOILED_PRINCESS}.
+     *
+     * @param message request message
+     */
+    @Override
+    public void monkPrincessScene(SMessageMonkPrincess message) {
+        clientHandler.sendMessage(message);
+    }
+
+    /**
+     * Asks additional information on chosen caracter effect of
+     * {@link Characters#ROGUE} or
+     * {@link Characters#MUSHROOM_PICKER}.
+     *
+     * @param message request message
+     */
+    @Override
+    public void rogueMushroomPickerScene(SMessageRogueMushroomPicker message) {
+        clientHandler.sendMessage(message);
+    }
+
+    /**
+     * Asks additional information on chosen caracter effect of
+     * {@link Characters#JESTER} or
+     * {@link Characters#BARD}.
+     *
+     * @param message request message
+     */
+    @Override
+    public void jesterBardScene(SMessageJesterBard message) {
+        clientHandler.sendMessage(message);
     }
 
     /**
@@ -163,7 +217,7 @@ public class VirtualView implements ViewInterface, Observer {
      */
     @Override
     public void askMove(){
-        //TODO: implementation
+        clientHandler.sendMessage(new SMessage(MessageType.S_MOVE));
     }
 
     

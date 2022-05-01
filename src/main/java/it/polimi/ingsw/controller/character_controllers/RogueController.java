@@ -1,11 +1,10 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.controller.character_controllers;
 
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.DiningRoom;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.network.messages.*;
-
-import java.util.EnumMap;
 
 /**
  * This class represents the Character Controller when the Rogue Character Card is played

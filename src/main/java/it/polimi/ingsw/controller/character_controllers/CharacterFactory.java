@@ -1,4 +1,5 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.controller.character_controllers;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.enumerations.Characters;
 
 /**

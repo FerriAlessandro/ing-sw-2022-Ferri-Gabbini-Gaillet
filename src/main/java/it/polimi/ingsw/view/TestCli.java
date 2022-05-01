@@ -8,8 +8,7 @@ import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 
 import java.security.InvalidParameterException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * This class implements a very basic Command Line Interface.
@@ -143,10 +142,8 @@ public class TestCli implements ViewInterface {
             System.out.println("\t This card costs " + messageCharacter.cardCost.get(character) + " coins");
             if(messageCharacter.students.get(character)!=null){
                 System.out.println("\t Students on the card: ");
-                for(Color color : messageCharacter.students.get(character).keySet()){
-                    System.out.println("\t " + messageCharacter.students.get(character).get(color) + " x " + color);
-                }
-            }else if (character.equals(Characters.GRANDMA_HERB) && messageCharacter.noEntryTiles!=null){
+                printColorMap(messageCharacter.students.get(character));
+            }else if (character.equals(Characters.GRANDMA_HERB)){
                 System.out.println("\t " + messageCharacter.noEntryTiles + " no entry tiles");
             }
         }
@@ -154,12 +151,12 @@ public class TestCli implements ViewInterface {
         do {
             System.out.println("Please pick a character card by providing its id (use 0 to discard the choice)");
             choice = in.nextInt();
-        }while (choice < 0 && choice > messageCharacter.effects.size());
+        }while (choice < 0 || choice > messageCharacter.effects.size());
         Characters chosenCharacter;
         if(choice!=0){
             chosenCharacter = messageCharacter.effects.get(choice - 1);
         }else{
-            chosenCharacter = null;
+            chosenCharacter = Characters.NONE;
         }
         adapter.sendMessage(new RMessageCharacter(chosenCharacter, this.nickname));
     }
@@ -204,32 +201,24 @@ public class TestCli implements ViewInterface {
             System.out.println("Player: " + player.toUpperCase());
 
             System.out.print("\tEntrance: ");
-            for (Color color: gameState.studEntrance.get(player).keySet()){
-                System.out.print("\t\t" + gameState.studEntrance.get(player).get(color) + " x " + color);
-            }
+            printColorMap(gameState.studEntrance.get(player));
 
             System.out.print("\n\tDining room: ");
-            for (Color color: gameState.studDining.get(player).keySet()){
-                System.out.print("\t\t" + gameState.studDining.get(player).get(color) + " x " + color);
-            }
+            printColorMap(gameState.studDining.get(player));
         }
 
         System.out.println("\n\nClouds: ");
         for (int cloud: gameState.studClouds.keySet()){
             int cloudIdx = cloud + 1;
             System.out.print("\nCloud " + cloudIdx + ": ");
-            for (Color color: gameState.studClouds.get(cloud).keySet()){
-                System.out.print("\t" + gameState.studClouds.get(cloud).get(color) + " x " + color);
-            }
+            printColorMap(gameState.studClouds.get(cloud));
         }
 
         System.out.println("\n\nIslands: ");
         for (int island: gameState.studIslands.keySet()){
             int islandIdx = island + 1;
             System.out.print("\nIsland " + islandIdx + ": ");
-            for (Color color: gameState.studIslands.get(island).keySet()){
-                System.out.print("\t" + gameState.studIslands.get(island).get(color) + " x " + color);
-            }
+            printColorMap(gameState.studIslands.get(island));
             if(!gameState.colorTowerIslands.get(island).equals(TowerColor.NONE) && gameState.numTowersIslands.get(island)!=0){
                 System.out.print("\t" + gameState.numTowersIslands.get(island) + gameState.colorTowerIslands.get(island) + " towers");
             }
@@ -249,7 +238,7 @@ public class TestCli implements ViewInterface {
     @Override
     public void showWinMessage(SMessageWin message) {
         if(message.getType().equals(MessageType.S_WIN)){
-            System.out.println(message.winner);
+            System.out.println(message.winMessage);
         }else{
             new InvalidParameterException().printStackTrace();
         }
@@ -287,30 +276,16 @@ public class TestCli implements ViewInterface {
         System.out.println("Please pick your next move.");
         String chosenColor;
         int destination;
-        Color chosenColorEnum = null;
 
-        boolean available = false;
-        do {
-            System.out.print("Please pick the color (");
-            for (Color color: Color.values()) {
-                    System.out.print(color + " ");
-                }
-            System.out.print("): ");
-            chosenColor =  in.nextLine();
-            try {
-                chosenColorEnum = Color.valueOf(chosenColor);
-                available = true;
-            }catch (IllegalArgumentException ignored){
-                System.out.println("Please pick a valid color");
-            }
-        }while (!available);
+        System.out.print("Please pick the color (" + colorList() + "): ");
+        chosenColor = colorChoice();
 
         do{
             System.out.print("Please choose the destination by providing its id (1-12 islands), (0 dining room): ");
             destination = in.nextInt();
         }while (destination < 0 || destination > 12);
 
-        adapter.sendMessage(new RMessageMove(chosenColorEnum, destination, nickname));
+        adapter.sendMessage(new RMessageMove(Color.valueOf(chosenColor), destination, nickname));
     }
 
     /**
@@ -344,10 +319,207 @@ public class TestCli implements ViewInterface {
     /**
      * Ask additional information on chosen character effect when necessary.
      *
-     * @param message
+     * @param message containing data required to perform the related operation
      */
+    @Deprecated
     @Override
     public void askCharacterMove(SMessage message) {
-       //TODO: implementation
+        switch (message.getType()){
+            case S_JESTERBARD:
+                jesterBardScene((SMessageJesterBard) message);
+                break;
+
+            case S_ROGUEMUSHROOMPICKER:
+                rogueMushroomPickerScene((SMessageRogueMushroomPicker) message);
+                break;
+
+            case S_MONKPRINCESS:
+                monkPrincessScene((SMessageMonkPrincess) message);
+                break;
+
+            case S_GRANDMAHERBHERALD:
+                grandmaHerbHeraldScene((SMessageGrandmaherbHerald) message);
+                break;
+
+            default:
+                new InvalidParameterException().printStackTrace();
+        }
     }
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#GRANDMA_HERB} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#HERALD}.
+     * @param messageGrandmaHerbHerald request message
+     */
+    public void grandmaHerbHeraldScene(SMessageGrandmaherbHerald messageGrandmaHerbHerald){
+        System.out.println("You chose the: " + messageGrandmaHerbHerald.characterName);
+        System.out.println("Effect: " + messageGrandmaHerbHerald.characterName.getEffect());
+        int islandIdx;
+        do {
+            System.out.print("Please choose the island where the effect will be applied by providing its id number: ");
+            islandIdx =  in.nextInt();
+        }while (islandIdx < 1 || islandIdx >12);
+
+        adapter.sendMessage(new RMessageGrandmaherbHerald(messageGrandmaHerbHerald.characterName, nickname, islandIdx));
+    }
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#MONK} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#SPOILED_PRINCESS}.
+     * @param messageMonkPrincess request message
+     */
+    public void monkPrincessScene(SMessageMonkPrincess messageMonkPrincess){
+        System.out.println("You chose the: " + messageMonkPrincess.characterName);
+        System.out.println("Effect: " + messageMonkPrincess.characterName.getEffect());
+
+        System.out.println("Please choose a student among the following: ");
+        printColorMap(messageMonkPrincess.colors);
+
+        String choice = colorChoice();
+        int islandIdx = -1;
+        if(messageMonkPrincess.characterName.equals(Characters.MONK)){
+            do {
+                System.out.print("Please choose the island where the effect will be applied by providing its id number: ");
+                islandIdx =  in.nextInt();
+            }while (islandIdx < 1 || islandIdx >12);
+        }
+
+        adapter.sendMessage(new RMessageMonkPrincess(messageMonkPrincess.characterName, nickname, islandIdx, Color.valueOf(choice)));
+    }
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#ROGUE} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#MUSHROOM_PICKER}.
+     * @param messageRogueMushroomPicker request message
+     */
+    public void rogueMushroomPickerScene(SMessageRogueMushroomPicker messageRogueMushroomPicker){
+        System.out.println("You chose the: " + Characters.MUSHROOM_PICKER);
+        System.out.println("Effect: " + Characters.MUSHROOM_PICKER.getEffect());
+        String choice = colorChoice();
+
+        adapter.sendMessage(new RMessageRogueMushroomPicker(messageRogueMushroomPicker.characterName, nickname, Color.valueOf(choice)));
+    }
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#JESTER} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#BARD}.
+     * @param messageJesterBard request message
+     */
+    public void jesterBardScene(SMessageJesterBard messageJesterBard){
+        ArrayList<Color> origin = new ArrayList<>();
+        ArrayList<Color> entrance = new ArrayList<>();
+
+        System.out.println("You chose the: " + messageJesterBard.characterName);
+        System.out.println("Effect: " + messageJesterBard.characterName.getEffect());
+        System.out.print("These are the students available ");
+        switch (messageJesterBard.characterName){
+            case JESTER:
+                System.out.print("on the card: ");
+                break;
+            case BARD:
+                System.out.print("in the dining room: ");
+                break;
+            default:
+                new InvalidParameterException().printStackTrace();
+                break;
+        }
+        printColorMap(messageJesterBard.origin);
+
+        System.out.print("\nThese are the students in your entrance: ");
+        printColorMap(messageJesterBard.entrance);
+
+        System.out.print("\nPlease choose the students to be taken from the ");
+        switch (messageJesterBard.characterName){
+            case JESTER:
+                System.out.print("card\n");
+                break;
+            case BARD:
+                System.out.print("dining room\n");
+                break;
+            default:
+                new InvalidParameterException().printStackTrace();
+                break;
+        }
+
+        System.out.print("You need to choose up to " + messageJesterBard.maxStudents + "students (one at a time) between ");
+        int count = 0;
+        String choice;
+        do{
+            do{
+                choice = colorChoice();
+            }while (messageJesterBard.origin.get(Color.valueOf(choice)) <= 0 || !messageJesterBard.origin.containsKey(Color.valueOf(choice)));
+            count ++;
+            origin.add(Color.valueOf(choice));
+
+            do {
+                System.out.println("Do you wish to select a student? y/n");
+                choice = in.nextLine();
+            }while (!choice.equals("y") && !choice.equals("n"));
+        }while(count < messageJesterBard.maxStudents && choice.equals("y"));
+
+        System.out.println("Please choose the students in the entrance you want to swap, one at a time");
+        for(int i=0; i < count; i++){
+            do{
+                choice = colorChoice();
+            }while (messageJesterBard.entrance.get(Color.valueOf(choice)) <= 0 || !messageJesterBard.entrance.containsKey(Color.valueOf(choice)));
+            entrance.add(Color.valueOf(choice));
+        }
+
+        adapter.sendMessage(new RMessageJesterBard(messageJesterBard.characterName, nickname, origin, entrance));
+    }
+
+    /**
+     * Provides a {@link String} containing a list of existing {@link Color}s
+     * @return {@link String} of comma and space separated colors (e.g. "RED, GREEN, BLUE")
+     */
+    private String colorList(){
+        String value = "";
+        for(Color color: Color.values()){
+            value = value.concat(color.toString() + ", ");
+        }
+        return value.substring(0, value.length()-2);
+    }
+
+    /**
+     * Checks if the provided {@link String} is linked to a {@link Color}.
+     * @param color {@link String} to be checked
+     * @return true if the provided color is valid
+     */
+    private boolean isValidColor(String color){
+        try{
+            Color.valueOf(color);
+        }catch (IllegalArgumentException ignored){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Prompts the user to pick a color.
+     * @return {@link String} name of the color
+     */
+    private String colorChoice(){
+        String choice;
+        do {
+            System.out.println("Please choose a valid color (" + colorList() + "): ");
+            choice = in.nextLine();
+        }while (!isValidColor(choice));
+        return choice;
+    }
+
+    /**
+     * Prints a {@link Map} with {@link Color} as a key and {@link Integer} as content.
+     * @param map to be printed
+     */
+    private void printColorMap(Map<Color, Integer> map){
+        for(Color color: map.keySet()){
+            if(map.get(color) != 0)
+                System.out.print(map.get(color) + "x" + color + "\t");
+        }
+    }
+
 }

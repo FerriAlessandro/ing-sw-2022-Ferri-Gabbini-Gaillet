@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.character_controllers.CharacterController;
+import it.polimi.ingsw.controller.character_controllers.CharacterFactory;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
@@ -146,7 +148,7 @@ public class GameController {
                 SMessageCurrentPlayer m = new SMessageCurrentPlayer(message);
                 for (VirtualView v : playersView.values())
                     v.showCurrentPlayer(m);
-                    break;
+                break;
             }
         }
     }
@@ -192,7 +194,7 @@ public class GameController {
     /**
      * Utility method to check who is the winner
      */
-    void checkWin(){
+    public void checkWin(){
         String winner = game.checkWinner();
 
         if(winner.equals("Tie")){
