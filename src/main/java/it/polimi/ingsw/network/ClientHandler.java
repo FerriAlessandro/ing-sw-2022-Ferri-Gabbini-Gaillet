@@ -56,28 +56,23 @@ public class ClientHandler extends Thread{
         try {
             Message inMessage;
             do {
+                sendMessage(new SMessage(MessageType.S_NICKNAME));
                 inMessage = (Message) in.readObject();
-                if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
-                    disconnect();
-                    break;
-                }else {
-                    synchronized (controller) {
-                        if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
-                            RMessageNickname nickMessage = (RMessageNickname) inMessage;
-                            if (!controller.getNicknames().contains(nickMessage.nickname)) {
-                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                                this.playerNickname = nickMessage.nickname;
-                                validNickName = true;
-                            } else {
-                                sendMessage(new SMessageInvalid("Nickname already taken"));
-                                sendMessage(new SMessage(MessageType.S_NICKNAME));
-                            }
-                            VirtualView virtualView = new VirtualView(this);
+                synchronized (controller) {
+                    if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
+                        RMessageNickname nickMessage = (RMessageNickname) inMessage;
+                        if (!controller.getNicknames().contains(nickMessage.nickname)) {
+                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                            this.playerNickname = nickMessage.nickname;
+                            validNickName = true;
                             try {
+                                VirtualView virtualView = new VirtualView(this);
                                 controller.addPlayer(nickMessage.nickname, virtualView);
                             } catch (FullGameException e) {
                                 e.printStackTrace();
                             }
+                        } else {
+                            sendMessage(new SMessageInvalid("Nickname already taken"));
                         }
                     }
                 }
@@ -146,4 +141,5 @@ public class ClientHandler extends Thread{
     public String getPlayerNickname(){
         return playerNickname;
     }
+
 }

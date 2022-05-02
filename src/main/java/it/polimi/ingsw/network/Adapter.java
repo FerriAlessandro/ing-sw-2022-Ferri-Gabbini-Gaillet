@@ -13,7 +13,7 @@ import java.io.IOException;
 public class Adapter {
     private ViewInterface view;
     private ClientSocket socket;
-    private Message previousMessage = new SMessage(MessageType.S_ERROR);
+    private Message previousMessage = new SMessageInvalid("No previous command");
     private String currentPlayer;
     private boolean gameEnded = false;
 
@@ -97,10 +97,6 @@ public class Adapter {
 
             case S_GAMESETTINGS:
                 view.askGameSettings();
-                break;
-
-            case S_ERROR:
-                view.showGenericMessage(new SMessageInvalid("A generic error occurred"));
                 break;
 
             case S_TRYAGAIN:

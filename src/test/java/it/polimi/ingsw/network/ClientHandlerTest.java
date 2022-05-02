@@ -51,9 +51,10 @@ class ClientHandlerTest {
             mockClient.sendMessage(new PingMessage());
             clientHandler.sendMessage(new SMessage(MessageType.R_DISCONNECT));
             while(Thread.activeCount() > threadCount - 2){ assert true; } //One for Maven?
-            assertEquals(MessageType.S_LOBBY, contMess.get(0));
-            assertEquals(MessageType.S_WIN, contMess.get(1));
-            assertEquals(2, contMess.size());
+            assertEquals(MessageType.S_NICKNAME, contMess.get(0));
+            assertEquals(MessageType.S_LOBBY, contMess.get(1));
+            assertEquals(MessageType.S_WIN, contMess.get(2));
+            assertEquals(3, contMess.size());
         } catch (Exception e) {
             fail();
         }
@@ -68,16 +69,6 @@ class ClientHandlerTest {
             fail();
         }
         mockClient.disconnect();
-    }
-
-    @Test
-    void disconnectFirst(){
-        int threadCount = Thread.activeCount();
-        System.out.println(threadCount);
-        mockClient.sendMessage(new RMessageDisconnect());
-        while(Thread.activeCount() > threadCount - 1){ assert true; }
-        clientHandler.sendMessage(new SMessageInvalid(""));
-        assertEquals(0, contMess.size());
     }
 
 }
