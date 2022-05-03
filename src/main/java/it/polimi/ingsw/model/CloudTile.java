@@ -70,5 +70,4 @@ public class CloudTile extends TileWithStudents {
         }
         return studentsToPick;
     }
-
 }
