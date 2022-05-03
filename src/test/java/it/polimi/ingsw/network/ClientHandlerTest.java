@@ -5,13 +5,13 @@ import it.polimi.ingsw.network.messages.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,7 +50,7 @@ class ClientHandlerTest {
             clientHandler.sendMessage(new SMessage(MessageType.S_WIN));
             mockClient.sendMessage(new PingMessage());
             clientHandler.sendMessage(new SMessage(MessageType.R_DISCONNECT));
-            while(Thread.activeCount() > threadCount - 2){ assert true; } //One for Maven?
+            while (clientHandler.isAlive()){ assert true; }
             assertEquals(MessageType.S_NICKNAME, contMess.get(0));
             assertEquals(MessageType.S_LOBBY, contMess.get(1));
             assertEquals(MessageType.S_WIN, contMess.get(2));
@@ -62,13 +62,10 @@ class ClientHandlerTest {
 
     @Test
     void disconnection(){
-        try{
-            TimeUnit.SECONDS.sleep(1);
-        } catch (Exception e){
-            e.printStackTrace();
-            fail();
-        }
-        mockClient.disconnect();
+        mockClient.sendMessage(new RMessageNickname("Pippo"));
+        while (clientHandler.isAlive()){ assert true; }
+        assertEquals(MessageType.S_NICKNAME, contMess.get(0));
+        assertEquals(1, contMess.size());
     }
 
 }
@@ -80,14 +77,13 @@ class ClientHandlerTest {
  * @author A.G. Gaillet
  */
 class MockClientSocket extends Thread{
-    Socket socket;
-    ObjectOutputStream out;
-    ObjectInputStream in;
-    boolean disconnected = false;
-    final Object lock = new Object();
+    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+    private boolean disconnected = false;
+    private final Object lock = new Object();
 
-    public MockClientSocket() {
-    }
+    public MockClientSocket() {}
 
     public void run(){
         try {
@@ -108,7 +104,7 @@ class MockClientSocket extends Thread{
                     break;
                 }
             } catch (Exception e){
-                if(!Thread.currentThread().isInterrupted() && !disconnected){
+                if(!Thread.currentThread().isInterrupted() && !disconnected && !e.getClass().equals(EOFException.class)){
                     e.printStackTrace();
                     fail();
                 }

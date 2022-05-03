@@ -89,10 +89,8 @@ public class Adapter {
                 break;
 
             case S_NICKNAME:
-                if (view.getNickName() == null)
-                    view.askNickName();
-                else
-                    sendMessage(new RMessageNickname(view.getNickName()));
+                view.askNickName();
+                sendMessage(new RMessageNickname(view.getNickName()));
                 break;
 
             case S_GAMESETTINGS:
