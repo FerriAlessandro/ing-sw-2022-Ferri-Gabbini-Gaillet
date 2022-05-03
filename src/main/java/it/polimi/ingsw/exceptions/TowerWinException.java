@@ -7,8 +7,5 @@ package it.polimi.ingsw.exceptions;
  */
 public class TowerWinException extends Exception{
 
-    public TowerWinException(){
-        super("There's a Winner!");
-    }
     public TowerWinException(String message){super(message);}
 }

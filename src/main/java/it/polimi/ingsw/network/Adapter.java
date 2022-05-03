@@ -13,8 +13,9 @@ import java.io.IOException;
 public class Adapter {
     private ViewInterface view;
     private ClientSocket socket;
-    private Message previousMessage = new SMessage(MessageType.S_ERROR);
+    private Message previousMessage = new SMessageInvalid("No previous command");
     private String currentPlayer;
+    private boolean gameEnded = false;
 
     /**
      * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
@@ -43,54 +44,86 @@ public class Adapter {
         }
         switch (message.getType()) {
             case DISCONNECTED:
-                view.showDisconnectionMessage();
+                if(!gameEnded)
+                    view.showDisconnectionMessage();
                 break;
+
             case S_GAMESTATE:
                 view.showBoard((SMessageGameState) message);
                 break;
+
             case S_WIN:
                 view.showWinMessage((SMessageWin) message);
+                try{
+                    socket.sendMessage(new RMessageDisconnect());
+                }catch (IOException ignored){}
+                gameEnded = true;
                 break;
+
             case S_LOBBY:
                 view.showLobby((SMessageLobby) message);
                 break;
+
             case S_INVALID:
                 view.showGenericMessage((SMessageInvalid) message);
                 break;
+
             case S_ASSISTANT:
                 view.showAssistantChoice((SMessageShowDeck) message);
                 break;
+
             case S_CHARACTER:
                 view.showCharacterChoice((SMessageCharacter) message);
                 break;
+
             case S_MOVE:
                 view.askMove();
                 break;
+
             case S_MOTHERNATURE:
                 view.askMotherNatureMove();
                 break;
+
             case S_CLOUD:
                 view.askCloud();
                 break;
+
             case S_NICKNAME:
-                if(view.getNickName() == null) view.askNickName();
-                else sendMessage(new RMessageNickname(view.getNickName()));
+                view.askNickName();
+                sendMessage(new RMessageNickname(view.getNickName()));
                 break;
+
             case S_GAMESETTINGS:
                 view.askGameSettings();
                 break;
-            case S_ERROR:
-                view.showGenericMessage(new SMessageInvalid("A generic error occurred"));
-                break;
+
             case S_TRYAGAIN:
                 view.askAgain();
                 elaborateMessage(previousMessage);
                 break;
+
             case S_PLAYER:
                 SMessageCurrentPlayer messageCurrentPlayer = (SMessageCurrentPlayer) message;
                 currentPlayer = messageCurrentPlayer.nickname;
                 view.showCurrentPlayer(messageCurrentPlayer);
                 break;
+
+            case S_MONKPRINCESS:
+                view.monkPrincessScene((SMessageMonkPrincess) message);
+                break;
+
+            case S_ROGUEMUSHROOMPICKER:
+                view.rogueMushroomPickerScene((SMessageRogueMushroomPicker) message);
+                break;
+
+            case S_GRANDMAHERBHERALD:
+                view.grandmaHerbHeraldScene((SMessageGrandmaherbHerald) message);
+                break;
+
+            case S_JESTERBARD:
+                view.jesterBardScene((SMessageJesterBard) message);
+                break;
+
             default:
                 new UnsupportedOperationException().printStackTrace();
                 break;
@@ -113,4 +146,5 @@ public class Adapter {
             e.printStackTrace();
         }
     }
+
 }

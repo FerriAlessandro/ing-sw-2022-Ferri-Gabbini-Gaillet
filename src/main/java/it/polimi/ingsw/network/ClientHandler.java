@@ -15,27 +15,31 @@ import java.net.Socket;
  * @see Socket
  * @see ClientSocket
  */
-public class ClientHandler extends Thread{
+public class ClientHandler extends Thread {
     private final Socket clientSocket;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
     private final InputController controller;
     private String playerNickname = null;
+    private final Timer timeout;
 
     /**
      * Constructor to be used for players that are not first.
-     * @param socket to be used for communication
+     *
+     * @param socket     to be used for communication
      * @param controller of the current game
      * @throws IOException when unable to get {@link InputStream} or {@link OutputStream}
-     */ ClientHandler(Socket socket, InputController controller) throws IOException {
+     */
+    ClientHandler(Socket socket, InputController controller) throws IOException {
         this(socket, new ObjectInputStream(socket.getInputStream()), new ObjectOutputStream(socket.getOutputStream()), controller);
     }
 
     /**
      * Constructor to be used for players who are first.
-     * @param socket to be used for communication
-     * @param in {@link ObjectInputStream} of the given {@link Socket}
-     * @param out {@link ObjectOutputStream} of the given {@link Socket}
+     *
+     * @param socket     to be used for communication
+     * @param in         {@link ObjectInputStream} of the given {@link Socket}
+     * @param out        {@link ObjectOutputStream} of the given {@link Socket}
      * @param controller of the current game
      */
     public ClientHandler(Socket socket, ObjectInputStream in, ObjectOutputStream out, InputController controller) {
@@ -43,6 +47,8 @@ public class ClientHandler extends Thread{
         this.in = in;
         this.out = out;
         this.controller = controller;
+        timeout = new Timer(this);
+        timeout.start();
     }
 
     /**
@@ -56,67 +62,72 @@ public class ClientHandler extends Thread{
         try {
             Message inMessage;
             do {
+                sendMessage(new SMessage(MessageType.S_NICKNAME));
                 inMessage = (Message) in.readObject();
-                if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
-                    disconnect();
-                    break;
-                }else {
-                    synchronized (controller) {
-                        if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
-                            RMessageNickname nickMessage = (RMessageNickname) inMessage;
-                            if (!controller.getNicknames().contains(nickMessage.nickname)) {
-                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                                this.playerNickname = nickMessage.nickname;
-                                validNickName = true;
-                            } else {
-                                sendMessage(new SMessageInvalid("Nickname already taken"));
-                                sendMessage(new SMessage(MessageType.S_NICKNAME));
-                            }
-                            VirtualView virtualView = new VirtualView(this);
+                synchronized (controller) {
+                    if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
+                        RMessageNickname nickMessage = (RMessageNickname) inMessage;
+                        if (!controller.getNicknames().contains(nickMessage.nickname)) {
+                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                            this.playerNickname = nickMessage.nickname;
+                            validNickName = true;
                             try {
+                                VirtualView virtualView = new VirtualView(this);
                                 controller.addPlayer(nickMessage.nickname, virtualView);
                             } catch (FullGameException e) {
                                 e.printStackTrace();
                             }
+                        } else {
+                            sendMessage(new SMessageInvalid("Nickname already taken"));
                         }
                     }
                 }
-            } while(!inMessage.getType().equals(MessageType.R_NICKNAME) || !validNickName);
-        } catch (Exception e){
-            if(!e.getClass().equals(EOFException.class)) {
+            } while (!inMessage.getType().equals(MessageType.R_NICKNAME) || !validNickName);
+        } catch (Exception e) {
+            if (!e.getClass().equals(EOFException.class)) {
                 //System.out.println("Invalid input or corrupted input stream");
                 e.printStackTrace();
-            }else{
+            } else {
                 disconnect();
             }
         }
 
         //Receive messages
-        while (!Thread.currentThread().isInterrupted()){
+        while (!Thread.currentThread().isInterrupted() && !clientSocket.isClosed()) {
             try {
                 Message inMessage = (Message) in.readObject();
                 //System.out.println("Message received, type: " + inMessage.getType());
 
-                if(inMessage.getType().equals(MessageType.R_DISCONNECT)){
+                if (inMessage.getType().equals(MessageType.R_DISCONNECT)) {
                     disconnect();
-                }else if(!inMessage.getType().equals(MessageType.PING)){
+                } else if (!inMessage.getType().equals(MessageType.PING)) {
+                    synchronized (timeout) {
+                        timeout.euthanize();
+                    }
                     controller.elaborateMessage(inMessage);
+                    synchronized (timeout) {
+                        timeout.reset();
+                        timeout.revive();
+                    }
+                } else {
+                    timeout.reset();
                 }
-            } catch (Exception e){
+            } catch (Exception ignored) {
+                Thread.currentThread().interrupt();
                 //System.out.println("Invalid input or corrupted input stream");
-                e.printStackTrace();
             }
         }
     }
 
     /**
      * Method to be called to send a message to the linked client.
+     *
      * @param message the {@link Message} to be sent
      */
-    public void sendMessage(SMessage message){
+    public void sendMessage(SMessage message) {
         try {
             out.writeObject(message);
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Unable to send the given message");
         }
     }
@@ -124,25 +135,27 @@ public class ClientHandler extends Thread{
     /**
      * Handles disconnection of the client closing the socket and interrupting the current Thread. Notifies the controller of the disconnection.
      */
-    private void disconnect(){
-        System.out.println(clientSocket.getInetAddress() + " is being disconnected");
-
-        try{
-            clientSocket.close();
-            if (playerNickname != null) {
-                controller.playerDisconnected(playerNickname);
-            }
-            Thread.currentThread().interrupt();
-        } catch (Exception e){
-            e.printStackTrace();
+    public void disconnect() {
+        System.out.println("Disconnection of: " + clientSocket.getInetAddress());
+        if (playerNickname != null) {
+            controller.playerDisconnected(playerNickname);
         }
+        timeout.interrupt();
+        try {
+            out.flush();
+            clientSocket.close();
+        } catch (Exception ignored) {
+        }
+        this.interrupt();
     }
 
     /**
      * Getter method for the nickname of the associated player.
+     *
      * @return {@link String} nickname of the associated player
      */
-    public String getPlayerNickname(){
+    public String getPlayerNickname() {
         return playerNickname;
     }
+
 }

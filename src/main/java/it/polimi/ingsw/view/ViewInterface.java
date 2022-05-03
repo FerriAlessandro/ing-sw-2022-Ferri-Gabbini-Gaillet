@@ -29,6 +29,7 @@ public interface ViewInterface {
      * Display lobby.
      * @param message containing information on connected and desired players.
      */
+
     void showLobby (SMessageLobby message);
 
     /**
@@ -96,8 +97,43 @@ public interface ViewInterface {
     String getNickName();
 
     /**
+     * This method is deprecated, please use specific character methods instead
+     * (e.g. {@link ViewInterface#grandmaHerbHeraldScene(SMessageGrandmaherbHerald)}).
      * Ask additional information on chosen character effect when necessary.
      */
+    @Deprecated
     void askCharacterMove(SMessage message);
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#GRANDMA_HERB} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#HERALD}.
+     * @param message request message
+     */
+    void grandmaHerbHeraldScene(SMessageGrandmaherbHerald message);
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#MONK} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#SPOILED_PRINCESS}.
+     * @param message request message
+     */
+    void monkPrincessScene(SMessageMonkPrincess message);
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#ROGUE} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#MUSHROOM_PICKER}.
+     * @param message request message
+     */
+    void rogueMushroomPickerScene(SMessageRogueMushroomPicker message);
+
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#JESTER} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#BARD}.
+     * @param message request message
+     */
+    void jesterBardScene(SMessageJesterBard message);
 
 }

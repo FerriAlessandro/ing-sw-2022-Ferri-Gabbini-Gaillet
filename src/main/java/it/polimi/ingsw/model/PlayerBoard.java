@@ -39,4 +39,6 @@ public class PlayerBoard {
     public int getCoin() { return coin; }
 
     public void addCoin() { coin ++; }
+
+    public void removeCoin(int num){coin -= num;}
 }

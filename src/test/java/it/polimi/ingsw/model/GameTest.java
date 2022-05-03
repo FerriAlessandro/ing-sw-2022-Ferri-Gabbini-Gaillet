@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 import org.junit.jupiter.api.*;
 
@@ -40,8 +41,10 @@ class GameTest {
         game.getPlayers().get(1).playAssistantCard(AssistantCard.CAT);
         game.getPlayers().get(2).playAssistantCard(AssistantCard.CHEETAH);
         assertTrue(p1.isFirst());
+        assertTrue(p1.isPlayerTurn());
         game.sortPlayersActionTurn();
         assertTrue(p3.isFirst());
+        assertTrue(p3.isPlayerTurn());
         assertEquals("Marco", game.getPlayers().get(0).getNickName());
         assertEquals("Alessandro", game.getPlayers().get(1).getNickName());
         assertEquals("Angelo", game.getPlayers().get(2).getNickName());
@@ -142,6 +145,7 @@ class GameTest {
                 game.getGameBoard().getPlayerBoard(p).getEntrance().getState().put(c, 0);
             }
         }
+
         p1.setPlayerTurn(false);
         p3.setPlayerTurn(true);
         game.getGameBoard().fillClouds();
@@ -169,6 +173,84 @@ class GameTest {
         assertEquals(game.getPlayers().get(0), p2);
         assertEquals(game.getPlayers().get(1), p3);
         assertEquals(game.getPlayers().get(2), p1);
+
+    }
+
+    @Test
+    @DisplayName("Tests if the CheckWinner method works properly when there isn't a Tie in the number of towers")
+    public void TestCheckWinNoTie() throws TowerWinException {
+
+        game.getGameBoard().getPlayerBoard(p1).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p2).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p3).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p3).getTowerZone().remove();
+        assertEquals(game.checkWinner(), p3.getNickName());
+        assertNotEquals(game.checkWinner(), p1.getNickName());
+        assertNotEquals(game.checkWinner(), p2.getNickName());
+    }
+
+
+    @Test
+    @DisplayName("Tests if the CheckWinner method works properly when there is a Tie in the number of towers but not in the number of Professors")
+    public void TestCheckWinTieInTowers() throws TowerWinException {
+
+        game.getGameBoard().getPlayerBoard(p1).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p2).getTowerZone().remove();
+        game.getGameBoard().getProfessors().put(Color.RED, p1);
+        game.getGameBoard().getProfessors().put(Color.BLUE, p2);
+        game.getGameBoard().getProfessors().put(Color.GREEN, p1);
+        game.getGameBoard().getProfessors().put(Color.YELLOW, p3);
+        game.getGameBoard().getProfessors().put(Color.PINK, p3);
+        assertEquals(game.checkWinner(), p1.getNickName());
+        assertNotEquals(game.checkWinner(), p2.getNickName());
+        assertNotEquals(game.checkWinner(), p3.getNickName());
+    }
+
+    @Test
+    @DisplayName("Tests if the CheckWinner method works properly when there is a Tie in the number of towers of all 3 players and in the number of Professors")
+    public void TestCheckWin3PlayersTie() throws TowerWinException {
+
+        game.getGameBoard().getPlayerBoard(p1).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p2).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p3).getTowerZone().remove();
+        game.getGameBoard().getProfessors().put(Color.RED, p1);
+        game.getGameBoard().getProfessors().put(Color.BLUE, p2);
+        game.getGameBoard().getProfessors().put(Color.GREEN, p1);
+        game.getGameBoard().getProfessors().put(Color.YELLOW, p3);
+        game.getGameBoard().getProfessors().put(Color.PINK, p3);
+        assertEquals("Tie", game.checkWinner());
+        assertNotEquals(game.checkWinner(), p2.getNickName());
+        assertNotEquals(game.checkWinner(), p3.getNickName());
+        assertNotEquals(game.checkWinner(), p1.getNickName());
+    }
+
+    @Test
+    @DisplayName("Tests if the CheckWinner method works properly when there is a Tie in the number of towers of all 3 players but not in the number of Professors")
+    public void TestCheckWin3PlayersTieTowers() throws TowerWinException {
+
+        game.getGameBoard().getPlayerBoard(p1).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p2).getTowerZone().remove();
+        game.getGameBoard().getPlayerBoard(p3).getTowerZone().remove();
+        game.getGameBoard().getProfessors().put(Color.RED, p1);
+        game.getGameBoard().getProfessors().put(Color.BLUE, p2);
+        game.getGameBoard().getProfessors().put(Color.YELLOW, p3);
+        game.getGameBoard().getProfessors().put(Color.PINK, p3);
+        assertEquals(p3.getNickName(), game.checkWinner());
+        assertNotEquals(game.checkWinner(), p2.getNickName());
+        assertNotEquals(game.checkWinner(), p1.getNickName());
+    }
+
+    @Test
+    @DisplayName("Tests if the method 'GetCharacterByName' works properly")
+    public void TestGetCharacterByName() throws EmptyBagException {
+
+        game.getGameBoard().addCharacterCard(Characters.JESTER);
+        game.getGameBoard().addCharacterCard(Characters.GRANDMA_HERB);
+        game.getGameBoard().addCharacterCard(Characters.MONK);
+
+        assertEquals(game.getCharacterByName(Characters.JESTER), game.getGameBoard().getCharacters().get(0));
+        assertSame(game.getCharacterByName(Characters.JESTER), game.getGameBoard().getCharacters().get(0));
+        assertThrows(RuntimeException.class, ()-> game.getCharacterByName(Characters.ROGUE));
 
     }
 

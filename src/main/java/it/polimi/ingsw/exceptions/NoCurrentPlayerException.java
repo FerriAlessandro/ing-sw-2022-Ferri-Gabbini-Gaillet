@@ -6,7 +6,7 @@ package it.polimi.ingsw.exceptions;
  * @version 1.0
  */
 
-public class NoCurrentPlayerException extends Exception{
+public class NoCurrentPlayerException extends RuntimeException{
 
     public NoCurrentPlayerException(){
 

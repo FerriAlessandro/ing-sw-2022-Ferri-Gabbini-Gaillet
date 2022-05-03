@@ -85,9 +85,25 @@ public class Game extends Observable {
         IslandTile islandToCheck;
         TowerColor influenceWinner;
         islandToCheck = gameBoard.moveMotherNature(num);
-        influenceWinner = gameBoard.checkInfluence(islandToCheck);
-        gameBoard.swapTowers(islandToCheck, influenceWinner);
-        gameBoard.checkForArchipelago(islandToCheck);
+        if(!islandToCheck.isForbidden()) {
+            influenceWinner = gameBoard.checkInfluence(islandToCheck);
+            try {
+                gameBoard.swapTowers(islandToCheck, influenceWinner);
+            } catch(TowerWinException e){
+                notifyObservers();
+                throw e;
+            }
+            try {
+                gameBoard.checkForArchipelago(islandToCheck);
+            }catch(NumOfIslandsException e){
+                notifyObservers();
+                throw e;
+            }
+        }
+        else {
+            getCharacterByName(Characters.GRANDMA_HERB).addNoEntryTile();
+            islandToCheck.removeNoEntry();
+        }
 
         notifyObservers();
     }
@@ -185,12 +201,15 @@ public class Game extends Observable {
     // (if p1 plays cheetah and p2 plays cheetah,
     // p1 should play before p2, the test works but keep an eye on that).
     public void sortPlayersActionTurn() {
+
+        players.get(numOfPlayers-1).setPlayerTurn(false);
         players = players.stream()
                 .sorted(Comparator.comparingInt((p) -> p.getPlayedCard().getCardValue()))
                 .collect(Collectors.toCollection(ArrayList :: new));
 
         Objects.requireNonNull(getFirstPlayer()).setFirst(false);
         players.get(0).setFirst(true);
+        players.get(0).setPlayerTurn(true);
 
     }
 
@@ -202,7 +221,7 @@ public class Game extends Observable {
             if(p.isFirst())
                 return p;
         }
-        return null;
+        throw new RuntimeException("First player not found"); //If a bug happens
     }
 
     /**
@@ -210,6 +229,7 @@ public class Game extends Observable {
      */
     public void sortPlayersAssistantTurn() {
 
+        players.get(numOfPlayers - 1).setPlayerTurn(false);
         ArrayList<Player> p = new ArrayList<>();
         p.add(getFirstPlayer());
         players.remove(getFirstPlayer());
@@ -225,6 +245,132 @@ public class Game extends Observable {
             }
         }
         players = p;
+        getFirstPlayer().setPlayerTurn(true);
     }
+
+    /**
+     * Finds the winner at the end of the game by checking the number of towers of each player and, in case of a tie, checks the number of Professors owned
+     * @return the nickName of the winner
+     */
+    public String checkWinner (){
+
+        int minTower;
+        Optional<Integer> maxProfessors;
+        ArrayList<Player> playersCopy = new ArrayList<>(players);
+        HashMap<Player, Integer> sameNumOfTowers = new HashMap<>();
+        Player winner;
+
+        minTower = gameBoard.getPlayerBoard(playersCopy.get(0)).getTowerZone().getNumOfTowers();
+        winner = playersCopy.get(0);
+
+
+        playersCopy.remove(0);
+
+        for(Player p : playersCopy){
+            if(gameBoard.getPlayerBoard(p).getTowerZone().getNumOfTowers() < minTower){
+                minTower = gameBoard.getPlayerBoard(p).getTowerZone().getNumOfTowers();
+                winner = p;
+            }
+            else if(gameBoard.getPlayerBoard(p).getTowerZone().getNumOfTowers() == minTower) {
+                sameNumOfTowers.put(p, 0);
+                if(!sameNumOfTowers.containsKey(winner))
+                    sameNumOfTowers.put(winner, 0);
+            }
+
+        }
+
+        if(!sameNumOfTowers.containsKey(winner))
+            return winner.getNickName();
+
+        else {
+            for(Color c : Color.values()){ //if a professor is owned by a player and the owner is in the "Tie" Map
+                if(gameBoard.getProfessors().containsKey(c) && sameNumOfTowers.containsKey(gameBoard.getProfessorOwnerByColor(c)))
+                    sameNumOfTowers.put(gameBoard.getProfessorOwnerByColor(c), sameNumOfTowers.get(gameBoard.getProfessorOwnerByColor(c)) + 1);
+            }
+
+            maxProfessors = sameNumOfTowers.values().stream().max((p1, p2) -> p1 > p2 ? 1 : p1.equals(p2) ? 0 : -1); //get the max number of prof owned by a player
+
+            if(sameNumOfTowers.values().stream().filter(p -> p.equals(maxProfessors.orElse(-1))).count() > 1) //Checks if someone else has Max professor, if he does it's a tie (2 prof p1, 2 prof p2)
+                return("Tie");
+
+
+
+            return Objects.requireNonNull(sameNumOfTowers.entrySet()
+                    .stream()
+                    .max((p1, p2) -> p1.getValue() > p2.getValue() ? 1 : p1.getValue().equals(p2.getValue()) ? 0 : -1)
+                    .orElse(null))
+                    .getKey().getNickName();
+        }
+
+
+    }
+
+    /**
+     * @return The available cards of a player
+     */
+    public ArrayList<AssistantCard> getPlayerDeck(){
+        return new ArrayList<>(getCurrentPlayer().getDeck().getCards());
+    }
+
+    /**
+     * Fills the Clouds after they are chosen
+     * @throws EmptyBagException Thrown if the bag is empty
+     */
+    public void fillClouds() throws EmptyBagException {
+        gameBoard.fillClouds();
+        notifyObservers();
+    }
+
+    /**
+     * @param characterName Name of the character needed
+     * @return The CharacterCard with the specified name
+     */
+    public CharacterCard getCharacterByName(Characters characterName){
+        for(CharacterCard character : getGameBoard().getCharacters()){
+            if(character.getName().equals(characterName))
+                return character;
+        }
+        throw new RuntimeException("Character not found");
+    }
+
+    /**
+     * Checks the FULL influence (All students' colors + Towers) on the desired Island and swaps the Towers accordingly to the winner
+     * @param islandToCheck The Island on which to calculate the influence
+     */
+    public void checkInfluence(IslandTile islandToCheck) throws TowerWinException {
+
+        TowerColor winner = gameBoard.checkInfluence(islandToCheck);
+        try {
+            gameBoard.swapTowers(islandToCheck, winner);
+
+        }catch(TowerWinException e){
+            notifyObservers();
+            throw e;
+        }
+        notifyObservers();
+    }
+
+    /**
+     * Checks if an Archipelago has to be created between adjacent Islands
+     * @param currentIsland The island on which the method starts checking
+     */
+    public void checkForArchipelago (IslandTile currentIsland) throws NumOfIslandsException {
+        try {
+            gameBoard.checkForArchipelago(currentIsland);
+        } catch (NumOfIslandsException e) {
+            notifyObservers();
+            throw e;
+        }
+        notifyObservers();
+    }
+
+    /**
+     * Checks the Ownership of the Professors after a student is moved
+     */
+    public void checkProfessorsOwnership(){
+        gameBoard.checkProfessorOwnership();
+        notifyObservers();
+    }
+
 
 }

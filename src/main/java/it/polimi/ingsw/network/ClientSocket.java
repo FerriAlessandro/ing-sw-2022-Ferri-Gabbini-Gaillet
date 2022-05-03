@@ -35,7 +35,6 @@ public class ClientSocket extends Thread {
      * Constructor for the {@link ClientSocket}.
      * @param ip the ip address of the desired server
      * @param port the port number of the desired server
-     * @throws IOException when unable to connect
      */
     public ClientSocket(String ip, int port, Adapter adapter){
         this.adapter = adapter;
@@ -85,7 +84,7 @@ public class ClientSocket extends Thread {
         synchronized (sendLock){
             out.writeObject(message);
             if(message.getType().equals(MessageType.R_DISCONNECT)){
-                Thread.currentThread().interrupt();
+                closeConnection();
             }
         }
     }
@@ -120,16 +119,19 @@ public class ClientSocket extends Thread {
      * This method closes the socket and terminates the connection.
      */
     private void closeConnection(){
+        try{
+            out.flush();
+        }catch (Exception ignored){}
         try {
             stopHeartbeat();
             socket.close();
             System.out.println("Closed client socket");
             Thread.currentThread().interrupt();
-            adapter.elaborateMessage(new SMessage(MessageType.DISCONNECTED));
         } catch (IOException ex) {
             System.out.println("Unable to close socket");
             ex.printStackTrace();
         }
+        adapter.elaborateMessage(new SMessage(MessageType.DISCONNECTED));
     }
 
 }

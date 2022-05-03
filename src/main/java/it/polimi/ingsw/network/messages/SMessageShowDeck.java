@@ -11,4 +11,5 @@ public class SMessageShowDeck extends SMessage{
         super(MessageType.S_ASSISTANT);
         this.cards = cards;
     }
+
 }

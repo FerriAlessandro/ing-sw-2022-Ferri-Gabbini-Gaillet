@@ -19,17 +19,18 @@ public class CharacterCard extends TileWithStudents{
     private boolean increased;
     private int noEntryTiles;
     private int maxStudents;
+    private boolean isActive = false;
+    private Color forbiddenColor;
 
     /**
      * Class constructor
      * @param name Name of the chosen Character
-     * @param cost Cost of the Character
      */
-    public CharacterCard(Characters name, int cost){
+    public CharacterCard(Characters name){
 
         super();
         this.name = name;
-        this.cost = cost;
+        this.cost = name.getCost();
         this.increased = false;
         this.maxStudents = 0;
         if(name.equals(Characters.GRANDMA_HERB))
@@ -64,15 +65,12 @@ public class CharacterCard extends TileWithStudents{
 
     /**
      * Removes the No Entry Tiles from the card (if the Character is Grandma Herb)
-      * @return True if the remove was successful, false if there were no 'No Entry Tiles' to remove
      */
 
-    public boolean removeNoEntryTile (){ //if there are no tiles return false... we avoid throwing an exception
+    public void removeNoEntryTile (){ //if there are no tiles return false... we avoid throwing an exception
         if(noEntryTiles > 0) {
-        noEntryTiles--;
-        return true;
-    }
-        else return false;
+            noEntryTiles--;
+        }
 }
 
     /**
@@ -82,6 +80,13 @@ public class CharacterCard extends TileWithStudents{
         if(name.equals(Characters.GRANDMA_HERB) && noEntryTiles < 4)
             noEntryTiles++;
 
+    }
+
+    /**
+     * @return Number of No Entry Tiles
+     */
+    public int getNoEntryTiles(){
+        return this.noEntryTiles;
     }
 
     /**
@@ -121,6 +126,35 @@ public class CharacterCard extends TileWithStudents{
         return name.equals(Characters.MONK) || name.equals(Characters.SPOILED_PRINCESS) || name.equals(Characters.JESTER);
     }
 
+    /**
+     * @return True if the card is currently active, false otherwise
+     */
+    public boolean isActive(){
+        return isActive;
+    }
+
+    /**
+     * Sets the card as active or inactive
+     * @param active True if is active, false if it's not
+     */
+    public void setActive(boolean active){
+        this.isActive = active;
+    }
+
+    /**
+     * Sets the color to ignore in the influence check (only if the card is Mushroom Picker)
+     * @param color The color to ignore in the influence check
+     */
+    public void setForbiddenColor(Color color){
+        this.forbiddenColor = color;
+    }
+
+    /**
+     * @return The color to ignore in the influence check (Only if the card is Mushroom Picker)
+     */
+    public Color getForbiddenColor(){
+        return this.forbiddenColor;
+    }
 
 
 }

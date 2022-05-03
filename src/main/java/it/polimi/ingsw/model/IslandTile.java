@@ -59,7 +59,7 @@ public class IslandTile  extends TileWithStudents{
     /**
      * Invoked when a player decides to put a NoEntryTile on the island.
      */
-    void addNoEntry() {
+    public void addNoEntry() {
         this.numOfNoEntryTiles ++;
     }
 
@@ -67,7 +67,7 @@ public class IslandTile  extends TileWithStudents{
      * Invoked when MotherNature moves on a forbidden island: removes the noEntryTile
      * @throws RuntimeException if the method is called even though there aren't noEntryTile.
      */
-    void removeNoEntry() {
+    public void removeNoEntry() {
         if(numOfNoEntryTiles == 0)
             throw new RuntimeException("There aren't noEntryTile to remove!");
         numOfNoEntryTiles --;
