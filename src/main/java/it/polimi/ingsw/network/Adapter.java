@@ -3,6 +3,7 @@ package it.polimi.ingsw.network;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -90,7 +91,6 @@ public class Adapter {
 
             case S_NICKNAME:
                 view.askNickName();
-                sendMessage(new RMessageNickname(view.getNickName()));
                 break;
 
             case S_GAMESETTINGS:
@@ -135,16 +135,20 @@ public class Adapter {
      * @param message to be sent
      */
     public void sendMessage(Message message){
-        if(!currentPlayer.equals(view.getNickName())){
+        System.out.println("--SENDING MESSAGE TO SERVER--");
+        /*
+        if(message.getType().equals(MessageType.R_GAMESETTINGS) && !message.getType().equals(MessageType.R_NICKNAME) && (currentPlayer.isBlank() || currentPlayer==null ||!currentPlayer.equals(view.getNickName()))){
             view.showGenericMessage(new SMessageInvalid("Not your turn"));
             return;
-        }
+        }*/
 
         try {
             socket.sendMessage(message);
         } catch (IOException e){
+            System.out.println("--UNABLE TO SEND MESSAGE--");
             e.printStackTrace();
         }
+        System.out.println("--MESSAGE SENT--");
     }
 
 }

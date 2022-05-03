@@ -43,35 +43,46 @@ public class Server {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server listening - port: " + port);
             while (true) {
+                System.out.println("Waiting for next player");
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected - address: " + socket.getInetAddress().toString());
                 if (numCurrentGame == 0) {
+                    System.out.println("This is the first player");
                     //IF PLAYER IS FIRST PLAYER OF CURRENT GAME:
                     try {
-                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
                         ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+                        System.out.println("Generated out stream");
+                        ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
                         Message message = null;
-
+                        System.out.println("Generated in stream");
                         do {
                             //Ask for number of players and type of game
+                            System.out.println("Asking for game settings");
                             outputStream.writeObject(new SMessage(MessageType.S_GAMESETTINGS));
                             try {
-                                message = (Message) inputStream.readObject();
-                            } catch (ClassNotFoundException e) {
+                                do {
+                                    message = (Message) inputStream.readObject();
+                                }while (message.getType().equals(MessageType.PING));
+
+                                System.out.println("Received " + message.getType() + " message");
+                            } catch (Exception e) {
+                                System.out.println(System.nanoTime());
                                 e.printStackTrace();
                             }
                         } while (message == null || !message.getType().equals(MessageType.R_GAMESETTINGS));
+                        System.out.println("Received game settings");
 
                         //Initialize game (via creation of new controller)
                         numRequiredGame = ((RMessageGameSettings) message).numPlayers;
                         boolean expertGame = ((RMessageGameSettings) message).expert;
                         controller = new InputController(numRequiredGame, expertGame);
+                        System.out.println("Created input controller");
 
                         new ClientHandler(socket, inputStream, outputStream, controller).start();
                         numCurrentGame += 1;
 
                     } catch (IOException ioException) {
-                        System.out.println("Unable to get the input stream");
+                        System.out.println("Unable to get a stream");
                         ioException.printStackTrace();
                     }
 

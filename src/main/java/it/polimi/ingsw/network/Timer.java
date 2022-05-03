@@ -19,7 +19,9 @@ public class Timer extends Thread{
     }
 
     public void run(){
-        alive = true;
+        synchronized (lockAlive) {
+            alive = true;
+        }
         while(!Thread.currentThread().isInterrupted()){
             synchronized (lockTimestamp) {
                 if (lastTimestamp == 0) {

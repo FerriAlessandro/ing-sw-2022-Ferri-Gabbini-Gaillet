@@ -48,7 +48,6 @@ public class ClientHandler extends Thread {
         this.out = out;
         this.controller = controller;
         timeout = new Timer(this);
-        timeout.start();
     }
 
     /**
@@ -62,18 +61,22 @@ public class ClientHandler extends Thread {
         try {
             Message inMessage;
             do {
+                System.out.println("ClientHandler sending nickname message");
                 sendMessage(new SMessage(MessageType.S_NICKNAME));
-                inMessage = (Message) in.readObject();
+                System.out.println("ClientHandler waiting for nickname");
+                do {
+                    inMessage = (Message) in.readObject();
+                }while (inMessage.getType().equals(MessageType.PING));
                 synchronized (controller) {
                     if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
                         RMessageNickname nickMessage = (RMessageNickname) inMessage;
                         if (!controller.getNicknames().contains(nickMessage.nickname)) {
                             System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
                             this.playerNickname = nickMessage.nickname;
-                            validNickName = true;
                             try {
                                 VirtualView virtualView = new VirtualView(this);
                                 controller.addPlayer(nickMessage.nickname, virtualView);
+                                validNickName = true;
                             } catch (FullGameException e) {
                                 e.printStackTrace();
                             }
@@ -88,15 +91,17 @@ public class ClientHandler extends Thread {
                 //System.out.println("Invalid input or corrupted input stream");
                 e.printStackTrace();
             } else {
+                System.out.println("EOF exception received");
                 disconnect();
             }
         }
 
         //Receive messages
+        timeout.start();
         while (!Thread.currentThread().isInterrupted() && !clientSocket.isClosed()) {
             try {
                 Message inMessage = (Message) in.readObject();
-                //System.out.println("Message received, type: " + inMessage.getType());
+                System.out.println("Message received, type: " + inMessage.getType());
 
                 if (inMessage.getType().equals(MessageType.R_DISCONNECT)) {
                     disconnect();
@@ -144,8 +149,7 @@ public class ClientHandler extends Thread {
         try {
             out.flush();
             clientSocket.close();
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
         this.interrupt();
     }
 

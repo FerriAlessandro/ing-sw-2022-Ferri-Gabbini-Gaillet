@@ -38,12 +38,12 @@ public class TestCli implements ViewInterface {
         );
         String ip = "localhost";
         int port = 2351;
-        System.out.print("Specify the ip address of the server (press Enter for default)");
+        System.out.println("Specify the ip address of the server (press Enter for default)");
         String ipTemp = in.nextLine();
         if(!ipTemp.isEmpty() && !ipTemp.isBlank()){
             ip = ipTemp;
         }
-        System.out.print("Specify the port number of the server (press Enter for defaults)");
+        System.out.println("Specify the port number of the server (press Enter for defaults)");
         String portTemp = in.nextLine();
         if(!portTemp.isEmpty() && !portTemp.isBlank()){
             port = Integer.parseInt(portTemp);

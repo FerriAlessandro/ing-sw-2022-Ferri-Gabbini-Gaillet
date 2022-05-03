@@ -5,7 +5,6 @@ import it.polimi.ingsw.network.messages.MessageType;
 import it.polimi.ingsw.network.messages.PingMessage;
 import it.polimi.ingsw.network.messages.SMessage;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -49,9 +48,14 @@ public class ClientSocket extends Thread {
     public void run() {
         try{
             socket = new Socket(ip, port);
+            ObjectInputStream in;
 
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            out = new ObjectOutputStream(socket.getOutputStream());
+            synchronized (sendLock) {
+                out = new ObjectOutputStream(socket.getOutputStream());
+                in = new ObjectInputStream(socket.getInputStream());
+            }
+
+            startHeartbeat();
 
             while (!Thread.currentThread().isInterrupted()){
                 try {
@@ -59,11 +63,12 @@ public class ClientSocket extends Thread {
                     adapter.elaborateMessage(inMessage);
 
                 } catch (Exception e){
-                    if(!Thread.currentThread().isInterrupted() && !e.getClass().equals(EOFException.class)){
+                    if(!Thread.currentThread().isInterrupted()){
+                        System.out.println(System.nanoTime());
                         System.out.println("Invalid input or corrupted input stream\n");
                         e.printStackTrace();
                         closeConnection();
-                    }else if(e.getClass().equals(EOFException.class)){
+                    }else{
                         closeConnection();
                     }
                     break;
@@ -99,7 +104,6 @@ public class ClientSocket extends Thread {
                 sendMessage(new PingMessage());
             } catch (Exception e) {
                 System.out.println("Lost connection to server");
-                adapter.elaborateMessage(new SMessage(MessageType.DISCONNECTED));
                 closeConnection();
             }
         }, 0, 1, TimeUnit.SECONDS );
@@ -119,6 +123,7 @@ public class ClientSocket extends Thread {
      * This method closes the socket and terminates the connection.
      */
     private void closeConnection(){
+        System.out.println("Closing connection");
         try{
             out.flush();
         }catch (Exception ignored){}
@@ -126,7 +131,7 @@ public class ClientSocket extends Thread {
             stopHeartbeat();
             socket.close();
             System.out.println("Closed client socket");
-            Thread.currentThread().interrupt();
+            this.interrupt();
         } catch (IOException ex) {
             System.out.println("Unable to close socket");
             ex.printStackTrace();
