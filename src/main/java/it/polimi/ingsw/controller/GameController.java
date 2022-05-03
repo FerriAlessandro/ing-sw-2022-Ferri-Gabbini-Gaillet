@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
 /**
@@ -96,6 +97,7 @@ public class GameController {
                 for(VirtualView v : playersView.values()){
                     game.addObserver(v);
                 }
+                game.notifyObservers();
                 broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
                 getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
             }
@@ -353,6 +355,11 @@ public class GameController {
             return;
 
         }
+        catch(InvalidParameterException e){
+            getVirtualView(game.getCurrentPlayer().getNickName()).showGenericMessage(new SMessageInvalid("No student of such color"));
+            askAgain();
+            return;
+        }
         numOfMoves += 1;
 
         if(numOfMoves == numOfPlayers + 1){ //Already moved 3 (or 4) pieces
@@ -410,6 +417,7 @@ public class GameController {
         }
         else {
             try {
+                System.out.println("CIao");
                 game.moveMotherNature(numOfSteps);
 
             } catch (TowerWinException e) {

@@ -6,18 +6,14 @@ import java.util.ArrayList;
  * {@link it.polimi.ingsw.observers.Observer} registered on the given object.
  */
 public abstract class Observable {
-    boolean changed = false;
     ArrayList<Observer> observers  = new ArrayList<>();
 
     /**
      * Method that notifies all {@link Observer} objects registered on this {@link Observable} of a change.
      */
     public void notifyObservers(){
-        if (changed) {
-            for (Observer obs : observers) {
-                obs.notify(this);
-            }
-            clearChanged();
+        for (Observer obs : observers) {
+            obs.notify(this);
         }
     }
 
@@ -36,19 +32,4 @@ public abstract class Observable {
     public void removeObserver(Observer obs){
         observers.remove(obs);
     }
-
-    /**
-     * Method to set the internal changed flag
-     */
-    public void setChanged(){
-        changed = true;
-    }
-
-    /**
-     * Method to reset the internal changed flag
-     */
-    protected void clearChanged(){
-        changed = false;
-    }
-
 }

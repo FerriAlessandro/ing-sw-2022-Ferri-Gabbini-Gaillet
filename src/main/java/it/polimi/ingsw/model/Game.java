@@ -4,6 +4,7 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.*;
 import it.polimi.ingsw.observers.Observable;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,6 @@ public class Game extends Observable {
             this.players.add(new Player(3, new AssistantDeck(Wizard.WIZARD_3), playersNames.get(2), false, false, TowerColor.GRAY));
 
         this.gameBoard = new GameBoard(players);
-        notifyObservers();
     }
 
     /**
@@ -86,7 +86,13 @@ public class Game extends Observable {
         TowerColor influenceWinner;
         islandToCheck = gameBoard.moveMotherNature(num);
         if(!islandToCheck.isForbidden()) {
-            influenceWinner = gameBoard.checkInfluence(islandToCheck);
+            try{
+                influenceWinner = gameBoard.checkInfluence(islandToCheck);
+            }catch(RuntimeException e){
+                notifyObservers();
+                return;
+            }
+
             try {
                 gameBoard.swapTowers(islandToCheck, influenceWinner);
             } catch(TowerWinException e){
@@ -98,6 +104,9 @@ public class Game extends Observable {
             }catch(NumOfIslandsException e){
                 notifyObservers();
                 throw e;
+            }
+            catch(RuntimeException e){
+                notifyObservers();
             }
         }
         else {
@@ -171,9 +180,13 @@ public class Game extends Observable {
      * @param destination The destination of the pawn
      * @throws FullDestinationException Thrown if the selected destination is already full
      */
-    public void move (Color color, TileWithStudents origin, TileWithStudents destination) throws FullDestinationException {
-        gameBoard.move(color, origin, destination);
-
+    public void move (Color color, TileWithStudents origin, TileWithStudents destination) throws FullDestinationException, InvalidParameterException {
+        try {
+            gameBoard.move(color, origin, destination);
+        }catch (Exception e){
+            notifyObservers();
+            throw e;
+        }
         notifyObservers();
     }
 

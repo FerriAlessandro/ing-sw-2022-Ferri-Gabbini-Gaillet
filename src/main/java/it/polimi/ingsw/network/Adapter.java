@@ -40,7 +40,7 @@ public class Adapter {
      * @param message received by the {@link ClientSocket}
      */
     public void elaborateMessage(Message message){
-        if(!message.getType().equals(MessageType.S_TRYAGAIN)){
+        if(!message.getType().equals(MessageType.S_TRYAGAIN) && !message.getType().equals(MessageType.S_INVALID) && !message.getType().equals(MessageType.S_GAMESTATE)){
             previousMessage = message;
         }
         switch (message.getType()) {

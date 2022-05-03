@@ -46,6 +46,14 @@ public class GameBoard implements Serializable {
         clouds = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
             clouds.add(new CloudTile(players.size()));
+            for(int j = 0; j < players.size() + 1; j++){
+                try{
+                    Color student = bag.getStudents(1).get(0);
+                    clouds.get(i).addStudent(student);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
 
         islands = new ArrayList<>();
