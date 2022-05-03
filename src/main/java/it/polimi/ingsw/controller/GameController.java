@@ -92,6 +92,12 @@ public class GameController {
                         characters.remove(0);
                     }
                 }
+
+                for(VirtualView v : playersView.values()){
+                    game.addObserver(v);
+                }
+                broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+                getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
             }
 
         }
@@ -270,6 +276,7 @@ public class GameController {
                                                        //the Game Phase is correct)
 
         RMessageAssistant assistantMessage = (RMessageAssistant) message;
+        System.out.println("PLAYED CARD: " + assistantMessage.getPlayedAssistant());
         try {
             game.playAssistantCard(assistantMessage.getPlayedAssistant());
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
@@ -401,7 +408,6 @@ public class GameController {
             sendErrorMessage(motherNatureMessage.getNickName(), "Insufficient number of steps!");
             getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
         }
-
         else {
             try {
                 game.moveMotherNature(numOfSteps);

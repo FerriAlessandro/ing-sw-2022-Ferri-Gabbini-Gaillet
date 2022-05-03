@@ -60,6 +60,7 @@ public class ClientSocket extends Thread {
             while (!Thread.currentThread().isInterrupted()){
                 try {
                     Message inMessage = (Message) in.readObject();
+                    System.out.println("Received " + inMessage.getType());
                     adapter.elaborateMessage(inMessage);
 
                 } catch (Exception e){

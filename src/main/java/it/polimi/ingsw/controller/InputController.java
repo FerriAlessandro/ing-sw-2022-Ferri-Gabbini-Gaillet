@@ -44,7 +44,9 @@ public class InputController {
         gameController.playerDisconnected(nickname);
     }
 
-    public ArrayList<String> getNicknames(){return new ArrayList<>();}
+    public ArrayList<String> getNicknames(){
+        return gameController.getNickNames();
+    }
 
     public GameController getGameController() { return gameController; }
 

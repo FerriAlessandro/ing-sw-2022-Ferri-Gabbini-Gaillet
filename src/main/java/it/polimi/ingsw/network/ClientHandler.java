@@ -101,7 +101,7 @@ public class ClientHandler extends Thread {
         while (!Thread.currentThread().isInterrupted() && !clientSocket.isClosed()) {
             try {
                 Message inMessage = (Message) in.readObject();
-                System.out.println("Message received, type: " + inMessage.getType());
+                System.out.println("Message received, type: " + inMessage.getType() + "Client Handler:" + Thread.currentThread().getId());
 
                 if (inMessage.getType().equals(MessageType.R_DISCONNECT)) {
                     disconnect();

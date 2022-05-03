@@ -111,16 +111,17 @@ public class TestCli implements ViewInterface {
     @Override
     public void showAssistantChoice(SMessageShowDeck message) {
         int choice;
-        int index = 0;
+        int index;
         do {
             System.out.println("Please pick an assistant card by providing its id: ");
             for(AssistantCard assistantCard : message.cards){
                 index = message.cards.indexOf(assistantCard) + 1;
-                System.out.println(message.cards.indexOf(assistantCard) + 1 + " - " + assistantCard);
+                System.out.println(index + " - " + assistantCard);
             }
             choice = in.nextInt();
         }while (choice < 1 || choice > message.cards.size());
-        adapter.sendMessage(new RMessageAssistant(message.cards.get(index - 1), nickname));
+        System.out.println("Chosen assistant : ");
+        adapter.sendMessage(new RMessageAssistant(message.cards.get(choice - 1), nickname));
     }
 
     /**

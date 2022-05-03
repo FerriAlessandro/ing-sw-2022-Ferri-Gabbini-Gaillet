@@ -36,7 +36,7 @@ public class Game extends Observable {
             this.players.add(new Player(3, new AssistantDeck(Wizard.WIZARD_3), playersNames.get(2), false, false, TowerColor.GRAY));
 
         this.gameBoard = new GameBoard(players);
-
+        notifyObservers();
     }
 
     /**
@@ -106,6 +106,7 @@ public class Game extends Observable {
         }
 
         notifyObservers();
+        System.out.println("END OF MOVEMN in GAME");
     }
 
     /**
