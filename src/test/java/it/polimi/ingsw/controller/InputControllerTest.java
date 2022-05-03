@@ -35,15 +35,20 @@ class InputControllerTest {
  */
 class MockGameController extends GameController {
     Phase phase;
+    boolean messageValidated = false;
     public MockGameController(int numOfPlayers, boolean isExpert) {
         super(numOfPlayers, isExpert);
     }
     public Phase getGamePhase() {
         return phase;
     }
-
     public void setGamePhase(Phase phase) {
         this.phase = phase;
+    }
+
+    public void elaborateMessage(Message mess) {
+        messageValidated = true;
+        super.elaborateMessage(mess);
     }
 }
 
@@ -56,5 +61,6 @@ class MockInputController extends InputController {
         super(numOfPlayers, isExpert);
         gameController = new MockGameController(numOfPlayers, isExpert);
     }
+
     public MockGameController getGameController() { return gameController; }
 }

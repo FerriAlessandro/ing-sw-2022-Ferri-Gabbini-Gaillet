@@ -1,5 +1,6 @@
-package it.polimi.ingsw.controller;
+/*package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.character_controllers.CharacterController;
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
@@ -55,3 +56,4 @@ public class MockGameController extends GameController{
 
     }
 }
+*/

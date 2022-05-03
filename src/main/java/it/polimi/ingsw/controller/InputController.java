@@ -30,9 +30,19 @@ public class InputController {
         verifyMessage(mess);
     }
 
-    public void addPlayer(String nick, VirtualView vv) throws FullGameException {}
+    public void addPlayer(String nickname, VirtualView virtualView) throws FullGameException {
+        if(nickname == null)
+            throw new RuntimeException("Player's nickname received is null!");
+        if(virtualView == null)
+            throw new RuntimeException("VirtualView received is null!");
+        gameController.addPlayer(nickname, virtualView);
+    }
 
-    public void playerDisconnected(String nick){}
+    public void playerDisconnected(String nickname) {
+        if(nickname == null)
+            throw new RuntimeException("Nickname received is nulL!");
+        gameController.playerDisconnected(nickname);
+    }
 
     public ArrayList<String> getNicknames(){return new ArrayList<>();}
 
@@ -88,7 +98,7 @@ public class InputController {
         if(isValid)
             gameController.elaborateMessage(message);
         else
-            gameController.askAgain(message);
+            gameController.askAgain();
     }
 
     private void moveCheck(Message message) {
@@ -148,17 +158,14 @@ public class InputController {
     private void characterCheck(Message message) {
         boolean isValid = ((RMessageCharacter)message).getCharacter() != null;
 
-        if(gamePhase != Phase.CHOOSE_CHARACTER_CARD)
+        if((gamePhase != Phase.CHOOSE_CHARACTER_CARD_1) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_2) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_3))
             new RuntimeException().printStackTrace();
 
         validateMessage(isValid, message);
     }
 
     private void nicknameCheck(Message message) {
-        RMessageNickname mess = (RMessageNickname) message;
-        String nickname = mess.getNickname();
         boolean isValid = ((RMessageNickname)message).getNickname() == null;
-
         validateMessage(isValid, message);
     }
 
