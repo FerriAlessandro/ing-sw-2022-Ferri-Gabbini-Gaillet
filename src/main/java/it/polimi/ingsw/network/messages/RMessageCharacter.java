@@ -16,5 +16,7 @@ public class RMessageCharacter extends Message {
         this.character = character;
         this.nickname = nickname;
     }
+
+    public Characters getCharacter() { return this.character; }
 }
 

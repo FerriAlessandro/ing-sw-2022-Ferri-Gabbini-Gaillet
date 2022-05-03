@@ -27,16 +27,14 @@ public class IslandTile  extends TileWithStudents{
         return this.towerColor;
     }
 
-    public int getNumTowers() {
-        return this.towers;
-    }
+    public int getNumTowers() { return this.towers; }
 
     public int getNumOfNoEntryTiles() {
         return this.numOfNoEntryTiles;
     }
 
     /**
-     * Changes the "owner" of the island, following a contention after Mother Nature movement.
+     * Changes the "owner" of the island, following a contention after Mother Nature movement or special character card use.
      * @param towerColor is the winner's tower color.
      * @throws IllegalArgumentException when the towerColor received is "NONE".
      */

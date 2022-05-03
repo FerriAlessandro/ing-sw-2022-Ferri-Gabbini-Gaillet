@@ -13,4 +13,6 @@ public class RMessageNickname extends Message{
         this.nickname = nickname;
         this.type = MessageType.R_NICKNAME;
     }
+
+    public String getNickname() { return this.nickname; }
 }

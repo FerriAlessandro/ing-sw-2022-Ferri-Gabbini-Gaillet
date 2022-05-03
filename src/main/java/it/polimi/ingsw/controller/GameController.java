@@ -133,6 +133,21 @@ public class GameController {
     }
 
     /**
+     * Method called when the message received has null/unacceptable data.
+     */
+    public void askAgain() {
+        getVirtualView(game.getCurrentPlayer().getNickName()).askAgain();
+    }
+
+    /**
+     * Method called when one of the player loses the connection.
+     * @param nickname is the nickname of the player disconnected
+     */
+    public void playerDisconnected(String nickname) {
+        //TODO resilienza alle disconnessioni?
+    }
+
+    /**
      * Utility method to send the same message to each player's virtual view
      * @param message The message that needs to be broadcasted
      */
