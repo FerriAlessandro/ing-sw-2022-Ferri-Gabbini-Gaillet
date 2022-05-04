@@ -58,11 +58,11 @@ public abstract class TileWithStudents {
     }
 
     /**
-     * Getter for the internal map of students.
-     * @return the reference to the memorized map.
+     * Provides a copy of the internal map of students.
+     * @return a new map representing students on this tile.
      */
     public Map<Color, Integer> getState(){
-        return students;
+        return new EnumMap<>(students);
     }
 }
 

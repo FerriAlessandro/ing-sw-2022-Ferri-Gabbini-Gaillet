@@ -206,6 +206,7 @@ public class TestCli implements ViewInterface {
 
             System.out.print("\n\tDining room: ");
             printColorMap(gameState.studDining.get(player));
+            System.out.print("\n");
         }
 
         System.out.println("\n\nClouds: ");
@@ -278,7 +279,6 @@ public class TestCli implements ViewInterface {
         String chosenColor;
         int destination;
 
-        System.out.print("Please pick the color (" + colorList() + "): ");
         chosenColor = colorChoice();
 
         do{
