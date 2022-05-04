@@ -119,7 +119,7 @@ public class GameController {
                 break;
 
             case R_CHARACTER:
-               // elaborateCharacter(m);
+                elaborateCharacter(m);
                 break;
 
             case R_MOVE:
