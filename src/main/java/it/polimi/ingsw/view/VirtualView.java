@@ -167,7 +167,7 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
-     * Asks additional information on chosen caracter effect of
+     * Asks additional information on chosen character effect of
      * {@link Characters#GRANDMA_HERB} or
      * {@link Characters#HERALD}.
      *
@@ -179,7 +179,7 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
-     * Asks additional information on chosen caracter effect of
+     * Asks additional information on chosen character effect of
      * {@link Characters#MONK} or
      * {@link Characters#SPOILED_PRINCESS}.
      *
@@ -191,7 +191,7 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
-     * Asks additional information on chosen caracter effect of
+     * Asks additional information on chosen character effect of
      * {@link Characters#ROGUE} or
      * {@link Characters#MUSHROOM_PICKER}.
      *
@@ -203,7 +203,7 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
-     * Asks additional information on chosen caracter effect of
+     * Asks additional information on chosen character effect of
      * {@link Characters#JESTER} or
      * {@link Characters#BARD}.
      *
@@ -232,6 +232,7 @@ public class VirtualView implements ViewInterface, Observer {
     public void notify(Observable observable) {
 
         Game g = (Game) observable;
+        System.out.println(g.toString());
 
         Map<String, Map<Color, Integer>> studEntrance = new HashMap<>();
         Map<String, Map<Color, Integer>> studDining = new HashMap<>();
@@ -271,6 +272,11 @@ public class VirtualView implements ViewInterface, Observer {
         int motherNaturePosition = islands.indexOf(g.getGameBoard().getMotherNature().getCurrentIsland());
 
         SMessageGameState message = new SMessageGameState(studEntrance, studDining, studIslands, numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition);
+
+        System.out.println("\n------------------\n");
+        TestCli cli = new TestCli();
+        cli.showBoard(message);
+        System.out.println("\n------------------\n");
 
         showBoard(message);
     }
