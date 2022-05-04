@@ -519,8 +519,24 @@ public class TestCli implements ViewInterface {
     private void printColorMap(Map<Color, Integer> map){
         for(Color color: map.keySet()){
             if(map.get(color) != 0)
-                System.out.print(map.get(color) + "x" + color + "\t");
+                System.out.print(colored(color) + map.get(color) + " " + color + endColor() + "\t");
         }
     }
 
+    /**
+     * Start coloring text of provided color.
+     * @param color
+     * @return ANSI color escape sequence
+     */
+    private String colored(Color color){
+        return CliColors.colored(color);
+    }
+
+    /**
+     * End text coloring.
+     * @return ANSI color escape code for reset
+     */
+    private String endColor(){
+        return CliColors.endColor();
+    }
 }
