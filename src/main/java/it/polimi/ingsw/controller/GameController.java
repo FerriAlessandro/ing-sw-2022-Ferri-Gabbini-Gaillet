@@ -87,6 +87,7 @@ public class GameController {
                 gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
                 if(isExpert){
                     ArrayList<Characters> characters = new ArrayList<>(List.of(Characters.values()));
+                    characters.remove(Characters.NONE);
                     for(int i=0;i<3;i++){
                         Collections.shuffle(characters);
                         game.getGameBoard().addCharacterCard(characters.get(0));

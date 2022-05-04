@@ -56,6 +56,7 @@ public class InputController {
      */
     private void verifyMessage(Message message) {
         //TODO synchronization on Message (?)
+        //TODO Tutti gli RMessage dei character (Es R_JESTERBARD)
         gamePhase = gameController.getGamePhase();
 
         switch(message.getType()) {
