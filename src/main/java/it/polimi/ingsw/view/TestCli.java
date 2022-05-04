@@ -114,14 +114,18 @@ public class TestCli implements ViewInterface {
         int choice;
         int index;
         do {
-            System.out.println("Please pick an assistant card by providing its id: ");
+            System.out.println("\nPlease pick an assistant card by providing its id: ");
             for(AssistantCard assistantCard : message.cards){
                 index = message.cards.indexOf(assistantCard) + 1;
-                System.out.println(index + " - " + assistantCard);
+                String spacing1 = "";
+                String spacing2 = "";
+                for(int i = 0; i < 10 - assistantCard.name().length() - (assistantCard.ordinal() + 1)/10; i++){spacing1 = spacing1.concat(" ");}
+                if(assistantCard.getCardValue() < 10){spacing2 = spacing2.concat(" ");}
+                System.out.println(index + " - " + assistantCard + spacing1 + "(value: " + assistantCard.getCardValue() + "," + spacing2 +" moves: " + assistantCard.getMotherNatureMovement() + ")");
             }
             choice = in.nextInt();
         }while (choice < 1 || choice > message.cards.size());
-        System.out.println("Chosen assistant : ");
+        System.out.println("Chosen assistant : " + message.cards.get(choice - 1));
         adapter.sendMessage(new RMessageAssistant(message.cards.get(choice - 1), nickname));
     }
 
@@ -192,6 +196,7 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void showBoard(SMessageGameState gameState) {
+        System.out.println("\033[H\033[2J"); //clears console
         System.out.println("THIS IS THE CURRENT SITUATION OF THE TABLE: ");
         System.out.println("Professor ownership: ");
         for (Color color: gameState.professors.keySet()){
@@ -202,7 +207,10 @@ public class TestCli implements ViewInterface {
         for (String player: gameState.studEntrance.keySet()){
             System.out.println("Player: " + player.toUpperCase());
 
-            System.out.print("\tEntrance: ");
+            System.out.print("\tTower color: " + gameState.towerColor.get(player));
+            System.out.print("\t" + gameState.towerNumber.get(player) + " remaining");
+
+            System.out.print("\n\tEntrance: ");
             printColorMap(gameState.studEntrance.get(player));
 
             System.out.print("\n\tDining room: ");
@@ -210,17 +218,20 @@ public class TestCli implements ViewInterface {
             System.out.print("\n");
         }
 
-        System.out.println("\n\nClouds: ");
+        System.out.println("\nClouds: ");
         for (int cloud: gameState.studClouds.keySet()){
             int cloudIdx = cloud + 1;
-            System.out.print("\nCloud " + cloudIdx + ": ");
+            System.out.print("\tCloud " + cloudIdx + ": ");
             printColorMap(gameState.studClouds.get(cloud));
+            System.out.print("\n");
         }
 
-        System.out.println("\n\nIslands: ");
+        System.out.print("\nIslands: ");
         for (int island: gameState.studIslands.keySet()){
             int islandIdx = island + 1;
-            System.out.print("\nIsland " + islandIdx + ": ");
+            String spacing = "";
+            if(islandIdx < 10){ spacing = spacing.concat(" ");}
+            System.out.print("\n\tIsland " + islandIdx + ": " + spacing);
             printColorMap(gameState.studIslands.get(island));
             if(!gameState.colorTowerIslands.get(island).equals(TowerColor.NONE) && gameState.numTowersIslands.get(island)!=0){
                 System.out.print("\t" + gameState.numTowersIslands.get(island) + gameState.colorTowerIslands.get(island) + " towers");
@@ -229,7 +240,7 @@ public class TestCli implements ViewInterface {
                 System.out.print("\t MOTHER NATURE");
             }
             if(gameState.forbiddenTokens.get(island)!=0){
-                System.out.print(gameState.forbiddenTokens.get(island) + "forbidden tokens - Mother Nature CANNOT move here");
+                System.out.print("\t" + gameState.forbiddenTokens.get(island) + "forbidden tokens - Mother Nature CANNOT move here");
             }
         }
     }
@@ -275,8 +286,7 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void askMove(){
-        System.out.println("It's your turn to move the students");
-        System.out.println("Please pick your next move.");
+        System.out.println("It's your turn to move the students - please pick your next move");
         String chosenColor;
         int destination;
 
@@ -305,7 +315,7 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer) {
-        System.out.println("It's now " + messageCurrentPlayer.nickname + "'s turn");
+        System.out.println("\n\nIt's now " + messageCurrentPlayer.nickname + "'s turn");
     }
 
     /**

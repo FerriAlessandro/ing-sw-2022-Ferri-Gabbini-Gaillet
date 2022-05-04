@@ -60,14 +60,13 @@ public class ClientSocket extends Thread {
             while (!Thread.currentThread().isInterrupted()){
                 try {
                     Message inMessage = (Message) in.readObject();
-                    System.out.println("Received " + inMessage.getType());
+                    //System.out.println("Received " + inMessage.getType());
                     adapter.elaborateMessage(inMessage);
 
                 } catch (Exception e){
                     if(!Thread.currentThread().isInterrupted()){
                         System.out.println(System.nanoTime());
                         System.out.println("Invalid input or corrupted input stream\n");
-                        e.printStackTrace();
                         closeConnection();
                     }else{
                         closeConnection();
@@ -99,7 +98,7 @@ public class ClientSocket extends Thread {
      * This method starts an executor which sends {@link PingMessage} at a fixed interval.
      */
     public void startHeartbeat(){
-        System.out.println("Starting heartbeat");
+        //System.out.println("Starting heartbeat");
         heartbeat.scheduleWithFixedDelay( () -> {
             try {
                 sendMessage(new PingMessage());
@@ -116,7 +115,7 @@ public class ClientSocket extends Thread {
     public void stopHeartbeat(){
         if (!heartbeat.isShutdown()) {
             heartbeat.shutdownNow();
-            System.out.println("Stopping heartbeat");
+            //System.out.println("Stopping heartbeat");
         }
     }
 
