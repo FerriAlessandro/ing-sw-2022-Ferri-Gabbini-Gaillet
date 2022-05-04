@@ -76,7 +76,8 @@ public class TestCli implements ViewInterface {
             System.out.print("Please enter valid a number: ");
             num = in.nextInt();
         }
-        System.out.print("Do you want to play an expert game or not: y/n");
+        System.out.print("Do you want to play an expert game or not (y/n): ");
+        in.nextLine();
         String choice = in.nextLine();
         while(!choice.equals("y") && !choice.equals("n")){
             System.out.print("Please enter valid a answer (y/n): ");
@@ -505,10 +506,13 @@ public class TestCli implements ViewInterface {
      */
     private String colorChoice(){
         String choice;
-        do {
+        System.out.println("Please choose a color among the following: " + colorList());
+        in.nextLine();
+        choice = in.nextLine();
+        while (!isValidColor(choice)){
             System.out.println("Please choose a valid color (" + colorList() + "): ");
             choice = in.nextLine();
-        }while (!isValidColor(choice));
+        }
         return choice;
     }
 

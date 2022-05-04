@@ -368,6 +368,11 @@ public class GameBoard implements Serializable {
             for (int i = 0; i < isl2.getNumOfNoEntryTiles(); i++) {
                 isl1.addNoEntry();
             }
+
+            if(motherNature.getCurrentIsland().equals(isl2)){
+                motherNature.move(islands.size() - 1);
+            }
+
             islands.remove(isl2);
 
             if (islands.size() == 3){
@@ -533,7 +538,7 @@ public class GameBoard implements Serializable {
             if (card.containsStudents())
                 try {
                     card.setStudents(bag);
-                }catch(EmptyBagException ignored){}; //Can't be empty when initializing the characters
+                }catch(EmptyBagException ignored){} //Can't be empty when initializing the characters
             characters.add(card);
         }
     }
