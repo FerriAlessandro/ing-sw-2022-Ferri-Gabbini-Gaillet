@@ -133,6 +133,13 @@ public class GameController {
                 elaborateCloud(m);
                 break;
 
+            case R_GRANDMAHERBHERALD:
+            case R_JESTERBARD:
+            case R_ROGUEMUSHROOMPICKER:
+            case R_MONKPRINCESS:
+                elaborateActivation(m);
+                break;
+
             default:
                  new UnsupportedOperationException().printStackTrace();
 
@@ -424,13 +431,12 @@ public class GameController {
                 for (String nickName : nickNames)
                    getVirtualView(nickName).showWinMessage(new SMessageWin(e.getMessage()));
                 return;
-                //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
+
 
             }
             catch (NumOfIslandsException e) {
 
                 checkWin();
-                //TODO CHIUDERE TUTTO OOOOOOOOOOOOOOO HANNO VINTO
                 return;
 
             }
@@ -557,7 +563,7 @@ public class GameController {
                 break;
             }
             case WINNER:{
-                //TODO CHIUDERE TUTTO, C'E' UN VINCITORE ED E' GIA' STATO NOTIFICATO
+
                 break;
             }
             default:
