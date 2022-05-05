@@ -28,6 +28,10 @@ public class InputController {
         gameController = new GameController(numOfPlayers, isExpert);
     }
 
+    public GameController getGameController() {
+        return gameController;
+    }
+
     /**
      * Method called by the clientHandler for sending messages
      * @param mess is the received message that has to be checked
@@ -57,7 +61,7 @@ public class InputController {
     public void playerDisconnected(String nickname) {
         if(nickname == null)
             throw new RuntimeException("Nickname received is nulL!");
-        gameController.playerDisconnected(nickname);
+        getGameController().playerDisconnected(nickname);
     }
 
     public ArrayList<String> getNicknames(){
@@ -74,7 +78,7 @@ public class InputController {
      */
     private void verifyMessage(Message message) {
 
-        gamePhase = gameController.getGamePhase();
+        gamePhase = getGameController().getGamePhase();
 
         switch(message.getType()) {
 
@@ -132,9 +136,9 @@ public class InputController {
      */
     private void validateMessage(boolean isValid, Message message) {
         if(isValid)
-            gameController.elaborateMessage(message);
+            getGameController().elaborateMessage(message);
         else
-            gameController.askAgain();
+            getGameController().askAgain();
     }
 
     /**
@@ -306,7 +310,7 @@ public class InputController {
      * Check if the {@link RMessageNickname} has acceptable field.
      */
     private void nicknameCheck(Message message) {
-        boolean isValid = ((RMessageNickname)message).getNickname() == null;
+        boolean isValid = !(((RMessageNickname)message).getNickname() == null);
         validateMessage(isValid, message);
     }
 
