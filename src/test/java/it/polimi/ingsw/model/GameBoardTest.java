@@ -419,7 +419,7 @@ class GameBoardTest {
 
     @Test
     @DisplayName("Tests if the method addCharacterCard works properly")
-    public void addCharacterTest() throws EmptyBagException {
+    public void addCharacterTest() {
 
         int oldSize = bg.numRemaining();
 

@@ -1,5 +1,5 @@
 package it.polimi.ingsw.network;
-
+/*
 import it.polimi.ingsw.network.messages.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -121,3 +121,4 @@ class MockAdapter extends Adapter{
         messageTypes.add(mess.getType());
     }
 }
+*/

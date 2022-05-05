@@ -30,7 +30,7 @@ public class ClientHandler extends Thread {
      * @param controller of the current game
      * @throws IOException when unable to get {@link InputStream} or {@link OutputStream}
      */
-    ClientHandler(Socket socket, InputController controller) throws IOException {
+    public ClientHandler(Socket socket, InputController controller) throws IOException {
         this(socket, new ObjectInputStream(socket.getInputStream()), new ObjectOutputStream(socket.getOutputStream()), controller);
     }
 

@@ -129,6 +129,14 @@ class GameTest {
         }
         assertTrue(p1.isPlayerTurn());
         game.getGameBoard().fillClouds();
+
+        Entrance entrance =  game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getEntrance();
+        for (Color color: Color.values()){
+            while(entrance.getNumStudents(color) > 0){
+                entrance.removeStudent(color);
+            }
+        }
+
         game.chooseCloud(game.getGameBoard().getClouds().get(0));
         assertFalse(p1.isPlayerTurn());
         assertTrue(p2.isPlayerTurn());
@@ -150,6 +158,12 @@ class GameTest {
         p3.setPlayerTurn(true);
         game.getGameBoard().fillClouds();
 
+        Entrance entrance =  game.getGameBoard().getPlayerBoard(game.getCurrentPlayer()).getEntrance();
+        for (Color color: Color.values()){
+            while(entrance.getNumStudents(color) > 0){
+                entrance.removeStudent(color);
+            }
+        }
         assertThrows(EndRoundException.class, ()->game.chooseCloud(game.getGameBoard().getClouds().get(0)));
         assertTrue(game.getGameBoard().getPlayerBoard(p3).getEntrance().getNumStudents() != 0);
 
@@ -242,7 +256,7 @@ class GameTest {
 
     @Test
     @DisplayName("Tests if the method 'GetCharacterByName' works properly")
-    public void TestGetCharacterByName() throws EmptyBagException {
+    public void TestGetCharacterByName() {
 
         game.getGameBoard().addCharacterCard(Characters.JESTER);
         game.getGameBoard().addCharacterCard(Characters.GRANDMA_HERB);

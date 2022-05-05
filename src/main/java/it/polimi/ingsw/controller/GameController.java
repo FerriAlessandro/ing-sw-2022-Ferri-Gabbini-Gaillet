@@ -39,12 +39,10 @@ public class GameController {
      * @param isExpert Flag to know if it's an expert game
      */
     public GameController(int numOfPlayers, boolean isExpert){
-
         this.isLastRound = false;
         this.numOfPlayers = numOfPlayers;
         this.isExpert = isExpert;
         this.hasPlayedCharacter = false;
-
     }
 
     /**

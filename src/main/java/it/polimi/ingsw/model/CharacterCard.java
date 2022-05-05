@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 import it.polimi.ingsw.exceptions.EmptyBagException;
+import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 
@@ -104,7 +105,9 @@ public class CharacterCard extends TileWithStudents{
                 maxStudents = 4;
                 ArrayList<Color> students = bag.getStudents(maxStudents);
                 for (int i = 0; i < maxStudents; i++)
-                    getState().put(students.get(i), getState().get(students.get(i)) + 1);
+                    try {
+                        addStudent(students.get(i));
+                    } catch (FullDestinationException ignored){}
                 break;
             }
 
@@ -112,7 +115,9 @@ public class CharacterCard extends TileWithStudents{
                 maxStudents = 6;
                 ArrayList<Color> students = bag.getStudents(maxStudents);
                 for (int i = 0; i < maxStudents; i++)
-                    getState().put(students.get(i), getState().get(students.get(i)) + 1);
+                    try {
+                        addStudent(students.get(i));
+                    } catch (FullDestinationException ignored){}
                 break;
             }
 
