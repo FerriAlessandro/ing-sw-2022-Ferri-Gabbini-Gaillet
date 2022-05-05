@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Wizard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,10 +13,11 @@ import java.util.List;
  * @author Alessandro F.
  * @version 1.0
  */
-public class AssistantDeck {
+public class AssistantDeck implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private final Wizard wizard;
-    private List<AssistantCard> deck = new ArrayList<>();
+    private final List<AssistantCard> deck = new ArrayList<>();
 
     public AssistantDeck(Wizard wizard){                            // player can choose its wizard
         this.wizard = wizard;

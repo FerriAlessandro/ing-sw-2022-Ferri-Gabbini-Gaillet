@@ -124,6 +124,10 @@ public class Adapter {
                 view.jesterBardScene((SMessageJesterBard) message);
                 break;
 
+            case S_LOADGAME:
+                view.askUseSavedGame();
+                break;
+
             default:
                 new UnsupportedOperationException().printStackTrace();
                 break;

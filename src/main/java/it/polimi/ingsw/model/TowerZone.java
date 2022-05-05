@@ -2,13 +2,16 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.TowerWinException;
 
+import java.io.Serializable;
+
 /**
  * Represents the tower zone of a player board. It hosts the player's towers.
  * towers attribute indicates how many towers are left
  * @author AlessandroG
  * @version 2.0
  */
-public class TowerZone {
+public class TowerZone implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int towers;
 
     /**

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import it.polimi.ingsw.exceptions.FullGameException;
 import it.polimi.ingsw.model.enumerations.Characters;
@@ -14,8 +15,9 @@ import it.polimi.ingsw.network.messages.*;
  * @author AlessandroG
  * @version 1.0
  */
-public class InputController {
+public class InputController implements Serializable{
 
+    private static final long serialVersionUID = 1L;
     private final GameController gameController;
     private Phase gamePhase;
 
@@ -37,6 +39,7 @@ public class InputController {
      * @param mess is the received message that has to be checked
      */
     public void elaborateMessage(Message mess){
+        DiskManager.saveGame(this);
         verifyMessage(mess);
     }
 

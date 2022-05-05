@@ -2,6 +2,7 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.exceptions.FullGameException;
+import it.polimi.ingsw.exceptions.NotExistingPlayerException;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
@@ -22,6 +23,7 @@ public class ClientHandler extends Thread {
     private final InputController controller;
     private String playerNickname = null;
     private final Timer timeout;
+    public static boolean restored = false;
 
     /**
      * Constructor to be used for players that are not first.
@@ -55,46 +57,8 @@ public class ClientHandler extends Thread {
      */
     public void run() {
         if (in == null) return;
-        boolean validNickName = false;
 
-        //Wait for nickname message
-        try {
-            Message inMessage;
-            do {
-                System.out.println("ClientHandler sending nickname message");
-                sendMessage(new SMessage(MessageType.S_NICKNAME));
-                System.out.println("ClientHandler waiting for nickname");
-                do {
-                    inMessage = (Message) in.readObject();
-                }while (inMessage.getType().equals(MessageType.PING));
-                synchronized (controller) {
-                    if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
-                        RMessageNickname nickMessage = (RMessageNickname) inMessage;
-                        if (!controller.getNicknames().contains(nickMessage.nickname)) {
-                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                            this.playerNickname = nickMessage.nickname;
-                            try {
-                                VirtualView virtualView = new VirtualView(this);
-                                controller.addPlayer(nickMessage.nickname, virtualView);
-                                validNickName = true;
-                            } catch (FullGameException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            sendMessage(new SMessageInvalid("Nickname already taken"));
-                        }
-                    }
-                }
-            } while (!inMessage.getType().equals(MessageType.R_NICKNAME) || !validNickName);
-        } catch (Exception e) {
-            if (!e.getClass().equals(EOFException.class)) {
-                //System.out.println("Invalid input or corrupted input stream");
-                e.printStackTrace();
-            } else {
-                System.out.println("EOF exception received");
-                disconnect();
-            }
-        }
+        askNickname();
 
         //Receive messages
         timeout.start();
@@ -160,6 +124,77 @@ public class ClientHandler extends Thread {
      */
     public String getPlayerNickname() {
         return playerNickname;
+    }
+
+
+    public void askNickname(){
+        //Wait for nickname message
+        boolean validNickName = false;
+        try {
+
+            Message inMessage;
+            do {
+                System.out.println("ClientHandler sending nickname message");
+                sendMessage(new SMessage(MessageType.S_NICKNAME));
+                System.out.println("ClientHandler waiting for nickname");
+                do {
+                    inMessage = (Message) in.readObject();
+                }while (inMessage.getType().equals(MessageType.PING));
+                synchronized (controller) {
+                    if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
+                        RMessageNickname nickMessage = (RMessageNickname) inMessage;
+
+                        if(restored) {
+
+                            if(controller.getGameController().restorable(nickMessage.nickname)){
+                                if(!controller.getNicknames().contains(nickMessage.nickname)) {
+                                    System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                                    this.playerNickname = nickMessage.nickname;
+                                    try {
+                                        VirtualView virtualView = new VirtualView(this);
+                                        controller.getGameController().restorePlayer(nickMessage.nickname, virtualView);
+                                        validNickName = true;
+                                    } catch (FullGameException | NotExistingPlayerException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    sendMessage(new SMessageInvalid("Nickname already taken"));
+                                }
+                            } else {
+                                sendMessage(new SMessageInvalid("No player of the saved game had this nickname"));
+                            }
+
+                        }else {
+
+                            if (!controller.getNicknames().contains(nickMessage.nickname)) {
+                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                                this.playerNickname = nickMessage.nickname;
+                                try {
+                                    VirtualView virtualView = new VirtualView(this);
+                                    controller.addPlayer(nickMessage.nickname, virtualView);
+                                    validNickName = true;
+                                } catch (FullGameException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                sendMessage(new SMessageInvalid("Nickname already taken"));
+                            }
+
+                        }
+
+                    }
+                }
+            } while (!inMessage.getType().equals(MessageType.R_NICKNAME) || !validNickName);
+
+        } catch (Exception e) {
+            if (!e.getClass().equals(EOFException.class)) {
+                //System.out.println("Invalid input or corrupted input stream");
+                e.printStackTrace();
+            } else {
+                System.out.println("EOF exception received");
+                disconnect();
+            }
+        }
     }
 
 }

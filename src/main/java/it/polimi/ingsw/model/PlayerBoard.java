@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
+
 /**This class represents the board personal to each player
  * @author A.G. Gaillet
  * @version 1.0
@@ -7,7 +9,8 @@ package it.polimi.ingsw.model;
  * @see DiningRoom
  * @see TowerZone
  */
-public class PlayerBoard {
+public class PlayerBoard implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final Entrance entrance;
     private final DiningRoom diningRoom;
     private final TowerZone towerZone;

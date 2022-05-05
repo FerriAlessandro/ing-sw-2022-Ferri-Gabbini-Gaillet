@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -19,13 +20,13 @@ import java.util.*;
  * @version 1.0
  */
 
-public class GameController {
+public class GameController implements Serializable {
 
-
+    private static final long serialVersionUID = 1L;
     private Game game;
     public Phase gamePhase;
     private CharacterController characterController;
-    private final Map<String, VirtualView > playersView = new HashMap<>();
+    public transient Map<String, VirtualView > playersView;
     private final boolean isExpert;
     private boolean isLastRound;
     private final int numOfPlayers;
@@ -34,7 +35,7 @@ public class GameController {
     private final ArrayList<String> nickNames = new ArrayList<>();
 
     /**
-     * Game Controller constructor
+     * Game Controller constructor.
      * @param numOfPlayers Num of players in the game
      * @param isExpert Flag to know if it's an expert game
      */
@@ -43,6 +44,7 @@ public class GameController {
         this.numOfPlayers = numOfPlayers;
         this.isExpert = isExpert;
         this.hasPlayedCharacter = false;
+        this.playersView = new HashMap<>();
     }
 
     /**
@@ -64,6 +66,38 @@ public class GameController {
 
     public ArrayList<String> getNickNames() {
         return nickNames;
+    }
+
+    public boolean restorable(String nickname){
+        ArrayList<String> availableNicknames = new ArrayList<>();
+        for(Player player : game.getPlayers()){
+            availableNicknames.add(player.getNickName());
+        }
+        return availableNicknames.contains(nickname);
+    }
+    /**
+     * Restore player.
+     * @param nickName of the player to add
+     * @param playerView Virtual View for the player
+     * @throws FullGameException
+     */
+    public void restorePlayer(String nickName, VirtualView playerView) throws FullGameException, NotExistingPlayerException{
+        if(playersView.size() < numOfPlayers){
+            if(restorable(nickName)){
+                playersView.put(nickName, playerView);
+            } else {
+                throw new NotExistingPlayerException();
+            }
+            if (playersView.size() == numOfPlayers) {
+                for(VirtualView v : playersView.values()){
+                    game.addObserver(v);
+                }
+                game.notifyObservers();
+                //TODO: start game from where it left off
+            }
+        } else {
+            throw new FullGameException();
+        }
     }
 
     /**
@@ -564,4 +598,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Return expert-game-flag
+     * @return true if the game is an expert game, false otherwise.
+     */
+    public boolean isExpert(){
+        return isExpert;
+    }
 }

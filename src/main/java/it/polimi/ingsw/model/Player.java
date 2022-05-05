@@ -7,16 +7,15 @@ import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Status;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 
+import java.io.Serializable;
+
 /**
  * This class represents the Player entity in the game.
  * @author Alessandro F.
  * @version 1.0
  */
-
-/**
- * Constructor of the Player Class, the status is set to "True".
- */
-public class Player {
+public class Player implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int ID;
     private final String nickName;
     private final AssistantDeck assistantDeck;
@@ -26,6 +25,9 @@ public class Player {
     private final TowerColor towerColor;
     private AssistantCard playedCard;
 
+    /**
+     * Constructor of the Player Class, the status is set to "True".
+     */
     public Player(int ID, AssistantDeck deck, String name, boolean isFirst, boolean isPlayerTurn, TowerColor color){
 
         this.ID = ID;
@@ -120,11 +122,10 @@ public class Player {
      * @return "False" if the player has at least 1 card that hasn't already been played in this turn by other players, "True" otherwise.
      */
     private boolean noCardsAvailable(){
-        boolean noCards = true;
         for(AssistantCard a : assistantDeck.getCards())
             if(!a.getPlayed())
-                noCards = false;
-        return noCards;
+                return false;
+        return true;
     }
 
     /**

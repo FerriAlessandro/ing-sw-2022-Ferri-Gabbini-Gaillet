@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
 import it.polimi.ingsw.observers.Observer;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -21,6 +22,7 @@ import java.util.*;
  * @version 1.0
  */
 public class VirtualView implements ViewInterface, Observer {
+    private static final long serialVersionUID = 1L;
     ClientHandler clientHandler;
 
     /**
@@ -78,7 +80,7 @@ public class VirtualView implements ViewInterface, Observer {
      * Display a disconnection message.
      */
     @Override
-    public void showDisconnectionMessage() {} //TODO: check?
+    public void showDisconnectionMessage() {new UnsupportedOperationException().printStackTrace();} //TODO: check?
 
     /**
      * Display a "someone has won" message.
@@ -212,6 +214,14 @@ public class VirtualView implements ViewInterface, Observer {
     @Override
     public void jesterBardScene(SMessageJesterBard message) {
         clientHandler.sendMessage(message);
+    }
+
+    /**
+     * Ask the user whether to use the loaded game save or not.
+     */
+    @Override
+    public void askUseSavedGame() {
+        new UnsupportedOperationException().printStackTrace();
     }
 
     /**

@@ -4,6 +4,7 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.*;
 import it.polimi.ingsw.observers.Observable;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,8 +16,9 @@ import java.util.stream.Collectors;
  * @version 1.0
  */
 
-public class Game extends Observable {
+public class Game extends Observable implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private ArrayList<Player> players; //sorted based on the assistant cards played (lowest to highest)
     private Phase gamePhase;
     private final GameBoard gameBoard;

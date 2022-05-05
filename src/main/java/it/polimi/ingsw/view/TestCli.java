@@ -264,7 +264,7 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void showGenericMessage(SMessageInvalid message) {
-        System.out.println(message.getError());
+        System.out.println("\n" + message.getError().toUpperCase());
     }
 
     /**
@@ -482,6 +482,23 @@ public class TestCli implements ViewInterface {
         }
 
         adapter.sendMessage(new RMessageJesterBard(messageJesterBard.characterName, nickname, origin, entrance));
+    }
+
+    /**
+     * Ask the user whether to use the loaded game save or not.
+     */
+    @Override
+    public void askUseSavedGame() {
+        String choice;
+        do {
+            System.out.println("A saved game matching your desired settings was found. Do you wish to continue playing it? y/n");
+            choice = in.nextLine();
+        }while (!choice.equals("y") && !choice.equals("n"));
+        if (choice.equals("y")){
+            adapter.sendMessage(new RMessageLoadGame(true));
+        }else{
+            adapter.sendMessage(new RMessageLoadGame(false));
+        }
     }
 
     /**

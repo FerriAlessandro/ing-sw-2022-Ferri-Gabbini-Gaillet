@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.enumerations.TowerColor;
  * @version 1.0
  */
 
-public class IslandTile  extends TileWithStudents{
+public class IslandTile extends TileWithStudents{
     private int towers;
     private TowerColor towerColor;
     private int numOfNoEntryTiles;

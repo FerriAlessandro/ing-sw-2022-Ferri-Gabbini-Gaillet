@@ -136,4 +136,8 @@ public interface ViewInterface {
      */
     void jesterBardScene(SMessageJesterBard message);
 
+    /**
+     * Ask the user whether to use the loaded game save or not.
+     */
+    void askUseSavedGame();
 }

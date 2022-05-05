@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.enumerations.*;
  * @author AlessandroG
  * @version 1.0
  */
-public class Entrance extends TileWithStudents{
+public class Entrance extends TileWithStudents {
     // the number of students in the entrance changes with the players number. 7 for 2 players, 9 for 3 players.
     private final int maxStudents;
 

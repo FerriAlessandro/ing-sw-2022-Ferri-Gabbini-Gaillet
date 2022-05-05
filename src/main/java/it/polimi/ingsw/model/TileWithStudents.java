@@ -2,6 +2,8 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
+
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -11,8 +13,9 @@ import java.util.Map;
  * @version 1.1
  */
 
-public abstract class TileWithStudents {
+public abstract class TileWithStudents implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     // students is a map that associates the number of students on the tile with the correspondent color
     private final EnumMap<Color, Integer> students;
 
