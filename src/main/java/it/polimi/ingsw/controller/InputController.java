@@ -30,6 +30,11 @@ public class InputController implements Serializable{
         gameController = new GameController(numOfPlayers, isExpert);
     }
 
+    //TODO: add javadoc
+    public InputController(GameController gameController){
+        this.gameController = gameController;
+    }
+
     public GameController getGameController() {
         return gameController;
     }
@@ -39,7 +44,6 @@ public class InputController implements Serializable{
      * @param mess is the received message that has to be checked
      */
     public void elaborateMessage(Message mess){
-        DiskManager.saveGame(this);
         verifyMessage(mess);
     }
 

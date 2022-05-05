@@ -68,7 +68,7 @@ public class GameController implements Serializable {
         return nickNames;
     }
 
-    public boolean restorable(String nickname){
+    public boolean playerExisted(String nickname){
         ArrayList<String> availableNicknames = new ArrayList<>();
         for(Player player : game.getPlayers()){
             availableNicknames.add(player.getNickName());
@@ -83,7 +83,7 @@ public class GameController implements Serializable {
      */
     public void restorePlayer(String nickName, VirtualView playerView) throws FullGameException, NotExistingPlayerException{
         if(playersView.size() < numOfPlayers){
-            if(restorable(nickName)){
+            if(playerExisted(nickName)){
                 playersView.put(nickName, playerView);
             } else {
                 throw new NotExistingPlayerException();
@@ -93,7 +93,7 @@ public class GameController implements Serializable {
                     game.addObserver(v);
                 }
                 game.notifyObservers();
-                //TODO: start game from where it left off
+                setupNewRound();
             }
         } else {
             throw new FullGameException();
@@ -277,6 +277,10 @@ public class GameController implements Serializable {
             isLastRound = true;
             broadcastMessage("The bag is empty, this is the last round!", MessageType.S_INVALID);
         }
+        broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+        gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
+        game.notifyObservers(); //Notifies the view in case the round is over
+        getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
     }
 
     /**
@@ -528,11 +532,9 @@ public class GameController implements Serializable {
                 checkWin();
             }
             else{
+                //Saves game status at the end of each round
+                DiskManager.saveGame(this);
                 setupNewRound();
-                broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-                gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
-                game.notifyObservers(); //Notifies the view in case the round is over
-                getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
             }
         }
 

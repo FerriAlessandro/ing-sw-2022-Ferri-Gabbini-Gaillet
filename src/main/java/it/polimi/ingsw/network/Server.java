@@ -67,8 +67,9 @@ public class Server {
                         numRequiredGame = ((RMessageGameSettings) message).numPlayers;
                         boolean expertGame = ((RMessageGameSettings) message).expert;
 
-                        controller = DiskManager.loadGame(numRequiredGame, expertGame);
-                        if(controller != null){
+                        controller = new InputController(DiskManager.loadGame(numRequiredGame, expertGame));
+                        if(controller.getGameController() != null){
+                            //A saved game was found
                             do {
                                 //Ask for number of players and type of game
                                 System.out.println("Asking whether the user wants to load a previous game");
@@ -76,7 +77,8 @@ public class Server {
                                 message = receiveMessageIgnorePing();
                             } while (message == null || !message.getType().equals(MessageType.R_LOADGAME));
                         }
-                        if(controller == null || !((RMessageLoadGame) message).use){
+
+                        if(controller.getGameController() == null || !((RMessageLoadGame) message).use){
                             //Create new game
                             controller = new InputController(numRequiredGame, expertGame);
                             System.out.println("Creating new game");
@@ -107,7 +109,7 @@ public class Server {
                     if (numRequiredGame == numCurrentGame) {
                         //Reset for new game
                         //PLEASE NOTE THAT MULTIPLE GAMES ARE CURRENTLY UNSUPPORTED!!
-                        //TODO: add support for multiple concurrent games or for multiple consecutive games
+                        // TODO: add support for multiple concurrent games or for multiple consecutive games
                         numCurrentGame = 0;
                     }
                 }
@@ -118,6 +120,7 @@ public class Server {
         }
     }
 
+    // TODO: add javadoc
     private static Message receiveMessageIgnorePing(){
         Message message = null;
         try {

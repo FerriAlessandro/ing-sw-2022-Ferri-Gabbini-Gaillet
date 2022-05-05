@@ -72,7 +72,7 @@ public class TestCli implements ViewInterface {
     public void askGameSettings() {
         System.out.print("Enter the desired number of players: ");
         int num = in.nextInt();
-        while(num<= 0){
+        while(num != 2 && num != 3){
             System.out.print("Please enter valid a number: ");
             num = in.nextInt();
         }
