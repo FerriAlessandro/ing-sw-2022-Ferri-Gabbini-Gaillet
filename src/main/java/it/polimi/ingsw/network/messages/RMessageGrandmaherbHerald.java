@@ -28,4 +28,12 @@ public class RMessageGrandmaherbHerald extends Message{
         this.islandIndex = islandIndex;
 
     }
+
+    public int getIslandIndex() {
+        return islandIndex;
+    }
+
+    public Characters getCharacterName() {
+        return characterName;
+    }
 }

@@ -16,4 +16,11 @@ public class RMessageRogueMushroomPicker extends Message{
         this.chosenColor = color;
     }
 
+    public Color getChosenColor() {
+        return chosenColor;
+    }
+
+    public Characters getCharacterName() {
+        return characterName;
+    }
 }

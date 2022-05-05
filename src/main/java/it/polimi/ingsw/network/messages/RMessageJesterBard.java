@@ -34,4 +34,17 @@ public class RMessageJesterBard extends Message{
 
 
     }
+
+    public ArrayList<Color> getOrigin() {
+        return origin;
+    }
+
+    public ArrayList<Color> getEntrance() {
+        return entrance;
+    }
+
+    public Characters getCharacterName() {
+        return characterName;
+    }
+
 }

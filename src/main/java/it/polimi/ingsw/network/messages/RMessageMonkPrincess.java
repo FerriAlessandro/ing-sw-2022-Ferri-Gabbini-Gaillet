@@ -31,4 +31,17 @@ public class RMessageMonkPrincess extends Message{
         this.nickName = nickName;
         this.islandIndex = islandIndex;
     }
+
+    public Color getChosenColor() {
+        return chosenColor;
+    }
+
+    public Characters getCharacterName() {
+        return characterName;
+    }
+
+    public int getIslandIndex() {
+        return islandIndex;
+    }
+
 }
