@@ -333,7 +333,8 @@ public class GameBoard implements Serializable {
         if (currentIdx == islands.size() - 1) nextIdx = 0;
         else nextIdx = currentIdx + 1;
         checkForArchipelagoStep(currentIdx, nextIdx);
-        //currentIdx = islands.indexOf(currentIsland);
+
+        currentIdx = islands.indexOf(currentIsland);
 
         int prevIdx;
         if (currentIdx == 0) prevIdx = islands.size() - 1;

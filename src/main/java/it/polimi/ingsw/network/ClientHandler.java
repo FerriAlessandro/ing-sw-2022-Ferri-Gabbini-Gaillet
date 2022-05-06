@@ -148,8 +148,8 @@ public class ClientHandler extends Thread {
 
                         if(restored) {
 
-                            if(controller.getGameController().playerExisted(nickMessage.nickname)){
-                                if(!controller.getNicknames().contains(nickMessage.nickname)) {
+                            if(controller.getGameController().getNickNames().contains(nickMessage.nickname)){
+                                if(!controller.getGameController().playersView.containsKey(nickMessage.nickname)) {
                                     System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
                                     this.playerNickname = nickMessage.nickname;
                                     try {

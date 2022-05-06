@@ -69,19 +69,6 @@ public class GameController implements Serializable {
     }
 
     /**
-     * To be called to check whether a nickname corresponds to a player from a save file.
-     * @param nickname of the player
-     * @return true if the player is found, false otherwise
-     */
-    public boolean playerExisted(String nickname){
-        ArrayList<String> availableNicknames = new ArrayList<>();
-        for(Player player : game.getPlayers()){
-            availableNicknames.add(player.getNickName());
-        }
-        return availableNicknames.contains(nickname);
-    }
-
-    /**
      * Restore player. Matches current player to previously saved player.
      * @param nickName of the player to add
      * @param playerView Virtual View for the player
@@ -89,7 +76,7 @@ public class GameController implements Serializable {
      */
     public void restorePlayer(String nickName, VirtualView playerView) throws FullGameException, NotExistingPlayerException{
         if(playersView.size() < numOfPlayers){
-            if(playerExisted(nickName)){
+            if(getNickNames().contains(nickName)){
                 playersView.put(nickName, playerView);
             } else {
                 throw new NotExistingPlayerException();

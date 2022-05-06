@@ -6,12 +6,15 @@ import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 
+import java.io.Serializable;
+
 /**
  * This class represents the Character Controller, it manages Characters effects in Expert Mode
  * @author Alessandro F.
  * @version 1.0
  */
-public class CharacterController {
+public class CharacterController implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public GameController gameController;
     public Characters characterName;
