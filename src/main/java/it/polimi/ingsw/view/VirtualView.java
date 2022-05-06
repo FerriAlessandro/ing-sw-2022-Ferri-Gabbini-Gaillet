@@ -12,7 +12,6 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
 import it.polimi.ingsw.observers.Observer;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**

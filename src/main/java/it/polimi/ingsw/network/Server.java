@@ -120,7 +120,10 @@ public class Server {
         }
     }
 
-    // TODO: add javadoc
+    /**
+     * Loop on input object stream until a {@link Message} that is not of type {@link MessageType#PING} is received.
+     * @return the received {@link Message}
+     */
     private static Message receiveMessageIgnorePing(){
         Message message = null;
         try {

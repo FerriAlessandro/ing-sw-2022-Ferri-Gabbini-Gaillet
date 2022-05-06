@@ -126,7 +126,9 @@ public class ClientHandler extends Thread {
         return playerNickname;
     }
 
-
+    /**
+     * Handles the beginning of the connection by asking for nickname and checking for existing saved game.
+     */
     public void askNickname(){
         //Wait for nickname message
         boolean validNickName = false;

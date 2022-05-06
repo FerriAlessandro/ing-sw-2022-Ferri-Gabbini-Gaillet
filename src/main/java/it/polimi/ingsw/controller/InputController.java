@@ -30,11 +30,17 @@ public class InputController implements Serializable{
         gameController = new GameController(numOfPlayers, isExpert);
     }
 
-    //TODO: add javadoc
+    /**
+     * Constructor to be used when restoring a saved game.
+     * @param gameController of the game to be restored
+     */
     public InputController(GameController gameController){
         this.gameController = gameController;
     }
 
+    /**
+     * @return reference to linked {@link GameController}
+     */
     public GameController getGameController() {
         return gameController;
     }

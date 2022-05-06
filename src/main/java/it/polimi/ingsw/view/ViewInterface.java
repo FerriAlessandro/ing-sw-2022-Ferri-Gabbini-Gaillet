@@ -66,7 +66,7 @@ public interface ViewInterface {
      * Ask player to pick a character card among provided available options.
      *
      * @param messageCharacter message containing available characters
-     */ //TODO: fix javadoc
+     */
     void showCharacterChoice(SMessageCharacter messageCharacter);
 
     /**
