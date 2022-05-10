@@ -86,8 +86,30 @@ public class GameController implements Serializable {
                     game.addObserver(v);
                 }
                 game.notifyObservers();
-                setupNewRound();
+                broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+                switch(gamePhase){
+                    case CHOOSE_ASSISTANT_CARD:
+                        getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
+                        break;
+                    case CHOOSE_CHARACTER_CARD_1:
+                    case CHOOSE_CHARACTER_CARD_2:
+                    case CHOOSE_CHARACTER_CARD_3:
+                        getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
+                        break;
+                    case MOVE_STUDENTS:
+                        getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
+                        break;
+                    case MOVE_MOTHERNATURE:
+                        getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
+                        break;
+                    case CHOOSE_CLOUD:
+                        getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
+                        break;
+                    default: throw new RuntimeException("Error while restoring the old game");
+
+                }
             }
+
         } else {
             throw new FullGameException();
         }
@@ -110,6 +132,7 @@ public class GameController implements Serializable {
             if (playersView.size() == numOfPlayers) {
                 game = new Game(nickNames);
                 gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
+                DiskManager.saveGame(this);
                 if(isExpert){
                     ArrayList<Characters> characters = new ArrayList<>(List.of(Characters.values()));
                     characters.remove(Characters.NONE);
@@ -280,6 +303,7 @@ public class GameController implements Serializable {
         broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
         gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
         game.notifyObservers(); //Notifies the view in case the round is over
+        DiskManager.saveGame(this);
         getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
     }
 
@@ -288,13 +312,21 @@ public class GameController implements Serializable {
      */
 
     public void switchPhase(){
-        if(gamePhase.equals(Phase.CHOOSE_CHARACTER_CARD_1))
+        if(gamePhase.equals(Phase.CHOOSE_CHARACTER_CARD_1)) {
             gamePhase = Phase.MOVE_STUDENTS;
+            DiskManager.saveGame(this);
+        }
 
-        else if(gamePhase.equals(Phase.CHOOSE_CHARACTER_CARD_2))
+
+        else if(gamePhase.equals(Phase.CHOOSE_CHARACTER_CARD_2)) {
             gamePhase = Phase.MOVE_MOTHERNATURE;
+            DiskManager.saveGame(this);
+        }
 
-        else gamePhase = Phase.CHOOSE_CLOUD;
+        else {
+            gamePhase = Phase.CHOOSE_CLOUD;
+            DiskManager.saveGame(this);
+        }
     }
 
     /**
@@ -350,12 +382,14 @@ public class GameController implements Serializable {
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             if(isExpert) {
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
 
             }
 
             else {
                 gamePhase = Phase.MOVE_STUDENTS;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
             }
         }
@@ -404,10 +438,12 @@ public class GameController implements Serializable {
             numOfMoves = 0;
             if(isExpert && !hasPlayedCharacter){
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_2;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
             }
             else{
                 gamePhase = Phase.MOVE_MOTHERNATURE;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
             }
         }
@@ -475,11 +511,13 @@ public class GameController implements Serializable {
 
             if(isExpert && !hasPlayedCharacter) {
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_3;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
             }
 
             else {
                 gamePhase = Phase.CHOOSE_CLOUD;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
             }
 
@@ -508,10 +546,12 @@ public class GameController implements Serializable {
 
             if(isExpert){
                 gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
             }
             else {
                 gamePhase = Phase.MOVE_STUDENTS;
+                DiskManager.saveGame(this);
                 getVirtualView(game.getCurrentPlayer().getNickName()).askMove(); //Asks move to next player (chooseCloud method
                                                                                  //manages the turn)
             }
@@ -531,8 +571,6 @@ public class GameController implements Serializable {
                 checkWin();
             }
             else{
-                //Saves game status at the end of each round
-                DiskManager.saveGame(this);
                 setupNewRound();
             }
         }
