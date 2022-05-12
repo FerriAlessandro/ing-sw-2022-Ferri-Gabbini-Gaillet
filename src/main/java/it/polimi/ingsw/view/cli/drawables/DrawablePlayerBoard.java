@@ -54,7 +54,7 @@ public class DrawablePlayerBoard extends Drawable{
         value = value.concat("│");
         for (Color color : Color.values()){
             if(professors.contains(color)){
-                value = value.concat(CliColors.colored(color) + "◍" + CliColors.endColor());
+                value = value.concat(CliColors.colored(color) + "●" + CliColors.endColor());
             }else{
                 value = value.concat(" ");
             }
@@ -94,7 +94,9 @@ public class DrawablePlayerBoard extends Drawable{
         String entranceString = "│ ";
         int entrance2linewidth = 2;
         for(int i = 0; i < entranceArray.size(); i++){
-            if(i == 4){
+            entranceString = entranceString.concat(CliColors.colored(entranceArray.get(i)) + "● " + CliColors.endColor());
+            entrance2linewidth += 2;
+            if(i == 3){
                 entranceString = entranceString.concat("│\n");
                 entrance2linewidth = 1;
                 value = value.concat(entranceString);
@@ -108,8 +110,6 @@ public class DrawablePlayerBoard extends Drawable{
                     }
                 }
             }
-            entranceString = entranceString.concat(CliColors.colored(entranceArray.get(i)) + "● " + CliColors.endColor());
-            entrance2linewidth += 2;
         }
 
         for(int i = entrance2linewidth; i < 10; i++){

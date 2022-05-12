@@ -27,6 +27,7 @@ public class AdvancedCli extends Cli {
                 System.out.print("\n");
             }
 
+
             ArrayList<Color> profs = new ArrayList<>();
             for(Color color : gameState.professors.keySet()){
                 if (gameState.professors.get(color).equals(player)){
