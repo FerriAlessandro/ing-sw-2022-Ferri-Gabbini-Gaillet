@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Characters;
@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.view.ViewInterface;
 
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -15,14 +16,14 @@ import java.util.*;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class TestCli implements ViewInterface {
+public class Cli implements ViewInterface {
     private final Scanner in = new Scanner(System.in);
     private Adapter adapter;
     private String nickname;
 
     private int numMovesMN = 0;
-    private boolean expert = false;
-    private final Map<String, Integer> coins = new HashMap<>();
+    protected boolean expert = false;
+    protected final Map<String, Integer> coins = new HashMap<>();
 
     /**
      * Main function for the Command Line Interface

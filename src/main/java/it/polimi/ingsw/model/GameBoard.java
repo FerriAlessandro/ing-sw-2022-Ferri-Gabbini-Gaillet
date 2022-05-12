@@ -64,7 +64,7 @@ public class GameBoard implements Serializable {
         motherNature = new MotherNature(islands);
         int idxStartingIsland = islands.indexOf(motherNature.getCurrentIsland());
         for (int idx = 0; idx < islands.size(); idx++) {
-            if (idx != (idxStartingIsland + (maxNumIslands / 2))) {
+            if (idx != ((idxStartingIsland + (maxNumIslands / 2)) % maxNumIslands) && idx != idxStartingIsland) {
                 try{
                     Color student = bag.getStudents(1).get(0);
                     islands.get(idx).addStudent(student);

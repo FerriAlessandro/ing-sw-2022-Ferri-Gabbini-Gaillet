@@ -1,6 +1,7 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.model.enumerations.Color;
+import it.polimi.ingsw.model.enumerations.TowerColor;
 
 /**
  * Provides ANSI escape codes for coloring text in the Command Line Interface.
@@ -15,6 +16,10 @@ public final class CliColors {
     private static final String BLUE = "\033[0;34m";
     private static final String PINK = "\033[38;5;206m";
     private static final String WHITE = "\033[0;37m";
+    private static final String T_GRAY = "\u001b[48;5;8m";
+    private static final String T_BLACK = "\u001b[48;5;0m";
+    private static final String T_WHITE = "\u001b[48;5;231m";
+
 
     /**
      * Start coloring text of provided color.
@@ -28,6 +33,20 @@ public final class CliColors {
             case RED: return RED;
             case BLUE: return BLUE;
             case PINK: return PINK;
+            default: return WHITE;
+        }
+    }
+
+    /**
+     * Start coloring text of provided tower color.
+     * @param color
+     * @retuen ANSI color escape sequence
+     */
+    public static String towerColored(TowerColor color){
+        switch (color){
+            case WHITE: return T_WHITE;
+            case BLACK: return T_BLACK;
+            case GRAY: return T_GRAY;
             default: return WHITE;
         }
     }

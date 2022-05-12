@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
 import it.polimi.ingsw.observers.Observer;
+import it.polimi.ingsw.view.cli.Cli;
 
 import java.util.*;
 
@@ -290,7 +291,7 @@ public class VirtualView implements ViewInterface, Observer {
                 numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition, coins);
 
         System.out.println("\n------------------\n");
-        TestCli cli = new TestCli();
+        Cli cli = new Cli();
         cli.showBoard(message);
         System.out.println("\n------------------\n");
 
