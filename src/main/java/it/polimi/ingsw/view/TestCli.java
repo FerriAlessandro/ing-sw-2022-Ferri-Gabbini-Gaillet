@@ -20,6 +20,10 @@ public class TestCli implements ViewInterface {
     private Adapter adapter;
     private String nickname;
 
+    private int numMovesMN = 0;
+    private boolean expert = false;
+    private final Map<String, Integer> coins = new HashMap<>();
+
     /**
      * Main function for the Command Line Interface
      */
@@ -49,6 +53,7 @@ public class TestCli implements ViewInterface {
             port = Integer.parseInt(portTemp);
         }
         adapter = new Adapter(this, ip, port);
+        System.out.print("\n");
     }
 
     /**
@@ -63,6 +68,7 @@ public class TestCli implements ViewInterface {
                 nickname = in.nextLine();
             }
         adapter.sendMessage(new RMessageNickname(nickname));
+        System.out.print("\n");
     }
 
     /**
@@ -85,9 +91,12 @@ public class TestCli implements ViewInterface {
         }
         if(choice.equals("y")){
             adapter.sendMessage(new RMessageGameSettings(num, true));
+            expert = true;
         }else{
             adapter.sendMessage(new RMessageGameSettings(num, false));
+            expert = false;
         }
+        System.out.print("\n");
     }
 
     /**
@@ -96,12 +105,13 @@ public class TestCli implements ViewInterface {
     @Override
     public void askMotherNatureMove() {
         int islandIdx;
-        System.out.println("It's your turn to move mother nature");
+        System.out.println("It's your turn to move mother nature. You can move her up to " + numMovesMN + " tiles.");
         do {
             System.out.print("Please choose the island of destination by providing its id number: ");
             islandIdx =  in.nextInt();
         }while (islandIdx < 1 || islandIdx >12);
         adapter.sendMessage(new RMessageMotherNature(islandIdx, nickname));
+        System.out.print("\n");
     }
 
     /**
@@ -127,6 +137,8 @@ public class TestCli implements ViewInterface {
         }while (choice < 1 || choice > message.cards.size());
         System.out.println("Chosen assistant : " + message.cards.get(choice - 1));
         adapter.sendMessage(new RMessageAssistant(message.cards.get(choice - 1), nickname));
+        numMovesMN = message.cards.get(choice - 1).getMotherNatureMovement();
+        System.out.print("\n");
     }
 
     /**
@@ -136,28 +148,35 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter){
-        int choice;
+        int choice = 0;
         int index;
+        System.out.println("You have " + coins.get(nickname) + "coins.");
 
-        System.out.println("These are the available character cards: ");
-        for(Characters character : messageCharacter.effects){
-            index = messageCharacter.effects.indexOf(character) + 1;
-            System.out.print(index);
-            System.out.print(" " + character + "\n");
-            System.out.println(character.getEffect());
-            System.out.println("\t This card costs " + messageCharacter.cardCost.get(character) + " coins");
-            if(messageCharacter.students.get(character)!=null){
-                System.out.println("\t Students on the card: ");
-                printColorMap(messageCharacter.students.get(character));
-            }else if (character.equals(Characters.GRANDMA_HERB)){
-                System.out.println("\t " + messageCharacter.noEntryTiles + " no entry tiles");
+        if (messageCharacter.effects.stream().anyMatch(x -> x.getCost() <= coins.get(nickname))) {
+            System.out.println("These are the available character cards: ");
+            for (Characters character : messageCharacter.effects) {
+                index = messageCharacter.effects.indexOf(character) + 1;
+                System.out.print(index);
+                System.out.print(" " + character + "\n");
+                System.out.println(character.getEffect());
+                System.out.println("\t This card costs " + messageCharacter.cardCost.get(character) + " coins");
+                if (messageCharacter.students.get(character) != null && !messageCharacter.students.get(character).values().stream().allMatch(x -> x == 0)) {
+                    System.out.println("\t Students on the card: ");
+                    printColorMap(messageCharacter.students.get(character));
+                } else if (character.equals(Characters.GRANDMA_HERB)) {
+                    System.out.println("\t " + messageCharacter.noEntryTiles + " no entry tiles");
+                }
+                System.out.print("\n");
             }
+
+            do {
+                System.out.println("Please pick a character card by providing its id (use 0 to discard the choice)");
+                choice = in.nextInt();
+            } while (choice < 0 || choice > messageCharacter.effects.size());
+        } else {
+            System.out.println("You don't have enough coins to choose any character card.");
         }
 
-        do {
-            System.out.println("Please pick a character card by providing its id (use 0 to discard the choice)");
-            choice = in.nextInt();
-        }while (choice < 0 || choice > messageCharacter.effects.size());
         Characters chosenCharacter;
         if(choice!=0){
             chosenCharacter = messageCharacter.effects.get(choice - 1);
@@ -165,6 +184,7 @@ public class TestCli implements ViewInterface {
             chosenCharacter = Characters.NONE;
         }
         adapter.sendMessage(new RMessageCharacter(chosenCharacter, this.nickname));
+        System.out.print("\n");
     }
 
     /**
@@ -180,6 +200,7 @@ public class TestCli implements ViewInterface {
         for (String nickname : players){
             System.out.println(nickname);
         }
+        System.out.print("\n");
     }
 
     /**
@@ -196,7 +217,7 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void showBoard(SMessageGameState gameState) {
-        System.out.println("\033[H\033[2J"); //clears console
+        //System.out.println("\033[H\033[2J"); //clears console
         System.out.println("THIS IS THE CURRENT SITUATION OF THE TABLE: ");
         System.out.println("Professor ownership: ");
         for (Color color: gameState.professors.keySet()){
@@ -206,6 +227,11 @@ public class TestCli implements ViewInterface {
         System.out.println("\nPlayer-boards: ");
         for (String player: gameState.studEntrance.keySet()){
             System.out.println("Player: " + player.toUpperCase());
+
+            if(expert) {
+                System.out.print("\t" + gameState.coins.get(player) + "coins\n");
+                coins.put(player,gameState.coins.get(player));
+            }
 
             System.out.print("\tTower color: " + gameState.towerColor.get(player));
             System.out.print("\t" + gameState.towerNumber.get(player) + " remaining");
@@ -243,6 +269,7 @@ public class TestCli implements ViewInterface {
                 System.out.print("\t" + gameState.forbiddenTokens.get(island) + "forbidden tokens - Mother Nature CANNOT move here");
             }
         }
+        System.out.print("\n");
     }
 
     /**
@@ -256,6 +283,7 @@ public class TestCli implements ViewInterface {
         }else{
             new InvalidParameterException().printStackTrace();
         }
+        System.out.print("\n");
     }
 
     /**
@@ -265,6 +293,7 @@ public class TestCli implements ViewInterface {
     @Override
     public void showGenericMessage(SMessageInvalid message) {
         System.out.println("\n" + message.getError().toUpperCase());
+        System.out.print("\n");
     }
 
     /**
@@ -272,13 +301,14 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void askCloud() {
-        System.out.println("It's your turn to choose an island");
+        System.out.println("It's your turn to choose a cloud");
         int cloudIdx;
         do {
             System.out.print("Please choose the cloud you wish to pick by providing its id number: ");
             cloudIdx =  in.nextInt();
         }while (cloudIdx < 1 || cloudIdx >4);
         adapter.sendMessage(new RMessageCloud(cloudIdx, nickname));
+        System.out.print("\n");
     }
 
     /**
@@ -298,6 +328,7 @@ public class TestCli implements ViewInterface {
         }while (destination < 0 || destination > 12);
 
         adapter.sendMessage(new RMessageMove(Color.valueOf(chosenColor), destination, nickname));
+        System.out.print("\n");
     }
 
     /**
@@ -306,6 +337,7 @@ public class TestCli implements ViewInterface {
     @Override
     public void askAgain() {
         System.out.println("Invalid request. Please try again...");
+        System.out.print("\n");
     }
 
     /**
@@ -315,7 +347,9 @@ public class TestCli implements ViewInterface {
      */
     @Override
     public void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer) {
+
         System.out.println("\n\nIt's now " + messageCurrentPlayer.nickname + "'s turn");
+        System.out.print("\n");
     }
 
     /**
@@ -356,6 +390,7 @@ public class TestCli implements ViewInterface {
             default:
                 new InvalidParameterException().printStackTrace();
         }
+        System.out.print("\n");
     }
 
     /**
@@ -466,9 +501,10 @@ public class TestCli implements ViewInterface {
             }while (messageJesterBard.origin.get(Color.valueOf(choice)) <= 0 || !messageJesterBard.origin.containsKey(Color.valueOf(choice)));
             count ++;
             origin.add(Color.valueOf(choice));
+            messageJesterBard.origin.remove(Color.valueOf(choice));
 
             do {
-                System.out.println("Do you wish to select a student? y/n");
+                System.out.println("Do you wish to select another student? y/n");
                 choice = in.nextLine();
             }while (!choice.equals("y") && !choice.equals("n"));
         }while(count < messageJesterBard.maxStudents && choice.equals("y"));
@@ -479,6 +515,7 @@ public class TestCli implements ViewInterface {
                 choice = colorChoice();
             }while (messageJesterBard.entrance.get(Color.valueOf(choice)) <= 0 || !messageJesterBard.entrance.containsKey(Color.valueOf(choice)));
             entrance.add(Color.valueOf(choice));
+            messageJesterBard.entrance.remove(Color.valueOf(choice));
         }
 
         adapter.sendMessage(new RMessageJesterBard(messageJesterBard.characterName, nickname, origin, entrance));
@@ -499,6 +536,7 @@ public class TestCli implements ViewInterface {
         }else{
             adapter.sendMessage(new RMessageLoadGame(false));
         }
+        System.out.print("\n");
     }
 
     /**

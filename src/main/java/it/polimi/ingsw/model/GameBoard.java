@@ -413,14 +413,22 @@ public class GameBoard implements Serializable {
 
             for (Color color : Color.values()) {
                 if (professors.containsKey(color)) {
-                    Player owner = professors.get(color);
-                    for (Player player : playerBoards.keySet()) {
-                        if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > playerBoards.get(owner).getDiningRoom().getNumStudents(color) ||
-                                (farmerCharacterCardIsActive && playerBoards.get(player).getDiningRoom().getNumStudents(color) == playerBoards.get(owner).getDiningRoom().getNumStudents(color) &&
-                                        player.isPlayerTurn()))
-                            owner = player;
+
+                    if(playerBoards.values().stream().mapToInt(x -> x.getDiningRoom().getNumStudents(color)).allMatch(x -> x==0)) {
+                        //Corner case: All students of this color have been removed from all dining rooms
+                        professors.remove(color);
+                    } else {
+                        //Normal situation
+                        Player owner = professors.get(color);
+                        for (Player player : playerBoards.keySet()) {
+                            if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > playerBoards.get(owner).getDiningRoom().getNumStudents(color) ||
+                                    (farmerCharacterCardIsActive && playerBoards.get(player).getDiningRoom().getNumStudents(color) == playerBoards.get(owner).getDiningRoom().getNumStudents(color) &&
+                                            player.isPlayerTurn()))
+                                owner = player;
+                        }
+                        professors.put(color, owner);
                     }
-                    professors.put(color, owner);
+
                 } else {
                     for (Player player : playerBoards.keySet()) {
                         if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > 0) {
@@ -429,8 +437,11 @@ public class GameBoard implements Serializable {
                         }
                     }
                 }
+
             }
+
         }
+
     }
 
     /**

@@ -151,9 +151,4 @@ public class Player implements Serializable {
             throw new EmptyDeckException(getNickName() + " played his last card, this is the last Round!");
     }
 
-
-
-
-
-
 }

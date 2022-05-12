@@ -253,6 +253,7 @@ public class VirtualView implements ViewInterface, Observer {
         Map<Integer, Integer> forbiddenTokens = new HashMap<>();
         Map<Integer, Map<Color, Integer>> studClouds = new HashMap<>();
         Map<Color, String> professors = new HashMap<>();
+        Map<String, Integer> coins = new HashMap<>();
 
 
         List<Player> players = g.getPlayers();
@@ -262,6 +263,7 @@ public class VirtualView implements ViewInterface, Observer {
             studDining.put(player.getNickName(), g.getGameBoard().getPlayerBoard(player).getDiningRoom().getState());
             numTowers.put(player.getNickName(), g.getGameBoard().getPlayerBoard(player).getTowerZone().getNumOfTowers());
             towerColor.put(player.getNickName(), player.getTowerColor());
+            coins.put(player.getNickName(), g.getGameBoard().getPlayerBoard(player).getCoin());
         }
 
         List<IslandTile> islands = g.getGameBoard().getIslands();
@@ -284,7 +286,8 @@ public class VirtualView implements ViewInterface, Observer {
 
         int motherNaturePosition = islands.indexOf(g.getGameBoard().getMotherNature().getCurrentIsland());
 
-        SMessageGameState message = new SMessageGameState(studEntrance, studDining, numTowers, towerColor, studIslands, numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition);
+        SMessageGameState message = new SMessageGameState(studEntrance, studDining, numTowers, towerColor, studIslands,
+                numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition, coins);
 
         System.out.println("\n------------------\n");
         TestCli cli = new TestCli();

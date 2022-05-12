@@ -23,12 +23,14 @@ public class SMessageGameState extends SMessage {
     public Map<Color, String> professors;
     public int motherNaturePosition;
 
+    public Map<String, Integer> coins;
+
     public SMessageGameState(Map<String, Map<Color, Integer>> studEntrance, Map<String, Map<Color, Integer>> studDining,
                              Map<String, Integer> towerNumber, Map<String, TowerColor> towerColor,
                              Map<Integer, Map<Color, Integer>> studIslands, Map<Integer, Integer> numTowersIslands,
                              Map<Integer, TowerColor> colorTowerIslands, Map<Integer, Integer> forbiddenTokens,
                              Map<Integer, Map<Color, Integer>> studClouds, Map<Color, String> professors,
-                             int motherNaturePosition){
+                             int motherNaturePosition, Map<String, Integer> coins){
 
         super(MessageType.S_GAMESTATE);
 
@@ -43,6 +45,7 @@ public class SMessageGameState extends SMessage {
         this.motherNaturePosition = motherNaturePosition;
         this.studClouds = studClouds;
         this.professors = professors;
+        this.coins = coins;
     }
 
 }
