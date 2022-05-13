@@ -11,6 +11,11 @@ public class SMessageLobby extends SMessage{
     public List<String> currentPlayers;
     public int numPlayersTotal;
 
+    /**
+     * Constructor.
+     * @param currentPlayers {@link java.util.ArrayList} of nicknames of currently connected players
+     * @param numPlayersTotal number of players required to start
+     */
     SMessageLobby(List<String> currentPlayers, int numPlayersTotal){
         super(MessageType.S_LOBBY);
         this.currentPlayers = currentPlayers;

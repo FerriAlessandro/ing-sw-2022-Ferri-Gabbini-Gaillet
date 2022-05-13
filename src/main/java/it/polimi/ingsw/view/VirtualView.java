@@ -51,10 +51,11 @@ public class VirtualView implements ViewInterface, Observer {
 
     /**
      * Ask the player to move mother nature.
+     * @param messageMotherNature message containing maximum number of steps.
      */
     @Override
-    public void askMotherNatureMove() {
-        clientHandler.sendMessage(new SMessage(MessageType.S_MOTHERNATURE));
+    public void askMotherNatureMove(SMessageMotherNature messageMotherNature) {
+        clientHandler.sendMessage(messageMotherNature);
     }
 
     /**

@@ -14,8 +14,8 @@ public class SMessageGrandmaherbHerald extends SMessage{
 
     /**
      * Constructor
+     * @param characterName of the {@link Character}
      */
-
     public SMessageGrandmaherbHerald(Characters characterName){
         super(MessageType.S_GRANDMAHERBHERALD);
         this.characterName = characterName;

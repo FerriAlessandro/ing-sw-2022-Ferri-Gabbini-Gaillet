@@ -2,8 +2,21 @@ package it.polimi.ingsw.view.cli.drawables;
 
 import java.util.ArrayList;
 
+/**
+ * This abstract class provides utility methods for handling {@link Drawable} objects.
+ * @author A.G. Gaillet
+ * @version 1.0
+ */
 public abstract class Drawable {
 
+    /**
+     * This method returns a multi-line cascade of all provided drawables in a printable format. These need to be all of the
+     * same height.
+     * @param objects to be added
+     * @param numOnOneLine number of objects on the first line
+     * @param height of elements
+     * @return {@link String}
+     */
     public String drawAll(ArrayList<Drawable> objects, int numOnOneLine, int height){
         String spacing = "  ";
 
@@ -36,6 +49,13 @@ public abstract class Drawable {
         return printable;
     }
 
+    /**
+     * This method provides a printable version of the game state.
+     * @param islands
+     * @param clouds
+     * @param boards
+     * @return {@link String}
+     */
     public String drawFullScene(ArrayList<Drawable> islands, ArrayList<Drawable> clouds, ArrayList<Drawable> boards){
         String boardString = drawAll(boards, boards.size(), DrawablePlayerBoard.height);
         String[] boardLines = boardString.split("\\n");

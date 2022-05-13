@@ -100,7 +100,7 @@ public class GameController implements Serializable {
                         getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
                         break;
                     case MOVE_MOTHERNATURE:
-                        getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
+                        getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
                         break;
                     case CHOOSE_CLOUD:
                         getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
@@ -404,11 +404,11 @@ public class GameController implements Serializable {
 
         RMessageMove moveMessage = (RMessageMove) message;
         TileWithStudents dest;
-        if (moveMessage.getDestination() == 0)  //Destination is the dining room
+        if (moveMessage.destination == 0)  //Destination is the dining room
             dest = getDiningRoom();
 
-        else if (moveMessage.getDestination() > 0 && moveMessage.getDestination() < game.getGameBoard().getIslands().size() + 1)//Destination is an island
-            dest = game.getGameBoard().getIslands().get(moveMessage.getDestination() - 1); //User counts islands from 1, not from 0
+        else if (moveMessage.destination > 0 && moveMessage.destination < game.getGameBoard().getIslands().size() + 1)//Destination is an island
+            dest = game.getGameBoard().getIslands().get(moveMessage.destination - 1); //User counts islands from 1, not from 0
 
         else { //Destination not valid
             sendErrorMessage(moveMessage.getNickName(),"This destination does not exist!");
@@ -417,7 +417,7 @@ public class GameController implements Serializable {
         }
 
         try{
-            game.move(moveMessage.getChosenColor(), getEntrance(), dest);
+            game.move(moveMessage.chosenColor, getEntrance(), dest);
 
         } catch (FullDestinationException e) { //Destination already full, need to pick another one (don't increment numOfMoves)
 
@@ -444,7 +444,7 @@ public class GameController implements Serializable {
             else{
                 gamePhase = Phase.MOVE_MOTHERNATURE;
                 DiskManager.saveGame(this);
-                getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
+                getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
             }
         }
 
@@ -473,7 +473,7 @@ public class GameController implements Serializable {
 
         if(lastIslandIndex < desiredIslandIndex){
             sendErrorMessage(motherNatureMessage.getNickName(), "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
-            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
+            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
             return;
         }
 
@@ -486,7 +486,7 @@ public class GameController implements Serializable {
 
         if(playerMaxSteps < numOfSteps) {
             sendErrorMessage(motherNatureMessage.getNickName(), "Insufficient number of steps!");
-            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove();
+            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
         }
         else {
             try {
@@ -595,7 +595,7 @@ public class GameController implements Serializable {
                 break;
             }
             case MOVE_MOTHERNATURE:{
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove();
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
                 break;
             }
             case CHOOSE_CLOUD:{
@@ -622,7 +622,7 @@ public class GameController implements Serializable {
                 break;
             }
             case MOVE_MOTHERNATURE:{
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove();
+                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
                 break;
             }
             case CHOOSE_CLOUD:{

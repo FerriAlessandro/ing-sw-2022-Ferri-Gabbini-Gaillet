@@ -9,6 +9,11 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * This class provides a {@link Drawable} player-board.
+ * @author A.G. Gaillet
+ * @version 1.0
+ */
 public class DrawablePlayerBoard extends Drawable{
     private final EnumMap<Color, Integer> dining;
     private final EnumMap<Color, Integer> entrance;
@@ -18,6 +23,15 @@ public class DrawablePlayerBoard extends Drawable{
     private final String nickname;
     public final static int height = 19;
 
+    /**
+     * Constructor.
+     * @param studentsDining
+     * @param studentsEntrance
+     * @param numTowers
+     * @param towerColor
+     * @param professors
+     * @param nickname
+     */
     public DrawablePlayerBoard(Map<Color, Integer> studentsDining, Map<Color, Integer> studentsEntrance, int numTowers, TowerColor towerColor, ArrayList<Color> professors, String nickname) {
         this.dining = new EnumMap<>(studentsDining);
         this.entrance = new EnumMap<>(studentsEntrance);
@@ -27,6 +41,10 @@ public class DrawablePlayerBoard extends Drawable{
         this.nickname = nickname;
     }
 
+    /**
+     * Converts the element to a printable version
+     * @return {@link String}
+     */
     @Override
     public String toString() {
         String nick = nickname.toUpperCase();

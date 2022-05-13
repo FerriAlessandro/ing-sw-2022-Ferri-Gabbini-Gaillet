@@ -9,13 +9,24 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class represents the message sent to ask the user to pick a character card.
+ * @author Alessandro F., A.G. Gaillet
+ * @version 1.0
+ * @see Characters
+ * @see Character
+ * @see CharacterCard
+ */
 public class SMessageCharacter extends SMessage{
     public ArrayList<Characters> effects = new ArrayList<>();
     public Map <Characters, Map<Color, Integer>> students = new HashMap<>();
     public Map <Characters, Integer> cardCost = new HashMap<>();
     public int noEntryTiles;
 
-
+    /**
+     * Constructor.
+     * @param characters {@link ArrayList} of available character cards
+     */
     public SMessageCharacter(ArrayList<CharacterCard> characters) {
 
         super(MessageType.S_CHARACTER);

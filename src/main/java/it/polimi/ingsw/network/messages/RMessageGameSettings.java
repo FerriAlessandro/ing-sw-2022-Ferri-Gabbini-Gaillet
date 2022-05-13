@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
+/**
+ * M
+ */
 public class RMessageGameSettings extends Message{
     public int numPlayers;
     public boolean expert;

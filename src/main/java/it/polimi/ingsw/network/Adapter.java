@@ -81,7 +81,7 @@ public class Adapter {
                 break;
 
             case S_MOTHERNATURE:
-                view.askMotherNatureMove();
+                view.askMotherNatureMove((SMessageMotherNature) message);
                 break;
 
             case S_CLOUD:

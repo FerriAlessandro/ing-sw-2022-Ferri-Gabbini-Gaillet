@@ -1,12 +1,19 @@
 package it.polimi.ingsw.network.messages;
 
 /**
- * Message received by the server containing MotherNature's chosen movement
+ * Message received by the server containing MotherNature's chosen movement.
+ * @author Alessandro F.
+ * @version 1.0
  */
 public class RMessageMotherNature extends RMessage{
 
     int islandIndex;
 
+    /**
+     * Constructor.
+     * @param index of the island of destination
+     * @param nickName of the player
+     */
     public RMessageMotherNature(int index, String nickName){
 
         this.type = MessageType.R_MOTHERNATURE;

@@ -21,7 +21,6 @@ public class Cli implements ViewInterface {
     private Adapter adapter;
     private String nickname;
 
-    private int numMovesMN = 0;
     protected boolean expert = false;
     protected final Map<String, Integer> coins = new HashMap<>();
 
@@ -104,9 +103,9 @@ public class Cli implements ViewInterface {
      * Ask the player to move mother nature.
      */
     @Override
-    public void askMotherNatureMove() {
+    public void askMotherNatureMove(SMessageMotherNature messageMotherNature) {
         int islandIdx;
-        System.out.println("It's your turn to move mother nature. You can move her up to " + numMovesMN + " tiles.");
+        System.out.println("It's your turn to move mother nature. You can move her up to " + messageMotherNature.maxNumTiles + " tiles.");
         do {
             System.out.print("Please choose the island of destination by providing its id number: ");
             islandIdx =  in.nextInt();
@@ -138,7 +137,6 @@ public class Cli implements ViewInterface {
         }while (choice < 1 || choice > message.cards.size());
         System.out.println("Chosen assistant : " + message.cards.get(choice - 1));
         adapter.sendMessage(new RMessageAssistant(message.cards.get(choice - 1), nickname));
-        numMovesMN = message.cards.get(choice - 1).getMotherNatureMovement();
         System.out.print("\n");
     }
 

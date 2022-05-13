@@ -7,6 +7,11 @@ import it.polimi.ingsw.view.cli.CliColors;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * This class provides a {@link Drawable} island.
+ * @author A.G. Gaillet
+ * @version 1.0
+ */
 public class DrawableIsland extends Drawable{
     private final Map<Color, Integer> students;
     private final int towerNumber;
@@ -17,7 +22,15 @@ public class DrawableIsland extends Drawable{
     public final static int height = 8;
 
 
-
+    /**
+     * Constructor.
+     * @param students
+     * @param towerNumber
+     * @param towerColor
+     * @param forbiddenTokens
+     * @param index
+     * @param motherNature
+     */
     public DrawableIsland (Map<Color, Integer> students, int towerNumber, TowerColor towerColor, int forbiddenTokens, int index, boolean motherNature){
         this.students = new EnumMap<>(students);
         this.towerNumber = towerNumber;
@@ -27,6 +40,10 @@ public class DrawableIsland extends Drawable{
         this.motherNature = motherNature;
     }
 
+    /**
+     * Converts the element to a printable version
+     * @return {@link String}
+     */
     public String toString(){
         String value;
         if (index < 10) {

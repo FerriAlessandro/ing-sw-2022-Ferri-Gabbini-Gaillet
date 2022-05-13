@@ -3,6 +3,12 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 
+/**
+ * This class represents the message received by the server and containing the parameters necessary to activate the
+ * {@link Characters#MUSHROOM_PICKER} or {@link Characters#ROGUE} character cards.
+ * @author Alessandro F.
+ * @version 1.0
+ */
 public class RMessageRogueMushroomPicker extends Message{
 
     public Color chosenColor;
@@ -16,11 +22,4 @@ public class RMessageRogueMushroomPicker extends Message{
         this.chosenColor = color;
     }
 
-    public Color getChosenColor() {
-        return chosenColor;
-    }
-
-    public Characters getCharacterName() {
-        return characterName;
-    }
 }

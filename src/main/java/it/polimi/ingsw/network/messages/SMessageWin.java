@@ -8,6 +8,11 @@ package it.polimi.ingsw.network.messages;
 public class SMessageWin extends SMessage{
 
     public String winMessage;
+
+    /**
+     * Constructor.
+     * @param winMessage
+     */
     public SMessageWin(String winMessage){
         super(MessageType.S_WIN);
         this.winMessage = winMessage;

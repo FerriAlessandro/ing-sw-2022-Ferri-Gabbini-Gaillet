@@ -158,13 +158,13 @@ public class InputController implements Serializable{
      * Check if the {@link RMessageMove} has acceptable field.
      */
     private void moveCheck(Message message) {
-        int destination = ((RMessageMove)message).getDestination();
+        int destination = ((RMessageMove)message).destination;
         boolean isValid = true;
 
         if(gamePhase != Phase.MOVE_STUDENTS)
             new RuntimeException("Message incompatible with actual game phase!").printStackTrace();
 
-        if(((RMessageMove)message).getChosenColor() == null)
+        if(((RMessageMove)message).chosenColor == null)
             isValid = false;
 
         if(destination < 0 || destination > 12)
@@ -310,10 +310,10 @@ public class InputController implements Serializable{
         if((gamePhase != Phase.CHOOSE_CHARACTER_CARD_1) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_2) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_3))
             new RuntimeException("Message incompatible with actual game phase!").printStackTrace();
 
-        if(mess.getChosenColor() == null || mess.getCharacterName() == null)
+        if(mess.chosenColor == null || mess.characterName == null)
             isValid = false;
 
-        if(mess.getCharacterName() != Characters.ROGUE && mess.getCharacterName() != Characters.MUSHROOM_PICKER)
+        if(mess.characterName != Characters.ROGUE && mess.characterName != Characters.MUSHROOM_PICKER)
             isValid = false;
 
         validateMessage(isValid, message);

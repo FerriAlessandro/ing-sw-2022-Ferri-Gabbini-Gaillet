@@ -25,6 +25,7 @@ public class SMessageGameState extends SMessage {
 
     public Map<String, Integer> coins;
 
+    //TODO: add JAVADOC
     public SMessageGameState(Map<String, Map<Color, Integer>> studEntrance, Map<String, Map<Color, Integer>> studDining,
                              Map<String, Integer> towerNumber, Map<String, TowerColor> towerColor,
                              Map<Integer, Map<Color, Integer>> studIslands, Map<Integer, Integer> numTowersIslands,

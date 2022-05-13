@@ -11,6 +11,11 @@ public class RMessageCharacter extends Message {
     public Characters character;
     public String nickname;
 
+    /**
+     * Constructor.
+     * @param character chosen character
+     * @param nickname of the player
+     */
     public RMessageCharacter(Characters character, String nickname){
         this.type = MessageType.R_CHARACTER;
         this.character = character;

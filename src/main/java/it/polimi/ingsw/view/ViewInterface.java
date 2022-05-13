@@ -21,11 +21,6 @@ public interface ViewInterface {
     void askGameSettings();
 
     /**
-     * Ask the player to move mother nature.
-     */
-    void askMotherNatureMove();
-
-    /**
      * Display lobby.
      * @param message containing information on connected and desired players.
      */
@@ -54,6 +49,8 @@ public interface ViewInterface {
      * @param message containing the {@link String} to be displayed.
      */
     void showGenericMessage(SMessageInvalid message);
+
+    void askMotherNatureMove(SMessageMotherNature messageMotherNature);
 
     /**
      * Ask the player to pick an assistant card from provided available cards.

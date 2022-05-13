@@ -9,6 +9,11 @@ import it.polimi.ingsw.view.cli.drawables.DrawablePlayerBoard;
 
 import java.util.ArrayList;
 
+/**
+ * This class provides some advanced graphics for the Command Line Interface.
+ * @author A.G. Gaillet
+ * @version 1.0
+ */
 public class AdvancedCli extends Cli {
 
     /**
@@ -23,7 +28,7 @@ public class AdvancedCli extends Cli {
         for (String player: gameState.studEntrance.keySet()){
             if(expert) {
                 System.out.print(player.toUpperCase() + " has " + gameState.coins.get(player) + " coins\n");
-                coins.put(player,gameState.coins.get(player));
+                coins.put(player, gameState.coins.get(player));
                 System.out.print("\n");
             }
 

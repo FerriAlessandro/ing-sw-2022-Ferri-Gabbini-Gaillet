@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * This class provides a {@link Drawable} cloud.
+ * @author A.G. Gaillet
+ * @version 1.2
+ */
 public class DrawableCloud extends Drawable{
     private final ArrayList<Color> students;
     private final int index;
@@ -23,6 +28,10 @@ public class DrawableCloud extends Drawable{
         this.index = index;
     }
 
+    /**
+     * Converts the element to a printable version
+     * @return {@link String}
+     */
     public String toString(){
         String value = "";
         value = value.concat("┌" + index + "━");
@@ -34,9 +43,15 @@ public class DrawableCloud extends Drawable{
         for(Color student : students){
             value = value.concat(CliColors.colored(student) + "● " + CliColors.endColor());
         }
+        if(students.size() == 0){
+            value = value.concat("  ");
+        }
         value = value.concat("│\n");
         value = value.concat("┕");
         for(int i = 0; i < students.size(); i++){
+            value = value.concat("━━");
+        }
+        if(students.size() == 0){
             value = value.concat("━━");
         }
         value = value.concat("━┙\n");
