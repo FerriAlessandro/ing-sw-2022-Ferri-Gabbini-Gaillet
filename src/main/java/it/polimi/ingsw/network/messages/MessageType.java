@@ -24,6 +24,7 @@ public enum MessageType {
     S_NICKNAME,
     R_NICKNAME,
     R_DISCONNECT,
+    S_DISCONNECT,
     R_GAMESETTINGS,
     S_GAMESETTINGS,
     S_TRYAGAIN,

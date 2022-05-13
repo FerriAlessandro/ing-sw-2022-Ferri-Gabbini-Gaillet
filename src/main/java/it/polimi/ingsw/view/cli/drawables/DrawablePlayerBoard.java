@@ -112,7 +112,10 @@ public class DrawablePlayerBoard extends Drawable{
         String entranceString = "│ ";
         int entrance2linewidth = 2;
         for(int i = 0; i < entranceArray.size(); i++){
-            entranceString = entranceString.concat(CliColors.colored(entranceArray.get(i)) + "● " + CliColors.endColor());
+            entranceString = entranceString.concat(CliColors.colored(entranceArray.get(i)) + "●" + CliColors.endColor());
+            if(i != 8){
+                entranceString = entranceString.concat(" ");
+            }
             entrance2linewidth += 2;
             if(i == 3){
                 entranceString = entranceString.concat("│\n");

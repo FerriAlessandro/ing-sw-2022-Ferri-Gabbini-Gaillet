@@ -61,8 +61,11 @@ public class ClientSocket extends Thread {
                 try {
                     Message inMessage = (Message) in.readObject();
                     //System.out.println("Received " + inMessage.getType());
-                    adapter.elaborateMessage(inMessage);
-
+                    if(inMessage.getType().equals(MessageType.S_DISCONNECT)){
+                        closeConnection();
+                    }else{
+                        adapter.elaborateMessage(inMessage);
+                    }
                 } catch (Exception e){
                     if(!Thread.currentThread().isInterrupted()){
                         System.out.println(System.nanoTime());

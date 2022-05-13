@@ -108,6 +108,10 @@ public class GameController implements Serializable {
                     default: throw new RuntimeException("Error while restoring the old game");
 
                 }
+            } else {
+                for(VirtualView v : playersView.values()){
+                    v.showLobby(new SMessageLobby(new ArrayList<>(playersView.keySet()), numOfPlayers));
+                }
             }
 
         } else {
@@ -149,6 +153,10 @@ public class GameController implements Serializable {
                 game.notifyObservers();
                 broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
                 getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
+            } else {
+                for(VirtualView v : playersView.values()){
+                    v.showLobby(new SMessageLobby(new ArrayList<>(playersView.keySet()), numOfPlayers));
+                }
             }
 
         }
@@ -208,12 +216,15 @@ public class GameController implements Serializable {
      * @param nickname is the nickname of the player disconnected
      */
     public void playerDisconnected(String nickname) {
+        playersView.remove(nickname);
+        for (VirtualView v : playersView.values())
+            v.showDisconnectionMessage();
         //TODO resilienza alle disconnessioni?
     }
 
     /**
      * Utility method to send the same message to each player's virtual view
-     * @param message The message that needs to be broadcasted
+     * @param message The message that needs to be broadcast
      */
     public void broadcastMessage(String message, MessageType type) {
         switch (type) {
@@ -379,19 +390,26 @@ public class GameController implements Serializable {
             game.sortPlayersActionTurn();
             for(AssistantCard assistant : AssistantCard.values())
                 assistant.resetPlayed();  //Reset the already played assistants
-            broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-            if(isExpert) {
-                gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
-                DiskManager.saveGame(this);
-                getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
+            askMoveOrCharacter();
+        }
+    }
 
-            }
+    /**
+     * If game is expert this method commands the current player to move students, otherwise it presents them a character card choice.
+     */
+    private void askMoveOrCharacter() {
+        broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+        if(isExpert) {
+            gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
+            DiskManager.saveGame(this);
+            getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
 
-            else {
-                gamePhase = Phase.MOVE_STUDENTS;
-                DiskManager.saveGame(this);
-                getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
-            }
+        }
+
+        else {
+            gamePhase = Phase.MOVE_STUDENTS;
+            DiskManager.saveGame(this);
+            getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
         }
     }
 
@@ -541,20 +559,7 @@ public class GameController implements Serializable {
                 c.setActive(false);
 
             game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
-            broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-
-
-            if(isExpert){
-                gamePhase = Phase.CHOOSE_CHARACTER_CARD_1;
-                DiskManager.saveGame(this);
-                getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
-            }
-            else {
-                gamePhase = Phase.MOVE_STUDENTS;
-                DiskManager.saveGame(this);
-                getVirtualView(game.getCurrentPlayer().getNickName()).askMove(); //Asks move to next player (chooseCloud method
-                                                                                 //manages the turn)
-            }
+            askMoveOrCharacter();
 
         } catch(CloudNotFullException e){
             sendErrorMessage(cloudMessage.getNickName(), "This Cloud is Empty, please select another Cloud");

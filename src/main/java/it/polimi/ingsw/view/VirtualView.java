@@ -81,7 +81,9 @@ public class VirtualView implements ViewInterface, Observer {
      * Display a disconnection message.
      */
     @Override
-    public void showDisconnectionMessage() {new UnsupportedOperationException().printStackTrace();} //TODO: check?
+    public void showDisconnectionMessage() {
+        clientHandler.sendMessage(new SMessage(MessageType.S_DISCONNECT));
+    }
 
     /**
      * Display a "someone has won" message.

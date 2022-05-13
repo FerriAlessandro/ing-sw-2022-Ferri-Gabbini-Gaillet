@@ -149,7 +149,7 @@ public class Cli implements ViewInterface {
     public void showCharacterChoice(SMessageCharacter messageCharacter){
         int choice = 0;
         int index;
-        System.out.println("You have " + coins.get(nickname) + "coins.");
+        System.out.println("You have " + coins.get(nickname) + " coins.");
 
         if (messageCharacter.effects.stream().anyMatch(x -> x.getCost() <= coins.get(nickname))) {
             System.out.println("These are the available character cards: ");
@@ -194,10 +194,10 @@ public class Cli implements ViewInterface {
     @Override
     public void showLobby(SMessageLobby message) {
         System.out.println("Waiting for " + message.numPlayersTotal + " players to be connected...");
-        System.out.println("Current players: ");
+        System.out.print("Current players: ");
         List<String> players = message.currentPlayers;
         for (String nickname : players){
-            System.out.println(nickname);
+            System.out.print(nickname + ", ");
         }
         System.out.print("\n");
     }
@@ -207,7 +207,7 @@ public class Cli implements ViewInterface {
      */
     @Override
     public void showDisconnectionMessage() {
-        System.out.println("Connection lost - you were disconnected");
+        System.out.println("Someone lost connection - ending game");
     }
 
     /**

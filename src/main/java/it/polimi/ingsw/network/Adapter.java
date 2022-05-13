@@ -14,7 +14,6 @@ public class Adapter {
     private ViewInterface view;
     private ClientSocket socket;
     private Message previousMessage = new SMessageInvalid("No previous command");
-    private String currentPlayer;
     private boolean gameEnded = false;
 
     /**
@@ -103,7 +102,6 @@ public class Adapter {
 
             case S_PLAYER:
                 SMessageCurrentPlayer messageCurrentPlayer = (SMessageCurrentPlayer) message;
-                currentPlayer = messageCurrentPlayer.nickname;
                 view.showCurrentPlayer(messageCurrentPlayer);
                 break;
 
@@ -127,6 +125,10 @@ public class Adapter {
                 view.askUseSavedGame();
                 break;
 
+            case S_DISCONNECT:
+                view.showDisconnectionMessage();
+                break;
+
             default:
                 new UnsupportedOperationException().printStackTrace();
                 break;
@@ -138,20 +140,15 @@ public class Adapter {
      * @param message to be sent
      */
     public void sendMessage(Message message){
-        System.out.println("--SENDING MESSAGE TO SERVER--");
-        /*
-        if(message.getType().equals(MessageType.R_GAMESETTINGS) && !message.getType().equals(MessageType.R_NICKNAME) && (currentPlayer.isBlank() || currentPlayer==null ||!currentPlayer.equals(view.getNickName()))){
-            view.showGenericMessage(new SMessageInvalid("Not your turn"));
-            return;
-        }*/
+        //System.out.println("--SENDING MESSAGE TO SERVER--");
 
         try {
             socket.sendMessage(message);
         } catch (IOException e){
-            System.out.println("--UNABLE TO SEND MESSAGE--");
+            //System.out.println("--UNABLE TO SEND MESSAGE--");
             e.printStackTrace();
         }
-        System.out.println("--MESSAGE SENT--");
+        //System.out.println("--MESSAGE SENT--");
     }
 
 }
