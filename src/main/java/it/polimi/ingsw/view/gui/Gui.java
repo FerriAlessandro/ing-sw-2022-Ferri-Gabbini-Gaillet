@@ -43,7 +43,7 @@ public class Gui implements ViewInterface {
     }
 
     @Override
-    public void askMotherNatureMove() {
+    public void askMotherNatureMove(SMessageMotherNature message) {
 
     }
 
