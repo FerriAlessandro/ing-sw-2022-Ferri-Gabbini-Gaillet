@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.scene.GameBoardSceneController">
+   <children>
+      <ImageView fx:id="background" fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Light_blue.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_1" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="65.0" y="50.0">
+         <image>
+            <Image url="@../images/island3.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_2" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="270.0" y="50.0">
+         <image>
+            <Image url="@../images/island2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_3" fitHeight="198.0" fitWidth="195.0" layoutX="475.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/island1.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_4" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="680.0" y="50.0">
+         <image>
+            <Image url="@../images/island3.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_5" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="885.0" y="50.0">
+         <image>
+            <Image url="@../images/island2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_6" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="1090.0" y="50.0">
+         <image>
+            <Image url="@../images/island1.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_7" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="65.0" y="255.0">
+         <image>
+            <Image url="@../images/island1.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_8" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="270.0" y="255.0">
+         <image>
+            <Image url="@../images/island2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_9" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="475.0" y="255.0">
+         <image>
+            <Image url="@../images/island3.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_10" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="680.0" y="255.0">
+         <image>
+            <Image url="@../images/island1.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_11" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="885.0" y="255.0">
+         <image>
+            <Image url="@../images/island2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="island_12" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="1090.0" y="255.0">
+         <image>
+            <Image url="@../images/island3.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="playerboard_1" fitHeight="278.0" fitWidth="610.0" pickOnBounds="true" preserveRatio="true" x="35.0" y="700.0">
+         <image>
+            <Image url="@../images/Playerboard.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="playerboard_2" fitHeight="278.0" fitWidth="610.0" pickOnBounds="true" preserveRatio="true" x="655.0" y="700.0">
+         <image>
+            <Image url="@../images/Playerboard.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="playerboard_3" fitHeight="278.0" fitWidth="610.0" pickOnBounds="true" preserveRatio="true" x="1275.0" y="700.0">
+         <image>
+            <Image url="@../images/Playerboard.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="cloud_1" fitHeight="178.0" fitWidth="198.0" pickOnBounds="true" preserveRatio="true" x="1398.0" y="50.0">
+         <image>
+            <Image url="@../images/cloud_card.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="cloud_2" fitHeight="178.0" fitWidth="198.0" pickOnBounds="true" preserveRatio="true" x="1636.0" y="50.0">
+         <image>
+            <Image url="@../images/cloud_card.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="cloud_3" fitHeight="178.0" fitWidth="198.0" pickOnBounds="true" preserveRatio="true" x="1517.0" y="255.0">
+         <image>
+            <Image url="@../images/cloud_card.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="chosen_assistant_1" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" x="35.0" y="530.0">
+         <image>
+            <Image url="@../images/Assistente.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="chosen_assistant_2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" x="655.0" y="530.0">
+         <image>
+            <Image url="@../images/Assistente.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="chosen_assistant_3" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" x="1275.0" y="530.0">
+         <image>
+            <Image url="@../images/Assistente.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="player_name_1" layoutX="280.0" layoutY="628.0" prefHeight="52.0" prefWidth="195.0" textAlignment="CENTER">
+         <font>
+            <Font name="Comic Sans MS" size="35.0" />
+         </font>
+      </Label>
+      <Label fx:id="player_name_2" layoutX="900.0" layoutY="628.0" prefHeight="52.0" prefWidth="195.0" textAlignment="CENTER">
+         <font>
+            <Font name="Comic Sans MS" size="35.0" />
+         </font>
+      </Label>
+      <Label fx:id="player_name_3" layoutX="1524.0" layoutY="628.0" prefHeight="52.0" prefWidth="195.0" textAlignment="CENTER">
+         <font>
+            <Font name="Comic Sans MS" size="35.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.scene.PlayerBoardsSceneController">
+   <children>
+      <ImageView fx:id="background" fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Light_blue.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="playerBoardOne" fitHeight="407.0" fitWidth="940.0" pickOnBounds="true" preserveRatio="true" x="10.0" y="93.0">
+         <image>
+            <Image url="@../images/Playerboard.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="playerBoardTwo" fitHeight="407.0" fitWidth="940.0" pickOnBounds="true" preserveRatio="true" x="970.0" y="93.0">
+         <image>
+            <Image url="@../images/Playerboard.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="playerBoardThree" fitHeight="407.0" fitWidth="940.0" pickOnBounds="true" preserveRatio="true" x="10.0" y="520.0">
+         <image>
+            <Image url="@../images/Playerboard.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="playerThreeName" layoutX="440.0" layoutY="953.5">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="playerTwoName" layoutX="1425.0" layoutY="26.5">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="playerOneName" layoutX="440.0" layoutY="26.5">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

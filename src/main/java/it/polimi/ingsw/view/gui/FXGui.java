@@ -1,7 +1,9 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import it.polimi.ingsw.view.gui.scene.MainMenuSceneController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -21,35 +23,18 @@ public class FXGui extends Application {
      * @param stage
      */
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws Exception{
 
         Gui gui = new Gui();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/fxml/mainMenuScene.fxml"));
-        Parent root = null;
-
-        try {
-            root = loader.load();
-        }
-        catch (IOException e) {
-          //TODO exception handling
-        }
-
-        MainMenuSceneController controller = loader.getController();
-
-        //TODO understand the observer controller question
-
-        //TODO load the start menu scene
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/GameBoard.fxml"));
+        Parent root = loader.load();
         Scene scene = new Scene(root);
+        stage.setTitle("Eriantys");
         stage.setScene(scene);
-
-        //Graphical resolution subject to changes
-        stage.setWidth(1280d);
-        stage.setHeight(720d);
-        stage.setFullScreen(true);
         stage.show();
 
-        //TODO set stop method for closing the application
+
+
     }
+
 }

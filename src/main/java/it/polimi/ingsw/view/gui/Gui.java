@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import javafx.scene.Scene;
 
 import java.util.HashMap;
@@ -31,6 +32,8 @@ public class Gui implements ViewInterface {
         //stage.setScene(currentScene);
        // stage.show();
     }
+
+
 
     @Override
     public void askNickName() {
