@@ -8,8 +8,8 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @version 1.0
  */
 public class RMessageCharacter extends Message {
-    public Characters character;
-    public String nickname;
+    public final Characters character;
+    public final String nickname;
 
     /**
      * Constructor.

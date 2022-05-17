@@ -7,7 +7,7 @@ package it.polimi.ingsw.network.messages;
  */
 public class SMessageInvalid extends SMessage{
 
-    private final String error;
+    public final String error;
 
     /**
      * Constructor
@@ -18,7 +18,4 @@ public class SMessageInvalid extends SMessage{
         this.error = error;
     }
 
-    public String getError(){
-        return this.error;
-    }
 }

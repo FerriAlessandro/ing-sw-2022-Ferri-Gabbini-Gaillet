@@ -7,7 +7,7 @@ package it.polimi.ingsw.network.messages;
  */
 public class RMessageMotherNature extends RMessage{
 
-    int islandIndex;
+    public final int islandIndex;
 
     /**
      * Constructor.
@@ -20,10 +20,6 @@ public class RMessageMotherNature extends RMessage{
         this.islandIndex = index; // from 1 to 12
         this.nickName = nickName;
 
-    }
-
-    public int getIslandIndex() {
-        return islandIndex;
     }
 
 }

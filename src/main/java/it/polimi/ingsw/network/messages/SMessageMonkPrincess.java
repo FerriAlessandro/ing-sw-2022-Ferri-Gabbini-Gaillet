@@ -11,8 +11,8 @@ import java.util.EnumMap;
 
 public class SMessageMonkPrincess extends SMessage{
 
-    public Characters characterName;
-    public EnumMap <Color, Integer> colors;
+    public final Characters characterName;
+    public final EnumMap <Color, Integer> colors;
 
     /**
      * Constructor

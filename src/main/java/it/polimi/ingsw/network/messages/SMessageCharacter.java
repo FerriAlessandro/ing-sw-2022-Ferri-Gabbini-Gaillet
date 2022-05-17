@@ -18,9 +18,9 @@ import java.util.Map;
  * @see CharacterCard
  */
 public class SMessageCharacter extends SMessage{
-    public ArrayList<Characters> effects = new ArrayList<>();
-    public Map <Characters, Map<Color, Integer>> students = new HashMap<>();
-    public Map <Characters, Integer> cardCost = new HashMap<>();
+    public final ArrayList<Characters> effects = new ArrayList<>();
+    public final Map <Characters, Map<Color, Integer>> students = new HashMap<>();
+    public final Map <Characters, Integer> cardCost = new HashMap<>();
     public int noEntryTiles;
 
     /**

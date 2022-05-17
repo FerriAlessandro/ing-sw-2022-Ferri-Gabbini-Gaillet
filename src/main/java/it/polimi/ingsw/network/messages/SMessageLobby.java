@@ -8,8 +8,8 @@ import java.util.List;
  * @version 1.0
  */
 public class SMessageLobby extends SMessage{
-    public List<String> currentPlayers;
-    public int numPlayersTotal;
+    public final List<String> currentPlayers;
+    public final int numPlayersTotal;
 
     /**
      * Constructor.
@@ -20,6 +20,6 @@ public class SMessageLobby extends SMessage{
         super(MessageType.S_LOBBY);
         this.currentPlayers = currentPlayers;
         this.numPlayersTotal = numPlayersTotal;
-
     }
+
 }

@@ -11,10 +11,10 @@ import it.polimi.ingsw.model.enumerations.Color;
 
 public class RMessageMonkPrincess extends Message{
 
-    public Color chosenColor;
-    public Characters characterName;
-    public String nickName;
-    public int islandIndex;
+    public final Color chosenColor;
+    public final Characters characterName;
+    public final String nickName;
+    public final int islandIndex;
 
     /**
      * Constructor
@@ -30,18 +30,6 @@ public class RMessageMonkPrincess extends Message{
         this.characterName = characterName;
         this.nickName = nickName;
         this.islandIndex = islandIndex;
-    }
-
-    public Color getChosenColor() {
-        return chosenColor;
-    }
-
-    public Characters getCharacterName() {
-        return characterName;
-    }
-
-    public int getIslandIndex() {
-        return islandIndex;
     }
 
 }

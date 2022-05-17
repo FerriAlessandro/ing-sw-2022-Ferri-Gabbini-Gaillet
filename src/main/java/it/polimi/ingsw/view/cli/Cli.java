@@ -77,10 +77,10 @@ public class Cli implements ViewInterface {
     @Override
     public void askGameSettings() {
         System.out.print("Enter the desired number of players: ");
-        int num = in.nextInt();
+        int num = nextInt();
         while(num != 2 && num != 3){
             System.out.print("Please enter valid a number: ");
-            num = in.nextInt();
+            num = nextInt();
         }
         System.out.print("Do you want to play an expert game or not (y/n): ");
         in.nextLine();
@@ -108,7 +108,7 @@ public class Cli implements ViewInterface {
         System.out.println("It's your turn to move mother nature. You can move her up to " + messageMotherNature.maxNumTiles + " tiles.");
         do {
             System.out.print("Please choose the island of destination by providing its id number: ");
-            islandIdx =  in.nextInt();
+            islandIdx =  nextInt();
         }while (islandIdx < 1 || islandIdx >12);
         adapter.sendMessage(new RMessageMotherNature(islandIdx, nickname));
         System.out.print("\n");
@@ -133,7 +133,7 @@ public class Cli implements ViewInterface {
                 if(assistantCard.getCardValue() < 10){spacing2 = spacing2.concat(" ");}
                 System.out.println(index + " - " + assistantCard + spacing1 + "(value: " + assistantCard.getCardValue() + "," + spacing2 +" moves: " + assistantCard.getMotherNatureMovement() + ")");
             }
-            choice = in.nextInt();
+            choice = nextInt();
         }while (choice < 1 || choice > message.cards.size());
         System.out.println("Chosen assistant : " + message.cards.get(choice - 1));
         adapter.sendMessage(new RMessageAssistant(message.cards.get(choice - 1), nickname));
@@ -170,7 +170,7 @@ public class Cli implements ViewInterface {
 
             do {
                 System.out.println("Please pick a character card by providing its id (use 0 to discard the choice)");
-                choice = in.nextInt();
+                choice = nextInt();
             } while (choice < 0 || choice > messageCharacter.effects.size());
         } else {
             System.out.println("You don't have enough coins to choose any character card.");
@@ -291,7 +291,7 @@ public class Cli implements ViewInterface {
      */
     @Override
     public void showGenericMessage(SMessageInvalid message) {
-        System.out.println("\n" + message.getError().toUpperCase());
+        System.out.println("\n" + message.error.toUpperCase());
         System.out.print("\n");
     }
 
@@ -304,7 +304,7 @@ public class Cli implements ViewInterface {
         int cloudIdx;
         do {
             System.out.print("Please choose the cloud you wish to pick by providing its id number: ");
-            cloudIdx =  in.nextInt();
+            cloudIdx =  nextInt();
         }while (cloudIdx < 1 || cloudIdx >4);
         adapter.sendMessage(new RMessageCloud(cloudIdx, nickname));
         System.out.print("\n");
@@ -323,7 +323,7 @@ public class Cli implements ViewInterface {
 
         do{
             System.out.print("Please choose the destination by providing its id (1-12 islands), (0 dining room): ");
-            destination = in.nextInt();
+            destination = nextInt();
         }while (destination < 0 || destination > 12);
 
         adapter.sendMessage(new RMessageMove(Color.valueOf(chosenColor), destination, nickname));
@@ -404,7 +404,7 @@ public class Cli implements ViewInterface {
         int islandIdx;
         do {
             System.out.print("Please choose the island where the effect will be applied by providing its id number: ");
-            islandIdx =  in.nextInt();
+            islandIdx =  nextInt();
         }while (islandIdx < 1 || islandIdx >12);
 
         adapter.sendMessage(new RMessageGrandmaherbHerald(messageGrandmaHerbHerald.characterName, nickname, islandIdx));
@@ -428,7 +428,7 @@ public class Cli implements ViewInterface {
         if(messageMonkPrincess.characterName.equals(Characters.MONK)){
             do {
                 System.out.print("Please choose the island where the effect will be applied by providing its id number: ");
-                islandIdx =  in.nextInt();
+                islandIdx =  nextInt();
             }while (islandIdx < 1 || islandIdx >12);
         }
 
@@ -607,4 +607,24 @@ public class Cli implements ViewInterface {
     private String endColor(){
         return CliColors.endColor();
     }
+
+    /**
+     * Gets int from standard input.
+     * @return int value
+     */
+    private int nextInt() {
+        boolean valid = false;
+        Integer number = null;
+        do {
+            String string = in.nextLine();
+            try {
+                number = Integer.parseInt(string);
+                valid = true;
+            } catch (NumberFormatException e){
+                System.out.println("Please input a number");
+            }
+        }while (!valid);
+        return number;
+    }
+
 }
