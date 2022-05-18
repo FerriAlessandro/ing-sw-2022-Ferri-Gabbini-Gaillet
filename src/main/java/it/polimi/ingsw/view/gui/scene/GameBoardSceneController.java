@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.scene;
 
+import it.polimi.ingsw.view.gui.FXPlayerBoard;
 import it.polimi.ingsw.view.gui.FXisland;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -98,6 +99,8 @@ public class GameBoardSceneController {
 
     private ArrayList<FXisland> islands = new ArrayList<>();
 
+    private ArrayList<FXPlayerBoard> playerBoards = new ArrayList<>();
+
 
     @FXML
     public void initialize(){
@@ -105,20 +108,18 @@ public class GameBoardSceneController {
             islands.add(new FXisland(this));
             islands.get(i).createIsland(i+1);
         }
-
-        for(FXisland island : islands){
-
+        for(int i=0;i<3;i++){
+            playerBoards.add(new FXPlayerBoard("Alessandro", i+1, this));
+            playerBoards.get(i).createPlayerBoard();
         }
 
 
 
+
+
     }
 
 
-    public void dostuff(){
-        player_name_2.setText("Angelo");
-        player_name_2.setFont(new Font("Arial", 15));
-        player_name_2.setStyle("-fx-font-weight: bold;");
-    }
+
 }
 

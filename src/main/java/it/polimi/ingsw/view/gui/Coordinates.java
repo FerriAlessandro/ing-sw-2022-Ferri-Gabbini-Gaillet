@@ -28,7 +28,7 @@ public class Coordinates {
         this.y=y;
     }
 
-    public Coordinates sum(Coordinates c1, Coordinates c2){
+    public static Coordinates sum(Coordinates c1, Coordinates c2){
         Coordinates res = new Coordinates();
         res.x = c1.x + c2.x;
         res.y= c1.y + c2.y;

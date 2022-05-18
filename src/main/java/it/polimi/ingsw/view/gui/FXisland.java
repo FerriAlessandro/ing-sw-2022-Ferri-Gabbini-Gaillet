@@ -18,7 +18,14 @@ public class FXisland {
     private int index;
     private final ArrayList<Circle> pawns = new ArrayList<>(); //Index 0 is the tower, index 1 is mothernature, index 2 is green student, index 3 is red, index 4 is yellow, index 5 is pink, index 6 is blue, index 7 is NoEntryTile
     private final ArrayList<Label> quantity = new ArrayList<>(); //Same as Pawns, but with the quantity of each pawn
-    GameBoardSceneController gameBoardSceneController;
+    private final GameBoardSceneController gameBoardSceneController;
+    private double islandsHorizontalDistance = 205;
+    private double islandsVerticalDistance = 205;
+    private double pawnsRadius = 12.5;
+    private double labelsVerticalOffset = 10.5;
+    private double labelsHorizontalOffset = 12.5;
+    private double pawnsHorizontalOffset = 35.5;
+    private double pawnsVerticalOffset = 46;
 
     public FXisland(GameBoardSceneController controller){
         this.gameBoardSceneController = controller;
@@ -27,37 +34,38 @@ public class FXisland {
     public void createIsland(int index){
 
         this.index = index;
-        int offset = 205 * (index-1); //We multiply the starting coordinates by (205 * 1/2/3/4/5) to get the right coordinates of each island [205 is the space between two islands]; Island with index 1 doesn't have an offset
+        double offset = islandsHorizontalDistance * (index-1); //We multiply the starting coordinates by (205 * 1/2/3/4/5) to get the right coordinates of each island [205 is the space between two islands]; Island with index 1 doesn't have an offset
 
 
         if(index >= 7) {
-            towers.setY(297); //top middle circle of the first island of the second row
-            offset = 205 * (index % 7); //island 7 doesn't have an offset, is below island 1
-            green_student.setY(343);
+            towers.setY(towers.getY() + islandsVerticalDistance); //top middle circle of the first island of the second row
+            offset = islandsHorizontalDistance * (index % 7); //island 7 doesn't have an offset, is below island 1
+            green_student.setY(green_student.getY() + islandsVerticalDistance);
         }
 
 
-        pawns.add(new Circle(towers.getX() + offset, towers.getY(), 12.5)); //Tower (12.5 is the radius)
+        pawns.add(new Circle(towers.getX() + offset, towers.getY(), pawnsRadius)); //Tower (12.5 is the radius)
         quantity.add(new Label());
-        quantity.get(0).setLayoutX(towers.getX() + offset - 12.5); //each label is shifted of -12.5 in X and +10.5 on Y from its pawn's coordinates
-        quantity.get(0).setLayoutY(towers.getY() + 10.5);
+        quantity.get(0).setLayoutX(towers.getX() + offset - labelsHorizontalOffset); //each label is shifted of -12.5 in X and +10.5 on Y from its pawn's coordinates
+        quantity.get(0).setLayoutY(towers.getY() + labelsVerticalOffset);
 
 
-        pawns.add(new Circle((towers.getX() + 35.5) + offset, towers.getY() , 12.5)); //MotherNature
+        pawns.add(new Circle((towers.getX() + pawnsHorizontalOffset) + offset, towers.getY() , pawnsRadius)); //MotherNature
         quantity.add(new Label());
-        quantity.get(1).setLayoutX(towers.getX() + 35.5 + offset - 12.5);
-        quantity.get(1).setLayoutY(towers.getY() + 10.5);
+        quantity.get(1).setLayoutX(towers.getX() + pawnsHorizontalOffset + offset - labelsHorizontalOffset);
+        quantity.get(1).setLayoutY(towers.getY() + labelsVerticalOffset);
 
         double horizontal_offset = 0;
+        double vertical_offset = 0;
         int labelCounter=2;
-        for(int j=0, vertical_offset = 0; j<2 ;j++, vertical_offset += 46){ //Vertical
+        for(int j=0; j<2 ;j++, vertical_offset += pawnsVerticalOffset){ //Vertical
             horizontal_offset = 0;
 
-            for(int i=0; i<3;i++, horizontal_offset += 35.5, labelCounter++){
-                pawns.add(new Circle(green_student.getX() + horizontal_offset + offset, green_student.getY() + vertical_offset, 12.5 ));
+            for(int i=0; i<3;i++, horizontal_offset += pawnsHorizontalOffset, labelCounter++){
+                pawns.add(new Circle(green_student.getX() + horizontal_offset + offset, green_student.getY() + vertical_offset, pawnsRadius ));
                 quantity.add(new Label());
-                quantity.get(labelCounter).setLayoutX(green_student.getX() +  horizontal_offset + offset - 12.5);
-                quantity.get(labelCounter).setLayoutY(green_student.getY() + vertical_offset + 10.5);
+                quantity.get(labelCounter).setLayoutX(green_student.getX() +  horizontal_offset + offset - labelsHorizontalOffset);
+                quantity.get(labelCounter).setLayoutY(green_student.getY() + vertical_offset + labelsVerticalOffset);
 
             }
         }
