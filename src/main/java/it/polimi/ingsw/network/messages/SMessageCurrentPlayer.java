@@ -6,7 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessageCurrentPlayer extends SMessage{
-    public String nickname;
+    public final String nickname;
 
     /**
      * Constructor.

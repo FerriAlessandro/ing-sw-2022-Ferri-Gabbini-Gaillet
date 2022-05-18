@@ -6,7 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class RMessageLoadGame extends RMessage{
-    public boolean use;
+    public final boolean use;
 
     /**
      * Constructor.

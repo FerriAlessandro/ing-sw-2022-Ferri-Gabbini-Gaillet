@@ -11,11 +11,11 @@ import java.util.ArrayList;
 
 public class RMessageJesterBard extends Message{
 
-    public ArrayList<Color> origin; //This ArrayList contains the students that the user wants to swap FROM THE ORIGIN! If the origin is the Dining Room,
+    public final ArrayList<Color> origin; //This ArrayList contains the students that the user wants to swap FROM THE ORIGIN! If the origin is the Dining Room,
                                     // it contains the students that the user wants to remove from its Dining Room!
-    public ArrayList<Color> entrance;//Same as above
-    public Characters characterName;
-    public String nickName;
+    public final ArrayList<Color> entrance;//Same as above
+    public final Characters characterName;
+    public final String nickName;
 
     /**
      * Constructor
@@ -25,26 +25,12 @@ public class RMessageJesterBard extends Message{
      * @param nickName NickName of the player
      */
     public RMessageJesterBard(Characters characterName, String nickName, ArrayList<Color> origin, ArrayList<Color> entrance){
-
         this.type = MessageType.R_JESTERBARD;
         this.origin = new ArrayList<>(origin);
         this.entrance = new ArrayList<>(entrance);
         this.characterName = characterName;
         this.nickName = nickName;
 
-
-    }
-
-    public ArrayList<Color> getOrigin() {
-        return origin;
-    }
-
-    public ArrayList<Color> getEntrance() {
-        return entrance;
-    }
-
-    public Characters getCharacterName() {
-        return characterName;
     }
 
 }

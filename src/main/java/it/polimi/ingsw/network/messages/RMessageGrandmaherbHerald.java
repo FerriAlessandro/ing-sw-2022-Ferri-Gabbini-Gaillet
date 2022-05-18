@@ -10,12 +10,12 @@ import it.polimi.ingsw.model.enumerations.Characters;
 
 public class RMessageGrandmaherbHerald extends Message{
 
-    public int islandIndex;
-    public Characters characterName;
-    public String nickName;
+    public final int islandIndex;
+    public final Characters characterName;
+    public final String nickName;
 
     /**
-     * Constructor
+     * Constructor.
      * @param characterName Name of the Character Card
      * @param nickName NickName of the player
      * @param islandIndex Index of the Island on which to place the no entry tile
@@ -29,11 +29,4 @@ public class RMessageGrandmaherbHerald extends Message{
 
     }
 
-    public int getIslandIndex() {
-        return islandIndex;
-    }
-
-    public Characters getCharacterName() {
-        return characterName;
-    }
 }

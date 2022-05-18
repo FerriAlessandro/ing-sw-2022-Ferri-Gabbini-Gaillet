@@ -6,7 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessageMotherNature extends SMessage {
-    public int maxNumTiles;
+    public final int maxNumTiles;
 
     /**
      * Constructor.

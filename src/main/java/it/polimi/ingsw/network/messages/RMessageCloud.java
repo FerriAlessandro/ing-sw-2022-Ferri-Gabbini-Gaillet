@@ -7,7 +7,7 @@ package it.polimi.ingsw.network.messages;
  */
 public class RMessageCloud extends RMessage{
 
-    int cloudIndex;
+    public final int cloudIndex;
 
     /**
      * Constructor.
@@ -20,9 +20,5 @@ public class RMessageCloud extends RMessage{
         this.cloudIndex = index;   // from 1 to 3
         this.nickName = nickName;
 
-    }
-
-    public int getCloudIndex() {
-        return cloudIndex;
     }
 }

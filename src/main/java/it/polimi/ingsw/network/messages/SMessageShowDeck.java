@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class SMessageShowDeck extends SMessage{
-    public ArrayList<AssistantCard> cards;
+    public final ArrayList<AssistantCard> cards;
 
     /**
      * Constructor

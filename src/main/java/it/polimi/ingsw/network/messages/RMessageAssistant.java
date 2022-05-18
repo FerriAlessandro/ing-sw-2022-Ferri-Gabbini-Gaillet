@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.enumerations.AssistantCard;
  */
 public class RMessageAssistant extends RMessage{
 
-     AssistantCard playedAssistant;
+     public final AssistantCard playedAssistant;
 
     /**
      * Constructor.
@@ -24,7 +24,4 @@ public class RMessageAssistant extends RMessage{
 
     }
 
-    public AssistantCard getPlayedAssistant() {
-        return playedAssistant;
-    }
 }

@@ -178,7 +178,7 @@ public class InputController implements Serializable{
      */
     private void cloudCheck(Message message) {
         boolean isValid = true;
-        int cloud = ((RMessageCloud)message).getCloudIndex();
+        int cloud = ((RMessageCloud)message).cloudIndex;
 
         if(gamePhase != Phase.CHOOSE_CLOUD)
             new RuntimeException("Message incompatible with actual game phase!").printStackTrace();
@@ -198,7 +198,7 @@ public class InputController implements Serializable{
         if(gamePhase != Phase.CHOOSE_ASSISTANT_CARD)
             new RuntimeException("Message incompatible with actual game phase!").printStackTrace();
 
-        if(((RMessageAssistant)message).getPlayedAssistant() == null)
+        if(((RMessageAssistant)message).playedAssistant == null)
             isValid = false;
 
         validateMessage(isValid, message);
@@ -208,7 +208,7 @@ public class InputController implements Serializable{
      * Check if the {@link RMessageMotherNature} has acceptable field.
      */
     private void motherNatureCheck(Message message) {
-        int islandIdx = ((RMessageMotherNature)message).getIslandIndex();
+        int islandIdx = ((RMessageMotherNature)message).islandIndex;
         boolean isValid = true;
 
         if(gamePhase != Phase.MOVE_MOTHERNATURE)
@@ -238,9 +238,9 @@ public class InputController implements Serializable{
     private void monkPrincessCheck(Message message) {
         boolean isValid = true;
         RMessageMonkPrincess mess = (RMessageMonkPrincess) message;
-        Color chosenColor = mess.getChosenColor();
-        Characters characterName = mess.getCharacterName();
-        int islandIndex = mess.getIslandIndex();
+        Color chosenColor = mess.chosenColor;
+        Characters characterName = mess.characterName;
+        int islandIndex = mess.islandIndex;
 
         if((gamePhase != Phase.CHOOSE_CHARACTER_CARD_1) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_2) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_3))
             new RuntimeException("Message incompatible with actual game phase!").printStackTrace();
@@ -267,10 +267,10 @@ public class InputController implements Serializable{
         if((gamePhase != Phase.CHOOSE_CHARACTER_CARD_1) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_2) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_3))
             new RuntimeException("Message incompatible with actual game phase!").printStackTrace();
 
-        if(mess.getEntrance() == null || mess.getOrigin() == null || mess.getCharacterName() == null)
+        if(mess.characterName == null)
             isValid = false;
 
-        if(mess.getCharacterName() != Characters.JESTER && mess.getCharacterName() != Characters.BARD)
+        if(mess.characterName != Characters.JESTER && mess.characterName != Characters.BARD)
             isValid = false;
 
         validateMessage(isValid, message);
@@ -282,8 +282,8 @@ public class InputController implements Serializable{
     private void grandmaherbHeraldCheck(Message message) {
         boolean isValid = true;
         RMessageGrandmaherbHerald mess = (RMessageGrandmaherbHerald) message;
-        int islandIndex = mess.getIslandIndex();
-        Characters characterName = mess.getCharacterName();
+        int islandIndex = mess.islandIndex;
+        Characters characterName = mess.characterName;
 
         if((gamePhase != Phase.CHOOSE_CHARACTER_CARD_1) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_2) && (gamePhase != Phase.CHOOSE_CHARACTER_CARD_3))
             new RuntimeException("Message incompatible with actual game phase!").printStackTrace();
@@ -323,7 +323,7 @@ public class InputController implements Serializable{
      * Check if the {@link RMessageNickname} has acceptable field.
      */
     private void nicknameCheck(Message message) {
-        boolean isValid = !(((RMessageNickname)message).getNickname() == null);
+        boolean isValid = !(((RMessageNickname)message).nickname == null);
         validateMessage(isValid, message);
     }
 

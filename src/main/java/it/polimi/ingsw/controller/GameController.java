@@ -358,9 +358,9 @@ public class GameController implements Serializable {
                                                        //the Game Phase is correct)
 
         RMessageAssistant assistantMessage = (RMessageAssistant) message;
-        System.out.println("PLAYED CARD: " + assistantMessage.getPlayedAssistant());
+        System.out.println("PLAYED CARD: " + assistantMessage.playedAssistant);
         try {
-            game.playAssistantCard(assistantMessage.getPlayedAssistant());
+            game.playAssistantCard(assistantMessage.playedAssistant);
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
 
@@ -479,7 +479,7 @@ public class GameController implements Serializable {
 
         RMessageMotherNature motherNatureMessage = (RMessageMotherNature) message;
         int lastIslandIndex = game.getGameBoard().getIslands().size()-1;
-        int desiredIslandIndex = motherNatureMessage.getIslandIndex()-1;
+        int desiredIslandIndex = motherNatureMessage.islandIndex-1;
         int currentMotherNatureIndex = game.getGameBoard().getIslands().indexOf(game.getGameBoard().getMotherNature().getCurrentIsland());
         int playerMaxSteps;
         int numOfSteps;
@@ -558,7 +558,7 @@ public class GameController implements Serializable {
             for(CharacterCard c : game.getGameBoard().getCharacters()) //Reset every character card
                 c.setActive(false);
 
-            game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.getCloudIndex() - 1));
+            game.chooseCloud(game.getGameBoard().getClouds().get(cloudMessage.cloudIndex - 1));
             askMoveOrCharacter();
 
         } catch(CloudNotFullException e){

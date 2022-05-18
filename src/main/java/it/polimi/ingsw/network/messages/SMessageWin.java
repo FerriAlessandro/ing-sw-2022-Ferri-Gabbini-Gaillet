@@ -7,7 +7,7 @@ package it.polimi.ingsw.network.messages;
  */
 public class SMessageWin extends SMessage{
 
-    public String winMessage;
+    public final String winMessage;
 
     /**
      * Constructor.

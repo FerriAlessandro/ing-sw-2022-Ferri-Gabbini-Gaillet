@@ -10,10 +10,10 @@ import java.util.EnumMap;
 
 public class SMessageJesterBard extends SMessage{
 
-    public EnumMap<Color, Integer> origin;
-    public EnumMap<Color, Integer> entrance;
-    public int maxStudents;
-    public Characters characterName;
+    public final EnumMap<Color, Integer> origin;
+    public final EnumMap<Color, Integer> entrance;
+    public final int maxStudents;
+    public final Characters characterName;
 
     /**
      * Constructor
@@ -22,7 +22,6 @@ public class SMessageJesterBard extends SMessage{
      * @param characterName Name of the Character Card
      */
     public SMessageJesterBard(EnumMap<Color, Integer> origin, EnumMap<Color, Integer> entrance, Characters characterName){
-
         super(MessageType.S_JESTERBARD);
         this.origin = origin; //If it's the Jester the origin is the card, if it's the Bard the origin is the Player's Dining Room
         this.entrance = entrance;
@@ -31,4 +30,5 @@ public class SMessageJesterBard extends SMessage{
             this.maxStudents = 3;
         else this.maxStudents = 2;
     }
+
 }

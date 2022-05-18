@@ -7,12 +7,15 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class RMessageNickname extends Message{
-    public String nickname;
+    public final String nickname;
 
+    /**
+     * Constructor
+     * @param nickname chosen by the player
+     */
     public RMessageNickname(String nickname){
         this.nickname = nickname;
         this.type = MessageType.R_NICKNAME;
     }
 
-    public String getNickname() { return this.nickname; }
 }
