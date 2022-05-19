@@ -6,20 +6,27 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.scene.MainMenuSceneController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.scene.MainMenuSceneController">
    <children>
       <Group>
          <children>
             <AnchorPane layoutX="151.0" layoutY="282.0" prefHeight="720.0" prefWidth="1280.0">
                <children>
-                  <ImageView fitHeight="720.0" fitWidth="1280.0" layoutX="3.0" layoutY="4.0">
+                  <ImageView fitHeight="1080.0" fitWidth="1920.0" layoutX="3.0" layoutY="4.0">
                      <image>
                         <Image url="@../images/LogoPNG.png" />
                      </image>
                   </ImageView>
-                  <Button layoutX="204.0" layoutY="548.0" mnemonicParsing="false" onAction="#playButtonPressed" prefHeight="65.0" prefWidth="101.0" text="PLAY" />
-                  <Button layoutX="935.0" layoutY="548.0" mnemonicParsing="false" onAction="#quitButtonPressed" prefHeight="65.0" prefWidth="101.0" text="QUIT" />
+                  <Button layoutX="537.0" layoutY="799.0" mnemonicParsing="false" onAction="#playButtonPressed" prefHeight="70.0" prefWidth="200.0" text="PLAY">
+                     <font>
+                        <Font size="36.0" />
+                     </font></Button>
+                  <Button layoutX="1273.0" layoutY="799.0" mnemonicParsing="false" onAction="#quitButtonPressed" prefHeight="70.0" prefWidth="200.0" text="QUIT">
+                     <font>
+                        <Font size="36.0" />
+                     </font></Button>
                </children>
             </AnchorPane>
          </children>

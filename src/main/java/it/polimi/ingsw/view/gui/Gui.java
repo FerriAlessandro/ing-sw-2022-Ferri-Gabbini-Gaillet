@@ -34,6 +34,7 @@ public class Gui extends Application implements ViewInterface {
     FXMLLoader loader;
     Parent root;
     SceneController controller;
+    public static Message currentMessage;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -46,10 +47,9 @@ public class Gui extends Application implements ViewInterface {
         this.stage = stage;
         stage.setTitle("Eriantys");
         stage.setScene(currentScene);
-        stage.setWidth(1280d);
-        stage.setHeight(720d);
+        stage.setWidth(1920d);
+        stage.setHeight(1080d);
         stage.show();
-
     }
 
     public void changeScene(String scene) throws Exception{
@@ -58,11 +58,14 @@ public class Gui extends Application implements ViewInterface {
         loader.setLocation(getClass().getResource(scene));
         root = loader.load();
         controller = loader.getController();
+        //For the moment currentMessage is a static attribute
+        //controller.setMessage(this.currentMessage);
         controller.setGui(this);
         currentScene = new Scene(root);
         stage.setScene(currentScene);
-        stage.setWidth(1280d);
-        stage.setHeight(720d);
+        stage.setWidth(1920d);
+        stage.setHeight(1080d);
+        stage.sizeToScene(); //TODO resizing
         stage.show();
 
     }
@@ -113,6 +116,7 @@ public class Gui extends Application implements ViewInterface {
                     expert = true;
                 adapter.sendMessage((new RMessageGameSettings(numOfPlayer, expert)));
             }
+
         });
 
     }
@@ -149,6 +153,17 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void showAssistantChoice(SMessageShowDeck message) {
+
+        Platform.runLater(() -> {
+            try {
+                currentMessage = message;
+                loader.setLocation(getClass().getResource("/fxml/AssistantChoiceScene.fxml"));
+                changeScene("/fxml/AssistantChoiceScene.fxml");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 

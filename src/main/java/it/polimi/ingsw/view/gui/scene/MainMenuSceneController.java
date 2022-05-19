@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.scene;
 
+import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.view.gui.Gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,4 +34,5 @@ public class MainMenuSceneController implements SceneController {
         this.gui = gui;
     }
 
+    public void setMessage(Message message) { }
 }

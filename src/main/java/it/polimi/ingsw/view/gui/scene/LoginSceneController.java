@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui.scene;
 
 import it.polimi.ingsw.network.Adapter;
+import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.view.gui.Gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,6 +27,7 @@ public class LoginSceneController implements SceneController {
     @FXML
     private TextField serverPortField;
 
+
     @FXML
     void onConnectButtonPressed(ActionEvent event) {
         //TODO add syntax controls
@@ -39,10 +41,11 @@ public class LoginSceneController implements SceneController {
             port = 2351;
         }
         gui.adapter = new Adapter(gui, ipAddress, port);
-        }
+    }
 
     public void setGui(Gui gui) {
         this.gui = gui;
     }
 
+    public void setMessage(Message message) { }
 }
