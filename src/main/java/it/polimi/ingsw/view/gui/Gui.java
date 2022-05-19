@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import it.polimi.ingsw.view.gui.scene.SceneController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -57,6 +58,7 @@ public class Gui extends Application implements ViewInterface {
         stage.setWidth(1920d);
         stage.setHeight(1080d);
         stage.show();
+        this.askMotherNatureMove(new SMessageMotherNature(5));
     }
 
     /**
@@ -138,7 +140,8 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askMotherNatureMove(SMessageMotherNature message) {
-
+        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+        gameBoardSceneController.makeIslandsSelectable();
     }
 
     @Override

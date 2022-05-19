@@ -1,7 +1,11 @@
 package it.polimi.ingsw.view.gui;
+import it.polimi.ingsw.network.messages.RMessageMotherNature;
+import it.polimi.ingsw.network.messages.SMessageMotherNature;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -30,8 +34,10 @@ public class FXisland {
     private double labelsHorizontalOffset = 12.5;
     private double pawnsHorizontalOffset = 35.5;
     private double pawnsVerticalOffset = 46;
+    private ImageView island;
 
-    public FXisland(GameBoardSceneController controller){
+    public FXisland(GameBoardSceneController controller, ImageView island){
+        this.island = island;
         this.gameBoardSceneController = controller;
 
     }
@@ -123,6 +129,29 @@ public class FXisland {
             label.setFont(new Font("Arial", 15));
             label.setStyle("-fx-font-weight: bold;");
         }
+
+
+    }
+
+    /**
+     * Makes the island selectable and, if clicked, sends the server the message containing the id of the clicked island, then makes all islands not clickable
+     */
+    public void makeSelectable(){
+
+        island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
+        island.setOnMouseClicked(mouseEvent -> {gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMotherNature(index, gameBoardSceneController.getGui().getNickName()));
+                                                gameBoardSceneController.removeIslandsSelectable();});
+
+
+
+    }
+
+    /**
+     * Method to make an island not selectable
+     */
+    public void removeSelectable(){
+        island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.DEFAULT));
+        island.setOnMouseClicked(null);
 
 
     }

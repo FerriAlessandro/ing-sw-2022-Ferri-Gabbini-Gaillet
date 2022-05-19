@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.scene;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.SMessageMotherNature;
 import it.polimi.ingsw.view.gui.FXCloud;
 import it.polimi.ingsw.view.gui.FXPlayerBoard;
 import it.polimi.ingsw.view.gui.FXisland;
@@ -8,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 
 /**
@@ -106,7 +109,7 @@ public class GameBoardSceneController implements SceneController {
     @FXML
     public void initialize(){
         for(int i=0; i<12; i++){
-            islands.add(new FXisland(this));
+            islands.add(new FXisland(this, getIslandById(i+1)));
             islands.get(i).createIsland(i+1);
         }
         for(int i=0;i<3;i++){
@@ -115,6 +118,7 @@ public class GameBoardSceneController implements SceneController {
         }
         player_name_1.setText("Alessandro");
         player_name_2.setText("Gabbo");
+        player_name_3.setTextFill(Color.RED);
         player_name_3.setText("Angelo");
         player_name_1.setStyle("-fx-font-weight: bold;");
         player_name_2.setStyle("-fx-font-weight: bold;");
@@ -136,9 +140,41 @@ public class GameBoardSceneController implements SceneController {
         this.gui = gui;
     }
 
+    public Gui getGui(){
+        return this.gui;
+    }
+
     @Override
     public void setMessage(Message message) {
 
+    }
+
+    public void makeIslandsSelectable(){
+        for(FXisland island : islands)
+            island.makeSelectable();
+    }
+
+    public void removeIslandsSelectable(){
+        for(FXisland island : islands)
+            island.removeSelectable();
+    }
+
+    private ImageView getIslandById(int id){
+        return switch (id) {
+            case 1 -> island_1;
+            case 2 -> island_2;
+            case 3 -> island_3;
+            case 4 -> island_4;
+            case 5 -> island_5;
+            case 6 -> island_6;
+            case 7 -> island_7;
+            case 8 -> island_8;
+            case 9 -> island_9;
+            case 10 -> island_10;
+            case 11 -> island_11;
+            case 12 -> island_12;
+            default -> null;
+        };
     }
 }
 
