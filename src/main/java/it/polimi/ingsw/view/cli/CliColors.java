@@ -27,14 +27,13 @@ public final class CliColors {
      * @return ANSI color escape sequence
      */
     public static String colored(Color color){
-        switch (color){
-            case GREEN: return GREEN;
-            case YELLOW: return YELLOW;
-            case RED: return RED;
-            case BLUE: return BLUE;
-            case PINK: return PINK;
-            default: return WHITE;
-        }
+        return switch (color) {
+            case GREEN -> GREEN;
+            case YELLOW -> YELLOW;
+            case RED -> RED;
+            case BLUE -> BLUE;
+            case PINK -> PINK;
+        };
     }
 
     /**
@@ -43,12 +42,12 @@ public final class CliColors {
      * @retuen ANSI color escape sequence
      */
     public static String towerColored(TowerColor color){
-        switch (color){
-            case WHITE: return T_WHITE;
-            case BLACK: return T_BLACK;
-            case GRAY: return T_GRAY;
-            default: return WHITE;
-        }
+        return switch (color) {
+            case WHITE -> T_WHITE;
+            case BLACK -> T_BLACK;
+            case GRAY -> T_GRAY;
+            default -> WHITE;
+        };
     }
 
     /**

@@ -6,8 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @author A.G. Gaillet, Alessandro F
  * @version 1.0
  */
-public class RMessageNickname extends Message{
-    public final String nickname;
+public class RMessageNickname extends RMessage{
 
     /**
      * Constructor

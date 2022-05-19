@@ -15,6 +15,8 @@ import java.util.Map;
 public class DrawableCloud extends Drawable{
     private final ArrayList<Color> students;
     private final int index;
+
+    /** The height of the drawable object in number of lines */
     public final static int height = 3;
 
     public DrawableCloud(Map<Color, Integer> students, int index){

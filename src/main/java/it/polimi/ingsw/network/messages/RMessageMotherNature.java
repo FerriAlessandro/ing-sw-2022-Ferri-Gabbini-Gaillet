@@ -7,6 +7,7 @@ package it.polimi.ingsw.network.messages;
  */
 public class RMessageMotherNature extends RMessage{
 
+    /** The index of the chosen {@link it.polimi.ingsw.model.IslandTile} of destination*/
     public final int islandIndex;
 
     /**
@@ -18,7 +19,7 @@ public class RMessageMotherNature extends RMessage{
 
         this.type = MessageType.R_MOTHERNATURE;
         this.islandIndex = index; // from 1 to 12
-        this.nickName = nickName;
+        this.nickname = nickName;
 
     }
 

@@ -6,7 +6,7 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessageInvalid extends SMessage{
-
+    /** {@link String} describing the error */
     public final String error;
 
     /**

@@ -12,8 +12,13 @@ import it.polimi.ingsw.network.messages.SMessageRogueMushroomPicker;
  * @author Alessandro F.
  * @version 1.0
  */
-
 public class MushroomPickerController extends CharacterController{
+
+    /**
+     * Constructor
+     * @param gameController The Game Controller
+     * @param characterName The Name of the Character Card
+     */
     public MushroomPickerController(GameController gameController, Characters characterName){
         super(gameController, characterName);
     }
@@ -25,7 +30,7 @@ public class MushroomPickerController extends CharacterController{
     @Override
     public void use(String nickName){
         if(checkCoin()){
-            gameController.getVirtualView(nickName).askCharacterMove(new SMessageRogueMushroomPicker(Characters.MUSHROOM_PICKER));
+            gameController.getVirtualView(nickName).rogueMushroomPickerScene(new SMessageRogueMushroomPicker(Characters.MUSHROOM_PICKER));
         }
         else chooseAnotherCard(nickName);
     }

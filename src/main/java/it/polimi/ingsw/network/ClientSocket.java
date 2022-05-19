@@ -22,13 +22,13 @@ import static java.util.concurrent.Executors.newScheduledThreadPool;
  * @see ClientHandler
  */
 public class ClientSocket extends Thread {
-    String ip;
-    int port;
+    private final String ip;
+    private final int port;
     private Socket socket;
     private ObjectOutputStream out;
     private final ScheduledExecutorService heartbeat = newScheduledThreadPool(1);
     private final Adapter adapter;
-    final Object sendLock = new Object();
+    private final Object sendLock = new Object();
 
     /**
      * Constructor for the {@link ClientSocket}.

@@ -129,6 +129,10 @@ public class Adapter {
                 view.showDisconnectionMessage();
                 break;
 
+            case S_EXPERT:
+                view.setExpert((SMessageExpert) message);
+                break;
+
             default:
                 new UnsupportedOperationException().printStackTrace();
                 break;

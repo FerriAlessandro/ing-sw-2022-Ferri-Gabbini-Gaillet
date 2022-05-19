@@ -33,7 +33,7 @@ public class MonkController extends CharacterController{
     public void use(String nickName){
         if(checkCoin()) //If the player has enough coin
             gameController.getVirtualView(nickName)
-                .askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK));
+                .monkPrincessScene(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK));
         else {//else ask for a new character card
             chooseAnotherCard(nickName);
 
@@ -54,8 +54,8 @@ public class MonkController extends CharacterController{
         int desiredIslandIndex = monkMessage.islandIndex-1;
         int lastIslandIndex = getGameBoard().getIslands().size()-1;
         if(lastIslandIndex < desiredIslandIndex){
-            gameController.sendErrorMessage(monkMessage.nickName, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
-            gameController.getVirtualView(monkMessage.nickName).askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK));
+            gameController.sendErrorMessage(monkMessage.nickname, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
+            gameController.getVirtualView(monkMessage.nickname).monkPrincessScene(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.MONK).getState()), Characters.MONK));
             return;
         }
         try {

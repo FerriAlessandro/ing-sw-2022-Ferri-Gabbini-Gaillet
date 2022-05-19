@@ -38,5 +38,6 @@ public enum MessageType {
     S_ROGUEMUSHROOMPICKER,
     R_ROGUEMUSHROOMPICKER,
     R_LOADGAME,
-    S_LOADGAME
+    S_LOADGAME,
+    S_EXPERT
 }

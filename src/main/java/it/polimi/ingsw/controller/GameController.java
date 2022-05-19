@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -22,15 +23,18 @@ import java.util.*;
 
 public class GameController implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private Game game;
     public Phase gamePhase;
     private CharacterController characterController;
+    /** Links each player nickname to the corresponding {@link VirtualView} */
     public transient Map<String, VirtualView > playersView;
     private final boolean isExpert;
     private boolean isLastRound;
     private final int numOfPlayers;
     private int numOfMoves = 0;
+    /** True if someone has played a character card, false otherwise.*/
     public boolean hasPlayedCharacter;
     private final ArrayList<String> nickNames = new ArrayList<>();
 
@@ -60,10 +64,18 @@ public class GameController implements Serializable {
         return playersView.get(nickName);
     }
 
+    /**
+     * Utility method to get the {@link Game}
+     * @return the linked game
+     */
     public Game getGame() {
         return game;
     }
 
+    /**
+     * Utility method to get the list of nicknames of the connected players.
+     * @return an {@link ArrayList} of nicknames
+     */
     public ArrayList<String> getNickNames() {
         return nickNames;
     }
@@ -81,32 +93,28 @@ public class GameController implements Serializable {
             } else {
                 throw new NotExistingPlayerException();
             }
+
+            playerView.setExpert(new SMessageExpert(isExpert));
+
             if (playersView.size() == numOfPlayers) {
                 for(VirtualView v : playersView.values()){
                     game.addObserver(v);
                 }
                 game.notifyObservers();
                 broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-                switch(gamePhase){
-                    case CHOOSE_ASSISTANT_CARD:
-                        getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
-                        break;
-                    case CHOOSE_CHARACTER_CARD_1:
-                    case CHOOSE_CHARACTER_CARD_2:
-                    case CHOOSE_CHARACTER_CARD_3:
-                        getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
-                        break;
-                    case MOVE_STUDENTS:
-                        getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
-                        break;
-                    case MOVE_MOTHERNATURE:
-                        getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
-                        break;
-                    case CHOOSE_CLOUD:
-                        getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
-                        break;
-                    default: throw new RuntimeException("Error while restoring the old game");
-
+                switch (gamePhase) {
+                    case CHOOSE_ASSISTANT_CARD ->
+                            getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
+                    case CHOOSE_CHARACTER_CARD_1, CHOOSE_CHARACTER_CARD_2, CHOOSE_CHARACTER_CARD_3 ->
+                            getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
+                    case MOVE_STUDENTS ->
+                            getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
+                    case MOVE_MOTHERNATURE ->
+                            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
+                    case CHOOSE_CLOUD ->
+                            getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
+                    default ->
+                            throw new RuntimeException("Error while restoring the old game");
                 }
             } else {
                 for(VirtualView v : playersView.values()){
@@ -132,6 +140,8 @@ public class GameController implements Serializable {
             nickNames.add(nickName);  // in order of arrival
 
             playersView.put(nickName, playerView);
+
+            playerView.setExpert(new SMessageExpert(isExpert));
 
             if (playersView.size() == numOfPlayers) {
                 game = new Game(nickNames);
@@ -169,38 +179,14 @@ public class GameController implements Serializable {
      */
     public void elaborateMessage(Message m){
 
-        switch(m.getType()){
-
-            case R_ASSISTANT:
-                elaborateAssistant(m);
-                break;
-
-            case R_CHARACTER:
-                elaborateCharacter(m);
-                break;
-
-            case R_MOVE:
-                elaborateMove(m);
-                break;
-
-            case R_MOTHERNATURE:
-                elaborateMotherNature(m);
-                break;
-
-            case R_CLOUD:
-                elaborateCloud(m);
-                break;
-
-            case R_GRANDMAHERBHERALD:
-            case R_JESTERBARD:
-            case R_ROGUEMUSHROOMPICKER:
-            case R_MONKPRINCESS:
-                elaborateActivation(m);
-                break;
-
-            default:
-                 new UnsupportedOperationException().printStackTrace();
-
+        switch (m.getType()) {
+            case R_ASSISTANT -> elaborateAssistant(m);
+            case R_CHARACTER -> elaborateCharacter(m);
+            case R_MOVE -> elaborateMove(m);
+            case R_MOTHERNATURE -> elaborateMotherNature(m);
+            case R_CLOUD -> elaborateCloud(m);
+            case R_GRANDMAHERBHERALD, R_JESTERBARD, R_ROGUEMUSHROOMPICKER, R_MONKPRINCESS -> elaborateActivation(m);
+            default -> new UnsupportedOperationException().printStackTrace();
         }
     }
 
@@ -228,17 +214,15 @@ public class GameController implements Serializable {
      */
     public void broadcastMessage(String message, MessageType type) {
         switch (type) {
-            case S_INVALID: {
+            case S_INVALID -> {
                 SMessageInvalid m = new SMessageInvalid(message);
                 for (VirtualView v : playersView.values())
                     v.showGenericMessage(m);
-                break;
             }
-            case S_PLAYER: {
+            case S_PLAYER -> {
                 SMessageCurrentPlayer m = new SMessageCurrentPlayer(message);
                 for (VirtualView v : playersView.values())
                     v.showCurrentPlayer(m);
-                break;
             }
         }
     }
@@ -254,6 +238,10 @@ public class GameController implements Serializable {
         getVirtualView(nickName).showGenericMessage(new SMessageInvalid(message));
     }
 
+    /**
+     * Creates a message with available {@link Characters}
+     * @return the created message
+     */
     public SMessageCharacter createCharacterMessage(){
         return new SMessageCharacter(game.getGameBoard().getCharacters());
     }
@@ -321,7 +309,6 @@ public class GameController implements Serializable {
     /**
      * Switches the Phase of the Game after a Character Card is used (or after no Character Card is chosen)
      */
-
     public void switchPhase(){
         if(gamePhase.equals(Phase.CHOOSE_CHARACTER_CARD_1)) {
             gamePhase = Phase.MOVE_STUDENTS;
@@ -374,8 +361,8 @@ public class GameController implements Serializable {
 
         }
         catch(CardNotAvailableException | CardNotFoundException e){
-            sendErrorMessage(assistantMessage.getNickName(), e.getMessage());
-            getVirtualView(assistantMessage.getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck())); //Re-Ask the player to pick a card
+            sendErrorMessage(assistantMessage.nickname, e.getMessage());
+            getVirtualView(assistantMessage.nickname).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck())); //Re-Ask the player to pick a card
         }
         catch(EmptyDeckException e){
             if(!isLastRound){
@@ -429,7 +416,7 @@ public class GameController implements Serializable {
             dest = game.getGameBoard().getIslands().get(moveMessage.destination - 1); //User counts islands from 1, not from 0
 
         else { //Destination not valid
-            sendErrorMessage(moveMessage.getNickName(),"This destination does not exist!");
+            sendErrorMessage(moveMessage.nickname,"This destination does not exist!");
             getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
             return;
         }
@@ -439,7 +426,7 @@ public class GameController implements Serializable {
 
         } catch (FullDestinationException e) { //Destination already full, need to pick another one (don't increment numOfMoves)
 
-            sendErrorMessage(moveMessage.getNickName(), e.getMessage() + "Please pick another one");
+            sendErrorMessage(moveMessage.nickname, e.getMessage() + "Please pick another one");
             getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
             return;
 
@@ -490,7 +477,7 @@ public class GameController implements Serializable {
         else playerMaxSteps = game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement();
 
         if(lastIslandIndex < desiredIslandIndex){
-            sendErrorMessage(motherNatureMessage.getNickName(), "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
+            sendErrorMessage(motherNatureMessage.nickname, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
             getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
             return;
         }
@@ -503,7 +490,7 @@ public class GameController implements Serializable {
 
 
         if(playerMaxSteps < numOfSteps) {
-            sendErrorMessage(motherNatureMessage.getNickName(), "Insufficient number of steps!");
+            sendErrorMessage(motherNatureMessage.nickname, "Insufficient number of steps!");
             getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
         }
         else {
@@ -562,12 +549,12 @@ public class GameController implements Serializable {
             askMoveOrCharacter();
 
         } catch(CloudNotFullException e){
-            sendErrorMessage(cloudMessage.getNickName(), "This Cloud is Empty, please select another Cloud");
+            sendErrorMessage(cloudMessage.nickname, "This Cloud is Empty, please select another Cloud");
             getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
 
         }
         catch(FullDestinationException e){
-            sendErrorMessage(cloudMessage.getNickName(), "Your Entrance is full, you can't choose a Cloud");
+            sendErrorMessage(cloudMessage.nickname, "Your Entrance is full, you can't choose a Cloud");
             getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
         }
         catch(EndRoundException e){
@@ -594,24 +581,7 @@ public class GameController implements Serializable {
         characterController = CharacterFactory.create(this, characterMessage.character);
         characterController.use(characterMessage.nickname);
 
-        switch(gamePhase){ //If the card sent was 'NONE' the phase has been changed and this switch activates, if there was a valid Card the phase hasn't been changed and this switch does Default
-            case MOVE_STUDENTS: {
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMove();
-                break;
-            }
-            case MOVE_MOTHERNATURE:{
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
-                break;
-            }
-            case CHOOSE_CLOUD:{
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
-                break;
-            }
-
-            default:
-        }
-
-
+        sceneAfterCharacter();
 
     }
 
@@ -621,24 +591,18 @@ public class GameController implements Serializable {
      */
     public void elaborateActivation(Message message){
         characterController.activate(message);
-        switch(gamePhase){
-            case MOVE_STUDENTS: {
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMove();
-                break;
-            }
-            case MOVE_MOTHERNATURE:{
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
-                break;
-            }
-            case CHOOSE_CLOUD:{
-                getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
-                break;
-            }
-            case WINNER:{
+        sceneAfterCharacter();
+    }
 
-                break;
-            }
-            default:
+    /**
+     * Asks next action after character choice.
+     */
+    private void sceneAfterCharacter() {
+        switch (gamePhase) {
+            case MOVE_STUDENTS -> getVirtualView(getGame().getCurrentPlayer().getNickName()).askMove();
+            case MOVE_MOTHERNATURE -> getVirtualView(getGame().getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
+            case CHOOSE_CLOUD -> getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
+            default -> {}
         }
     }
 

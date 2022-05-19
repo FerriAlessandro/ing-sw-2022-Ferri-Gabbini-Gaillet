@@ -18,7 +18,11 @@ import java.util.EnumMap;
  */
 public class SpoiledPrincessController extends CharacterController{
 
-
+    /**
+     * Constructor
+     * @param gameController The Game Controller
+     * @param characterName The Name of the Character Card
+     */
     public SpoiledPrincessController(GameController gameController, Characters characterName){
         super(gameController, characterName);
     }
@@ -40,7 +44,7 @@ public class SpoiledPrincessController extends CharacterController{
             }
             if (playable) //if the player can play the card ask for the color
                 gameController.getVirtualView(nickName)
-                        .askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
+                        .monkPrincessScene(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
             else { //if the player cannot play the card, ask if he wants to play another card
                 gameController.sendErrorMessage(nickName, "You cannot play this card, you already filled the Dining Rooms corresponding to this card's colors");
                 gameController.getVirtualView(nickName).showCharacterChoice(gameController.createCharacterMessage());
@@ -68,8 +72,8 @@ public class SpoiledPrincessController extends CharacterController{
             getGameBoard().fillCharacter(gameController.getCharacterByName(Characters.SPOILED_PRINCESS));
 
         } catch(FullDestinationException e){
-            gameController.sendErrorMessage(princessMessage.nickName, "Your " + princessMessage.chosenColor + "Dining Room is full, please selected another color");
-            gameController.getVirtualView(princessMessage.nickName).askCharacterMove(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
+            gameController.sendErrorMessage(princessMessage.nickname, "Your " + princessMessage.chosenColor + "Dining Room is full, please selected another color");
+            gameController.getVirtualView(princessMessage.nickname).monkPrincessScene(new SMessageMonkPrincess(new EnumMap<>(gameController.getCharacterByName(Characters.SPOILED_PRINCESS).getState()), Characters.SPOILED_PRINCESS));
             return;
         }
         catch(EmptyBagException ignored){} //already handled in the ChooseCloud method

@@ -11,12 +11,15 @@ import it.polimi.ingsw.network.messages.*;
  * @author Alessandro F.
  * @version 1.0
  */
-
 public class RogueController extends CharacterController{
 
     private final int rogueRemovals;
 
-
+    /**
+     * Constructor
+     * @param gameController The Game Controller
+     * @param characterName The Name of the Character Card
+     */
     public RogueController(GameController gameController, Characters characterName){
         super(gameController, characterName);
         this.rogueRemovals = 3;
@@ -31,7 +34,7 @@ public class RogueController extends CharacterController{
 
         if(checkCoin()){
             gameController.getVirtualView(nickName)
-                    .askCharacterMove(new SMessageRogueMushroomPicker(Characters.ROGUE));
+                    .rogueMushroomPickerScene(new SMessageRogueMushroomPicker(Characters.ROGUE));
         }
         else{
             chooseAnotherCard(nickName);
@@ -68,7 +71,5 @@ public class RogueController extends CharacterController{
         gameController.broadcastMessage("ROGUE Card has been played, 3 "+rogueMessage.chosenColor+" Students were removed from your Dining Room", MessageType.S_INVALID);
         sideEffects();
     }
-
-
 
 }

@@ -9,22 +9,22 @@ import it.polimi.ingsw.model.enumerations.Color;
  * @author Alessandro F.
  * @version 1.0
  */
-public class RMessageRogueMushroomPicker extends Message{
-
+public class RMessageRogueMushroomPicker extends RMessage{
+    /** The chosen {@link Color}*/
     public final Color chosenColor;
+    /** The character choice which originated this message*/
     public final Characters characterName;
-    public final String nickName;
 
     /**
      * Constructor
      * @param characterName either {@link Characters#MUSHROOM_PICKER} or {@link Characters#ROGUE}
-     * @param nickName of the player
+     * @param nickname of the player
      * @param color of students on which the effect is applied
      */
-    public RMessageRogueMushroomPicker(Characters characterName, String nickName, Color color){
+    public RMessageRogueMushroomPicker(Characters characterName, String nickname, Color color){
         this.type = MessageType.R_ROGUEMUSHROOMPICKER;
         this.characterName = characterName;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.chosenColor = color;
     }
 

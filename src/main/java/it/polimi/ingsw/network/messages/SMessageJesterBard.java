@@ -9,10 +9,16 @@ import java.util.EnumMap;
  */
 
 public class SMessageJesterBard extends SMessage{
-
+    /** The Jester card itself if the played card is Jester, the Dining Room if the played card is Bard */
     public final EnumMap<Color, Integer> origin;
+
+    /** The entrance of the current player's player-board */
     public final EnumMap<Color, Integer> entrance;
+
+    /** The maximum number of students that can be chosen */
     public final int maxStudents;
+
+    /** The character choice that originated this message */
     public final Characters characterName;
 
     /**

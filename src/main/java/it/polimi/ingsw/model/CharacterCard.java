@@ -24,7 +24,7 @@ public class CharacterCard extends TileWithStudents{
     private Color forbiddenColor;
 
     /**
-     * Class constructor
+     * Class constructor.
      * @param name Name of the chosen Character
      */
     public CharacterCard(Characters name){
@@ -97,30 +97,23 @@ public class CharacterCard extends TileWithStudents{
      */
     public void setStudents(Bag bag) throws EmptyBagException {
 
-        switch (name){
-
-            case MONK :
-
-            case SPOILED_PRINCESS: {
+        switch (name) {
+            case MONK, SPOILED_PRINCESS -> {
                 maxStudents = 4;
                 ArrayList<Color> students = bag.getStudents(maxStudents);
                 for (int i = 0; i < maxStudents; i++)
                     try {
                         addStudent(students.get(i));
-                    } catch (FullDestinationException ignored){}
-                break;
+                    } catch (FullDestinationException ignored) {}
             }
-
-            case JESTER: {
+            case JESTER -> {
                 maxStudents = 6;
                 ArrayList<Color> students = bag.getStudents(maxStudents);
                 for (int i = 0; i < maxStudents; i++)
                     try {
                         addStudent(students.get(i));
-                    } catch (FullDestinationException ignored){}
-                break;
+                    } catch (FullDestinationException ignored) {}
             }
-
         }
     }
 

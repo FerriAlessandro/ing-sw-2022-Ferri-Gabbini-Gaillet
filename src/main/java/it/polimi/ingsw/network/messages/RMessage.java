@@ -8,9 +8,9 @@ package it.polimi.ingsw.network.messages;
 
 public abstract class RMessage extends Message{
 
-    String nickName;
+    /**
+     * Nickname of the player who sends the message.
+     */
+    public String nickname;
 
-    public String getNickName() {
-        return nickName;
-    }
 }

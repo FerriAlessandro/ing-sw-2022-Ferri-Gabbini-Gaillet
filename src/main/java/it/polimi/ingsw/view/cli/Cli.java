@@ -21,24 +21,38 @@ public class Cli implements ViewInterface {
     private Adapter adapter;
     private String nickname;
 
-    protected boolean expert = false;
-    protected final Map<String, Integer> coins = new HashMap<>();
+    /** True if the current game follows expert rules, false otherwise */
+    protected boolean expert;
+
+    /** Coins owned by each player */
+    protected final Map<String, Integer> coins;
+
+    /**
+     * Constructor.
+     */
+    public Cli(){
+        coins =  new HashMap<>();
+    }
 
     /**
      * Main function for the Command Line Interface
      */
     public void startGame(){
-        System.out.println( "\n\n" +
-                            "   ▄████████    ▄████████ ▄██   ▄      ▄████████ ███▄▄▄▄       ███      ▄█     ▄████████ \n" +
-                            "  ███    ███   ███    ███ ███   ██▄   ███    ███ ███▀▀▀██▄ ▀█████████▄ ███    ███    ███ \n" +
-                            "  ███    █▀    ███    ███ ███▄▄▄███   ███    ███ ███   ███    ▀███▀▀██ ███▌   ███    █▀  \n" +
-                            " ▄███▄▄▄      ▄███▄▄▄▄██▀ ▀▀▀▀▀▀███   ███    ███ ███   ███     ███   ▀ ███▌   ███        \n" +
-                            "▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ▄██   ███ ▀███████████ ███   ███     ███     ███▌ ▀███████████ \n" +
-                            "  ███    █▄  ▀███████████ ███   ███   ███    ███ ███   ███     ███     ███           ███ \n" +
-                            "  ███    ███   ███    ███ ███   ███   ███    ███ ███   ███     ███     ███     ▄█    ███ \n" +
-                            "  ██████████   ███    ███  ▀█████▀    ███    █▀   ▀█   █▀     ▄████▀   █▀    ▄████████▀  \n" +
-                            "               ███    ███                                                                \n" +
-                            "\n\nWelcome to the Eryantis board game"
+        System.out.println("""
+
+
+                   ▄████████    ▄████████ ▄██   ▄      ▄████████ ███▄▄▄▄       ███      ▄█     ▄████████\s
+                  ███    ███   ███    ███ ███   ██▄   ███    ███ ███▀▀▀██▄ ▀█████████▄ ███    ███    ███\s
+                  ███    █▀    ███    ███ ███▄▄▄███   ███    ███ ███   ███    ▀███▀▀██ ███▌   ███    █▀ \s
+                 ▄███▄▄▄      ▄███▄▄▄▄██▀ ▀▀▀▀▀▀███   ███    ███ ███   ███     ███   ▀ ███▌   ███       \s
+                ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ▄██   ███ ▀███████████ ███   ███     ███     ███▌ ▀███████████\s
+                  ███    █▄  ▀███████████ ███   ███   ███    ███ ███   ███     ███     ███           ███\s
+                  ███    ███   ███    ███ ███   ███   ███    ███ ███   ███     ███     ███     ▄█    ███\s
+                  ██████████   ███    ███  ▀█████▀    ███    █▀   ▀█   █▀     ▄████▀   █▀    ▄████████▀ \s
+                               ███    ███                                                               \s
+
+
+                Welcome to the Eryantis board game"""
         );
         String ip = "localhost";
         int port = 2351;
@@ -83,18 +97,16 @@ public class Cli implements ViewInterface {
             num = nextInt();
         }
         System.out.print("Do you want to play an expert game or not (y/n): ");
-        in.nextLine();
         String choice = in.nextLine();
         while(!choice.equals("y") && !choice.equals("n")){
             System.out.print("Please enter valid a answer (y/n): ");
             choice = in.nextLine();
         }
         if(choice.equals("y")){
+            System.out.println("You chose to play an expert game");
             adapter.sendMessage(new RMessageGameSettings(num, true));
-            expert = true;
         }else{
             adapter.sendMessage(new RMessageGameSettings(num, false));
-            expert = false;
         }
         System.out.print("\n");
     }
@@ -177,9 +189,9 @@ public class Cli implements ViewInterface {
         }
 
         Characters chosenCharacter;
-        if(choice!=0){
+        if (choice != 0) {
             chosenCharacter = messageCharacter.effects.get(choice - 1);
-        }else{
+        } else {
             chosenCharacter = Characters.NONE;
         }
         adapter.sendMessage(new RMessageCharacter(chosenCharacter, this.nickname));
@@ -362,37 +374,6 @@ public class Cli implements ViewInterface {
     }
 
     /**
-     * Ask additional information on chosen character effect when necessary.
-     *
-     * @param message containing data required to perform the related operation
-     */
-    @Deprecated
-    @Override
-    public void askCharacterMove(SMessage message) {
-        switch (message.getType()){
-            case S_JESTERBARD:
-                jesterBardScene((SMessageJesterBard) message);
-                break;
-
-            case S_ROGUEMUSHROOMPICKER:
-                rogueMushroomPickerScene((SMessageRogueMushroomPicker) message);
-                break;
-
-            case S_MONKPRINCESS:
-                monkPrincessScene((SMessageMonkPrincess) message);
-                break;
-
-            case S_GRANDMAHERBHERALD:
-                grandmaHerbHeraldScene((SMessageGrandmaherbHerald) message);
-                break;
-
-            default:
-                new InvalidParameterException().printStackTrace();
-        }
-        System.out.print("\n");
-    }
-
-    /**
      * Asks additional information on chosen character effect of
      * {@link it.polimi.ingsw.model.enumerations.Characters#GRANDMA_HERB} or
      * {@link it.polimi.ingsw.model.enumerations.Characters#HERALD}.
@@ -462,16 +443,10 @@ public class Cli implements ViewInterface {
         System.out.println("You chose the: " + messageJesterBard.characterName);
         System.out.println("Effect: " + messageJesterBard.characterName.getEffect());
         System.out.print("These are the students available ");
-        switch (messageJesterBard.characterName){
-            case JESTER:
-                System.out.print("on the card: ");
-                break;
-            case BARD:
-                System.out.print("in the dining room: ");
-                break;
-            default:
-                new InvalidParameterException().printStackTrace();
-                break;
+        switch (messageJesterBard.characterName) {
+            case JESTER -> System.out.print("on the card: ");
+            case BARD -> System.out.print("in the dining room: ");
+            default -> new InvalidParameterException().printStackTrace();
         }
         printColorMap(messageJesterBard.origin);
 
@@ -479,16 +454,10 @@ public class Cli implements ViewInterface {
         printColorMap(messageJesterBard.entrance);
 
         System.out.print("\nPlease choose the students to be taken from the ");
-        switch (messageJesterBard.characterName){
-            case JESTER:
-                System.out.print("card\n");
-                break;
-            case BARD:
-                System.out.print("dining room\n");
-                break;
-            default:
-                new InvalidParameterException().printStackTrace();
-                break;
+        switch (messageJesterBard.characterName) {
+            case JESTER -> System.out.print("card\n");
+            case BARD -> System.out.print("dining room\n");
+            default -> new InvalidParameterException().printStackTrace();
         }
 
         System.out.print("You need to choose up to " + messageJesterBard.maxStudents + "students (one at a time) between ");
@@ -539,6 +508,16 @@ public class Cli implements ViewInterface {
     }
 
     /**
+     * Used to set the client flag for expert game handling.
+     *
+     * @param messageExpert message containing the flag value
+     */
+    @Override
+    public void setExpert(SMessageExpert messageExpert) {
+        expert = messageExpert.expert;
+    }
+
+    /**
      * Provides a {@link String} containing a list of existing {@link Color}s
      * @return {@link String} of comma and space separated colors (e.g. "RED, GREEN, BLUE")
      */
@@ -571,7 +550,6 @@ public class Cli implements ViewInterface {
     private String colorChoice(){
         String choice;
         System.out.println("Please choose a color among the following: " + colorList());
-        in.nextLine();
         choice = in.nextLine();
         while (!isValidColor(choice)){
             System.out.println("Please choose a valid color (" + colorList() + "): ");

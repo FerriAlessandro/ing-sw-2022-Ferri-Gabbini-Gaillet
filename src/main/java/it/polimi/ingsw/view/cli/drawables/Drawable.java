@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class Drawable {
 
     /**
-     * This method returns a multi-line cascade of all provided drawables in a printable format. These need to be all of the
+     * This method returns a multi-line cascade of all provided drawables in a printable format. These need to be all the
      * same height.
      * @param objects to be added
      * @param numOnOneLine number of objects on the first line

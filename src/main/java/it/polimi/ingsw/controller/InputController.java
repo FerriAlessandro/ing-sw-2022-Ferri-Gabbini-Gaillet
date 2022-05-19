@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import it.polimi.ingsw.exceptions.FullGameException;
@@ -17,6 +18,7 @@ import it.polimi.ingsw.network.messages.*;
  */
 public class InputController implements Serializable{
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private final GameController gameController;
     private Phase gamePhase;
@@ -77,6 +79,10 @@ public class InputController implements Serializable{
         getGameController().playerDisconnected(nickname);
     }
 
+    /**
+     * Utility method to get the list of nicknames of the connected players.
+     * @return an {@link ArrayList} of nicknames
+     */
     public ArrayList<String> getNicknames(){
         return gameController.getNickNames();
     }
@@ -93,51 +99,18 @@ public class InputController implements Serializable{
 
         gamePhase = getGameController().getGamePhase();
 
-        switch(message.getType()) {
-
-            case R_MOVE:
-                moveCheck(message);
-                break;
-
-            case R_CLOUD:
-                cloudCheck(message);
-                break;
-
-            case R_ASSISTANT:
-                assistantCheck(message);
-                break;
-
-            case R_MOTHERNATURE:
-                motherNatureCheck(message);
-                break;
-
-            case R_CHARACTER:
-                characterCheck(message);
-                break;
-
-            case R_MONKPRINCESS:
-                monkPrincessCheck(message);
-                break;
-
-            case R_JESTERBARD:
-                jesterBardCheck(message);
-                break;
-
-            case R_GRANDMAHERBHERALD:
-                grandmaherbHeraldCheck(message);
-                break;
-
-            case R_ROGUEMUSHROOMPICKER:
-                rogueMushroomPickerCheck(message);
-                break;
-
-            case R_NICKNAME:
-                nicknameCheck(message);
-                break;
-
-            default:
-                new RuntimeException("This messageType doesn't exist!").printStackTrace();
-                break;
+        switch (message.getType()) {
+            case R_MOVE -> moveCheck(message);
+            case R_CLOUD -> cloudCheck(message);
+            case R_ASSISTANT -> assistantCheck(message);
+            case R_MOTHERNATURE -> motherNatureCheck(message);
+            case R_CHARACTER -> characterCheck(message);
+            case R_MONKPRINCESS -> monkPrincessCheck(message);
+            case R_JESTERBARD -> jesterBardCheck(message);
+            case R_GRANDMAHERBHERALD -> grandmaherbHeraldCheck(message);
+            case R_ROGUEMUSHROOMPICKER -> rogueMushroomPickerCheck(message);
+            case R_NICKNAME -> nicknameCheck(message);
+            default -> new RuntimeException("This messageType doesn't exist!").printStackTrace();
         }
     }
 

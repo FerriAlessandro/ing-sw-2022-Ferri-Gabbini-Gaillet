@@ -6,8 +6,10 @@ package it.polimi.ingsw.exceptions;
  * @author Alessandro F.
  * @version 1.0
  */
-
 public class CardNotAvailableException extends Exception{
+    /**
+     * Constructor.
+     */
     public CardNotAvailableException(){
         super("This card has already been played by another Player! Please select another Card");
     }

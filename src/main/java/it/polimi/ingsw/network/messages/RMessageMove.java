@@ -9,9 +9,10 @@ import it.polimi.ingsw.model.enumerations.Color;
  */
 
 public class RMessageMove extends RMessage{
-
+    /** The chosen {@link Color}*/
     public final Color chosenColor;
-    public final int destination;      // 0 for Dining Room, 1 to 12 for the islands
+    /** An int value representing the chosen destination. 0 for Dining Room, 1 to 12 for the islands*/
+    public final int destination;
 
     /**
      * Constructor
@@ -23,7 +24,7 @@ public class RMessageMove extends RMessage{
         this.type = MessageType.R_MOVE;
         this.chosenColor = color;
         this.destination = destination;
-        this.nickName = nickName;
+        this.nickname = nickName;
     }
 
 }

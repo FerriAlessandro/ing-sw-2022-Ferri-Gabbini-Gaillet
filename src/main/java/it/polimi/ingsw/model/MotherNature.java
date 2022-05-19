@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,6 +16,7 @@ import java.util.Random;
 public class MotherNature implements Serializable {
     private final ArrayList<IslandTile> islands;
     private IslandTile currentIsland;
+    @Serial
     private static final long serialVersionUID = -5551582185882138723L;
     /**
      * Constructor.
@@ -36,6 +38,10 @@ public class MotherNature implements Serializable {
         currentIsland = islands.get((idx + positions)%islands.size());
     }
 
+    /**
+     * Provides the reference to the {@link IslandTile} where mother nature is currently located
+     * @return the {@link IslandTile} where mother nature currently is
+     */
     public IslandTile getCurrentIsland(){
         return currentIsland;
     }

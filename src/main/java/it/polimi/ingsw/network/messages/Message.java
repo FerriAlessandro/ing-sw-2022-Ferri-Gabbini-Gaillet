@@ -10,6 +10,9 @@ import java.io.Serializable;
 public abstract class Message implements Serializable {
     MessageType type;
 
+    /**
+     * @return the type of this message.
+     */
     public MessageType getType(){
         return type;
     }

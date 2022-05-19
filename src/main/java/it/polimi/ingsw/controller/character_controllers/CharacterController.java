@@ -6,18 +6,28 @@ import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
  * This class represents the Character Controller, it manages Characters effects in Expert Mode
  * @author Alessandro F.
  * @version 1.0
+ * @see GameController
+ * @see Characters
  */
 public class CharacterController implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    public GameController gameController;
-    public Characters characterName;
+    /**
+     * Linked {@link GameController} from which it originated.
+     */
+    public final GameController gameController;
+    /**
+     * Name of the specific character that needs to be implemented.
+     */
+    public final Characters characterName;
 
     /**
      * Constructor
@@ -29,10 +39,18 @@ public class CharacterController implements Serializable {
         this.characterName = characterName;
     }
 
+    /**
+     * Generic method to select the character.
+     * @param nickName of the player
+     */
     public void use(String nickName){
         switchPhase();
     }
 
+    /**
+     * Generic method to activate the character.
+     * @param message used to provide required parameters
+     */
     public void activate(Message message){
 
     }
@@ -62,9 +80,18 @@ public class CharacterController implements Serializable {
         gameController.getGame().getGameBoard().getPlayerBoard(gameController.getGame().getCurrentPlayer()).removeCoin(gameController.getCharacterByName(characterName).getCost());
     }
 
+    /**
+     * Utility method to get the {@link GameBoard} of the current game.
+     * @return the {@link GameBoard}
+     */
     public GameBoard getGameBoard(){
         return gameController.getGame().getGameBoard();
     }
+
+    /**
+     * Utility method to get the current {@link Game}
+     * @return the {@link Game}
+     */
     public Game getGame(){
         return gameController.getGame();
     }
