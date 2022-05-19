@@ -6,6 +6,9 @@ package it.polimi.ingsw.exceptions;
  * @version 1.0
  */
 public class EmptyOriginException extends Exception{
+    /**
+     * Constructor.
+     */
     public EmptyOriginException(){
         super("Given origin tile is empty");
     }

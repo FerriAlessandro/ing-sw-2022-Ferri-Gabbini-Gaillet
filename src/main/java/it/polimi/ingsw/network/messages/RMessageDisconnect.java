@@ -6,6 +6,9 @@ package it.polimi.ingsw.network.messages;
  * {@link Message} to be sent by the client when it wishes to disconnect from the server
  */
 public class RMessageDisconnect extends Message{
+    /**
+     * Constructor.
+     */
     public RMessageDisconnect(){
         this.type = MessageType.R_DISCONNECT;
     }

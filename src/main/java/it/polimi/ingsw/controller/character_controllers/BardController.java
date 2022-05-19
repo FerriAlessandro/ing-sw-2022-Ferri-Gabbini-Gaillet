@@ -19,6 +19,11 @@ import java.util.EnumMap;
 
 public class BardController extends CharacterController{
 
+    /**
+     * Constructor.
+     * @param gameController the {@link GameController} from where commands originate
+     * @param characterName name of the character to be elaborated
+     */
     public BardController(GameController gameController, Characters characterName){
         super(gameController, characterName);
     }
@@ -41,7 +46,7 @@ public class BardController extends CharacterController{
             }
             if(playable) {  //If at least one swap is possible the card is playable
                 gameController.getVirtualView(nickName)
-                        .askCharacterMove(new SMessageJesterBard(
+                        .jesterBardScene(new SMessageJesterBard(
                                 new EnumMap<>(getCurrentPlayerBoard().getDiningRoom().getState()),
                                 new EnumMap<>(getCurrentPlayerBoard().getEntrance().getState()),
                                 Characters.BARD));

@@ -9,8 +9,8 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @version 1.0
  */
 public class SMessageRogueMushroomPicker extends SMessage{
-
-    public Characters characterName;
+    /** The character choice that originated this message */
+    public final Characters characterName;
 
     /**
      * Constructor

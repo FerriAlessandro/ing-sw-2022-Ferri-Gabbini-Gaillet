@@ -8,8 +8,11 @@ import java.util.List;
  * @version 1.0
  */
 public class SMessageLobby extends SMessage{
-    public List<String> currentPlayers;
-    public int numPlayersTotal;
+    /** List of the nicknames of connected players */
+    public final List<String> currentPlayers;
+
+    /** Desired number of players for this game instance */
+    public final int numPlayersTotal;
 
     /**
      * Constructor.
@@ -20,6 +23,6 @@ public class SMessageLobby extends SMessage{
         super(MessageType.S_LOBBY);
         this.currentPlayers = currentPlayers;
         this.numPlayersTotal = numPlayersTotal;
-
     }
+
 }

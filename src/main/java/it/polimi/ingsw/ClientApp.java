@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.view.gui.FXGui;
+import it.polimi.ingsw.view.gui.Gui;
 import javafx.application.Application;
 import it.polimi.ingsw.view.cli.AdvancedCli;
 import it.polimi.ingsw.view.cli.Cli;
@@ -14,8 +14,8 @@ public class ClientApp {
 
     public static void main(String[] args) {
 
-        //TODO sistemare tutto sto schifo, ora è giusto tanto per aprire la gui
-/*        boolean cliUsage = false;
+        //TODO we have to decide if we want a standalone launcher
+        /*boolean cliUsage = false;
 
         for(String arguments : args)
             if(arguments.equals("--cli") || arguments.equals("-c")) {
@@ -28,7 +28,7 @@ public class ClientApp {
             cli.startGame();
         }
         else
-            Application.launch(FXGui.class);*/
-        Application.launch(FXGui.class);
+            Application.launch(Gui.class);*/
+        Application.launch(Gui.class);
     }
 }

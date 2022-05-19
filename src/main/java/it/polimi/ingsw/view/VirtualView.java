@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class VirtualView implements ViewInterface, Observer {
     private static final long serialVersionUID = 1L;
-    ClientHandler clientHandler;
+    private final ClientHandler clientHandler;
 
     /**
      * Constructor.
@@ -159,19 +159,6 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
-     * This method is deprecated, please use specific character methods instead
-     * (e.g. {@link VirtualView#grandmaHerbHeraldScene(SMessageGrandmaherbHerald)}).
-     * Ask additional information on chosen character effect when necessary.
-     *
-     * @param message request message
-     */
-    @Deprecated
-    @Override
-    public void askCharacterMove(SMessage message) {
-        clientHandler.sendMessage(message);
-    }
-
-    /**
      * Asks additional information on chosen character effect of
      * {@link Characters#GRANDMA_HERB} or
      * {@link Characters#HERALD}.
@@ -225,6 +212,16 @@ public class VirtualView implements ViewInterface, Observer {
     @Override
     public void askUseSavedGame() {
         new UnsupportedOperationException().printStackTrace();
+    }
+
+    /**
+     * Used to set the client flag for expert game handling.
+     *
+     * @param messageExpert message containing the flag value
+     */
+    @Override
+    public void setExpert(SMessageExpert messageExpert) {
+        clientHandler.sendMessage(messageExpert);
     }
 
     /**

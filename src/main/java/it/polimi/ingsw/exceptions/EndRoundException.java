@@ -6,7 +6,9 @@ package it.polimi.ingsw.exceptions;
  * @version 1.0
  */
 public class EndRoundException extends Exception{
-
+    /**
+     * Constructor.
+     */
     public EndRoundException(){
         super("Round over, prepare next Round");
     }

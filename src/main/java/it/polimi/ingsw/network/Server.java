@@ -20,7 +20,7 @@ import java.net.Socket;
  */
 public class Server {
 
-    static ObjectInputStream inputStream;
+    private static ObjectInputStream inputStream;
 
     /**
      * Main function
@@ -42,6 +42,7 @@ public class Server {
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server listening - port: " + port);
+            //noinspection InfiniteLoopStatement
             while (true) {
                 System.out.println("Waiting for next player");
                 Socket socket = serverSocket.accept();

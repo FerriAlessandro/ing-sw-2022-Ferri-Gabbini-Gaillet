@@ -6,7 +6,8 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class SMessageMotherNature extends SMessage {
-    public int maxNumTiles;
+    /** The maximum number of jumps that mother nature can do */
+    public final int maxNumTiles;
 
     /**
      * Constructor.

@@ -9,42 +9,30 @@ import java.util.ArrayList;
  * @version 1.0
  */
 
-public class RMessageJesterBard extends Message{
+public class RMessageJesterBard extends RMessage{
 
-    public ArrayList<Color> origin; //This ArrayList contains the students that the user wants to swap FROM THE ORIGIN! If the origin is the Dining Room,
-                                    // it contains the students that the user wants to remove from its Dining Room!
-    public ArrayList<Color> entrance;//Same as above
-    public Characters characterName;
-    public String nickName;
+    /** This ArrayList contains the students that the user wants to swap FROM THE ORIGIN! If the origin is the Dining Room,
+        it contains the students that the user wants to remove from its Dining Room!*/
+    public final ArrayList<Color> origin;
+    /** This ArrayList contains the students that the user wants to remove (swap) from the entrance*/
+    public final ArrayList<Color> entrance;
+    /** The character choice which originated this message*/
+    public final Characters characterName;
 
     /**
      * Constructor
      * @param origin The students to remove from Jester Card if the played card is Jester, from the Dining Room if the played card is Bard
      * @param entrance The students to remove from the player's Entrance
      * @param characterName Name of the Character card
-     * @param nickName NickName of the player
+     * @param nickname NickName of the player
      */
-    public RMessageJesterBard(Characters characterName, String nickName, ArrayList<Color> origin, ArrayList<Color> entrance){
-
+    public RMessageJesterBard(Characters characterName, String nickname, ArrayList<Color> origin, ArrayList<Color> entrance){
         this.type = MessageType.R_JESTERBARD;
         this.origin = new ArrayList<>(origin);
         this.entrance = new ArrayList<>(entrance);
         this.characterName = characterName;
-        this.nickName = nickName;
+        this.nickname = nickname;
 
-
-    }
-
-    public ArrayList<Color> getOrigin() {
-        return origin;
-    }
-
-    public ArrayList<Color> getEntrance() {
-        return entrance;
-    }
-
-    public Characters getCharacterName() {
-        return characterName;
     }
 
 }

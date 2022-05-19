@@ -7,9 +7,9 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class RMessageCharacter extends Message {
-    public Characters character;
-    public String nickname;
+public class RMessageCharacter extends RMessage {
+    /** The chosen Character card*/
+    public final Characters character;
 
     /**
      * Constructor.

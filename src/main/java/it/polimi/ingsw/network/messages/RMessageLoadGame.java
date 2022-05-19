@@ -5,8 +5,9 @@ package it.polimi.ingsw.network.messages;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class RMessageLoadGame extends RMessage{
-    public boolean use;
+public class RMessageLoadGame extends Message{
+    /** True if the player wants to load the save file, false otherwise */
+    public final boolean use;
 
     /**
      * Constructor.

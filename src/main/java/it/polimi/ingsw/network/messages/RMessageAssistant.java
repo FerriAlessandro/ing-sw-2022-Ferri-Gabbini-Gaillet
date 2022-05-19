@@ -9,7 +9,10 @@ import it.polimi.ingsw.model.enumerations.AssistantCard;
  */
 public class RMessageAssistant extends RMessage{
 
-     AssistantCard playedAssistant;
+    /**
+     * Chosen assistant card.
+     */
+     public final AssistantCard playedAssistant;
 
     /**
      * Constructor.
@@ -19,12 +22,9 @@ public class RMessageAssistant extends RMessage{
     public RMessageAssistant(AssistantCard assistant, String nickName){
 
         this.type = MessageType.R_ASSISTANT;
-        this.nickName = nickName;
+        this.nickname = nickName;
         this.playedAssistant = assistant;
 
     }
 
-    public AssistantCard getPlayedAssistant() {
-        return playedAssistant;
-    }
 }

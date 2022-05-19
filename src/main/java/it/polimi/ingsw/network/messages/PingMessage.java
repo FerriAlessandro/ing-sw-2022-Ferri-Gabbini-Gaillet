@@ -6,6 +6,9 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class PingMessage extends Message{
+    /**
+     * Constructor.
+     */
     public PingMessage(){
         this.type = MessageType.PING;
     }

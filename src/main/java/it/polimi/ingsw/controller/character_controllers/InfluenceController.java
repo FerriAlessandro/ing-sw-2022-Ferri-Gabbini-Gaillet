@@ -11,6 +11,11 @@ import it.polimi.ingsw.model.enumerations.Characters;
 
 public class InfluenceController extends CharacterController{
 
+    /**
+     * Constructor
+     * @param gameController The Game Controller
+     * @param characterName The Name of the Character Card
+     */
     public InfluenceController(GameController gameController, Characters characterName){
         super(gameController, characterName);
     }

@@ -7,10 +7,9 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @author Alessandro F.
  * @version 1.0
  */
-
 public class SMessageGrandmaherbHerald extends SMessage{
-
-    public Characters characterName;
+    /** Character choice that originated this message */
+    public final Characters characterName;
 
     /**
      * Constructor

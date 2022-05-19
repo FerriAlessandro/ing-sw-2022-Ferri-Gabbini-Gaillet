@@ -18,6 +18,11 @@ import it.polimi.ingsw.network.messages.SMessageWin;
 
 public class HeraldController extends CharacterController{
 
+    /**
+     * Constructor
+     * @param gameController The Game Controller
+     * @param characterName The Name of the Character Card
+     */
     public HeraldController(GameController gameController, Characters characterName){
         super(gameController, characterName);
     }
@@ -30,7 +35,7 @@ public class HeraldController extends CharacterController{
     public void use(String nickName){
 
         if(checkCoin()){
-            gameController.getVirtualView(nickName).askCharacterMove(new SMessageGrandmaherbHerald(Characters.HERALD));
+            gameController.getVirtualView(nickName).grandmaHerbHeraldScene(new SMessageGrandmaherbHerald(Characters.HERALD));
         }
         else chooseAnotherCard(nickName);
     }
@@ -49,14 +54,14 @@ public class HeraldController extends CharacterController{
         int desiredIsland = heraldMessage.islandIndex - 1;
         int lastIslandIndex = getGameBoard().getIslands().size() - 1;
         if(lastIslandIndex < desiredIsland){
-            gameController.sendErrorMessage(heraldMessage.nickName, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
-            gameController.getVirtualView(heraldMessage.nickName).askCharacterMove(new SMessageGrandmaherbHerald(Characters.HERALD));
+            gameController.sendErrorMessage(heraldMessage.nickname, "Invalid Island! Please select a number between 1 and " + (lastIslandIndex + 1));
+            gameController.getVirtualView(heraldMessage.nickname).grandmaHerbHeraldScene(new SMessageGrandmaherbHerald(Characters.HERALD));
             return;
         }
         islandToCheck = getGameBoard().getIslands().get(desiredIsland);
         if(islandToCheck.isForbidden()){
-            gameController.sendErrorMessage(heraldMessage.nickName, "You can't calculate influence on a forbidden Island! Please select another Island");
-            gameController.getVirtualView(heraldMessage.nickName).askCharacterMove(new SMessageGrandmaherbHerald(Characters.HERALD));
+            gameController.sendErrorMessage(heraldMessage.nickname, "You can't calculate influence on a forbidden Island! Please select another Island");
+            gameController.getVirtualView(heraldMessage.nickname).grandmaHerbHeraldScene(new SMessageGrandmaherbHerald(Characters.HERALD));
             return;
         }
 
@@ -64,8 +69,8 @@ public class HeraldController extends CharacterController{
             getGame().checkInfluence(islandToCheck);
             getGame().checkForArchipelago(islandToCheck);
         }catch (TowerWinException e){
-            for (String nickName : gameController.getNickNames())
-                gameController.getVirtualView(nickName).showWinMessage(new SMessageWin(e.getMessage()));
+            for (String nickname : gameController.getNickNames())
+                gameController.getVirtualView(nickname).showWinMessage(new SMessageWin(e.getMessage()));
             gameController.gamePhase = Phase.WINNER;
             return;
 

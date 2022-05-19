@@ -6,7 +6,9 @@ package it.polimi.ingsw.exceptions;
  * @version 1.0
  */
 public class EmptyDeckException extends Exception{
-
+    /**
+     * Constructor.
+     */
     public EmptyDeckException(String message){
         super(message);
     }

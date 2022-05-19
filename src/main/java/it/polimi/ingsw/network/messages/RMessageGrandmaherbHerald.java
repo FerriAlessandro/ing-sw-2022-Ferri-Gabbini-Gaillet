@@ -8,32 +8,26 @@ import it.polimi.ingsw.model.enumerations.Characters;
  * @version 1.0
  */
 
-public class RMessageGrandmaherbHerald extends Message{
+public class RMessageGrandmaherbHerald extends RMessage{
 
-    public int islandIndex;
-    public Characters characterName;
-    public String nickName;
+    /** Index of the chosen {@link it.polimi.ingsw.model.IslandTile}*/
+    public final int islandIndex;
+    /** The character choice originating this message*/
+    public final Characters characterName;
 
     /**
-     * Constructor
+     * Constructor.
      * @param characterName Name of the Character Card
-     * @param nickName NickName of the player
+     * @param nickname NickName of the player
      * @param islandIndex Index of the Island on which to place the no entry tile
      */
-    public RMessageGrandmaherbHerald(Characters characterName, String nickName, int islandIndex){
+    public RMessageGrandmaherbHerald(Characters characterName, String nickname, int islandIndex){
 
         this.type = MessageType.R_GRANDMAHERBHERALD;
         this.characterName = characterName;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.islandIndex = islandIndex;
 
     }
 
-    public int getIslandIndex() {
-        return islandIndex;
-    }
-
-    public Characters getCharacterName() {
-        return characterName;
-    }
 }

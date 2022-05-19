@@ -10,9 +10,12 @@ import java.util.EnumMap;
  */
 
 public class SMessageMonkPrincess extends SMessage{
+    /** Character choice that originated this message */
+    public final Characters characterName;
 
-    public Characters characterName;
-    public EnumMap <Color, Integer> colors;
+    /** The color of the student to remove from the card and add to the destination (case Monk/Princess) or the color of the student to remove from each
+     *               player's Dining Room (case Rogue). */
+    public final EnumMap <Color, Integer> colors;
 
     /**
      * Constructor

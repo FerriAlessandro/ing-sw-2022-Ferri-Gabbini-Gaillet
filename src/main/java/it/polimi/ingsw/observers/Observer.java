@@ -8,5 +8,5 @@ public interface Observer {
      *
      * @param observable the observable object.
      */
-    abstract void notify(Observable observable);
+    void notify(Observable observable);
 }

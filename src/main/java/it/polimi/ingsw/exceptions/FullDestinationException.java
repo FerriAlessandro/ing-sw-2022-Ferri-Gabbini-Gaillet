@@ -6,6 +6,9 @@ package it.polimi.ingsw.exceptions;
  * @version 1.0
  */
 public class FullDestinationException extends Exception{
+    /**
+     * Constructor.
+     */
     public FullDestinationException(){
         super("Given destination tile is full");
     }
