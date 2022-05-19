@@ -15,8 +15,8 @@ import java.util.*;
 public class FXPlayerBoard {
 
     private TowerColor towerColor;
-    private Label nickname;
-    int boardNumber; //Number of the board to set the right coordinates for the pawns
+    private final int boardNumber; //Number of the board to set the right coordinates for the pawns
+    private final int numOfPlayers;
     private final ArrayList<FXStudent> entrance = new ArrayList<>();
     private final Map<Color, ArrayList<FXStudent>> diningRooms = new HashMap<>();
     private final Map<Color, FXStudent> professorZone = new HashMap<>();
@@ -41,16 +41,17 @@ public class FXPlayerBoard {
 
 
 
-    public FXPlayerBoard(String nickname, int boardNumber, GameBoardSceneController gameBoardSceneController){
+    public FXPlayerBoard(int boardNumber, GameBoardSceneController gameBoardSceneController, int numOfPlayers){
+        this.numOfPlayers = numOfPlayers;
         this.offset = playerBoardsHorizontalOffset * (boardNumber - 1);
         this.boardNumber = boardNumber;
         this.gameBoardSceneController = gameBoardSceneController;
-        this.nickname = new Label(nickname);
+       /* this.nickname = new Label(nickname);
         this.nickname.setLayoutX(label.getX() + offset);
         this.nickname.setLayoutY(label.getY());
         this.nickname.setFont(new Font("Arial", 35));
         this.nickname.setStyle("-fx-font-weight: bold;");
-        this.gameBoardSceneController.mainPane.getChildren().add(this.nickname);
+        this.gameBoardSceneController.mainPane.getChildren().add(this.nickname);*/
         if(boardNumber == 1)
             towerColor = TowerColor.WHITE;
         else if(boardNumber == 2)
@@ -147,14 +148,18 @@ public class FXPlayerBoard {
         double horizontalOffset = 0;
         double verticalOffset = 0;
         int counter = 0;
+        int numOfRows;
         String imageColor;
         String imagePath;
         imageColor = towerColor.toString().toLowerCase(Locale.ROOT);
         imagePath = "images/"+imageColor+"_tower.png";
+        if(numOfPlayers == 2)
+            numOfRows = 3;
+        else numOfRows = 2;
 
         for(int i=0; i<3; i++, horizontalOffset+=towersHorizontalOffset){
             verticalOffset=0;
-            for(int j=0; j<3;j++, verticalOffset += towersVerticalOffset, counter++){
+            for(int j=0; j<numOfRows;j++, verticalOffset += towersVerticalOffset, counter++){
                 if(i!= 2 || j!= 2){
                     towerZone.add(new Circle(startingTower.getX() + offset + horizontalOffset, startingTower.getY() + verticalOffset, professorsRadius));
                     Image towerImage = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.scene;
 
+import it.polimi.ingsw.view.gui.FXCloud;
 import it.polimi.ingsw.view.gui.FXPlayerBoard;
 import it.polimi.ingsw.view.gui.FXisland;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import org.w3c.dom.css.Rect;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameBoardSceneController {
@@ -101,6 +103,8 @@ public class GameBoardSceneController {
 
     private ArrayList<FXPlayerBoard> playerBoards = new ArrayList<>();
 
+    private ArrayList<FXCloud> clouds = new ArrayList<>();
+
 
     @FXML
     public void initialize(){
@@ -109,8 +113,18 @@ public class GameBoardSceneController {
             islands.get(i).createIsland(i+1);
         }
         for(int i=0;i<3;i++){
-            playerBoards.add(new FXPlayerBoard("Alessandro", i+1, this));
+            playerBoards.add(new FXPlayerBoard(i+1, this, 3));
             playerBoards.get(i).createPlayerBoard();
+        }
+        player_name_1.setText("Alessandro");
+        player_name_2.setText("Gabbo");
+        player_name_3.setText("Angelo");
+        player_name_1.setStyle("-fx-font-weight: bold;");
+        player_name_2.setStyle("-fx-font-weight: bold;");
+        player_name_3.setStyle("-fx-font-weight: bold;");
+        for(int i=0;i<3;i++){
+            clouds.add(new FXCloud(i+1, this, 2));
+            clouds.get(i).createCloud();
         }
 
 
