@@ -1,26 +1,23 @@
 package it.polimi.ingsw.view.gui.scene;
-
+import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.view.gui.FXCloud;
 import it.polimi.ingsw.view.gui.FXPlayerBoard;
 import it.polimi.ingsw.view.gui.FXisland;
+import it.polimi.ingsw.view.gui.Gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
-import org.w3c.dom.css.Rect;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class GameBoardSceneController {
+/**
+ * This class represents the main game scene
+ * @author Alessandro F.
+ * @version 1.0
+ */
+public class GameBoardSceneController implements SceneController {
 
+    private Gui gui;
     @FXML
     public Pane mainPane;
 
@@ -49,15 +46,6 @@ public class GameBoardSceneController {
     private ImageView island_1;
 
     @FXML
-    private ImageView island_10;
-
-    @FXML
-    private ImageView island_11;
-
-    @FXML
-    private ImageView island_12;
-
-    @FXML
     private ImageView island_2;
 
     @FXML
@@ -80,6 +68,15 @@ public class GameBoardSceneController {
 
     @FXML
     private ImageView island_9;
+
+    @FXML
+    private ImageView island_10;
+
+    @FXML
+    private ImageView island_11;
+
+    @FXML
+    private ImageView island_12;
 
     @FXML
     private Label player_name_1;
@@ -134,6 +131,14 @@ public class GameBoardSceneController {
     }
 
 
+    @Override
+    public void setGui(Gui gui) {
+        this.gui = gui;
+    }
 
+    @Override
+    public void setMessage(Message message) {
+
+    }
 }
 

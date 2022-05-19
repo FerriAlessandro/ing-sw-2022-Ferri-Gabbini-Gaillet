@@ -1,5 +1,4 @@
 package it.polimi.ingsw.view.gui;
-
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -7,9 +6,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
-
 import java.util.ArrayList;
 import java.util.Objects;
+
+/**
+ * This class is used to store and modify the students, mother nature, the towers and the no entry tiles (represented as Circles) present on an island tile
+ * @author Alessandro F.
+ * @version 1.0
+ */
 
 public class FXisland {
 
@@ -31,6 +35,11 @@ public class FXisland {
         this.gameBoardSceneController = controller;
 
     }
+
+    /**
+     * Method used to create the FXIsland
+     * @param index the index of the island that's being created
+     */
     public void createIsland(int index){
 
         this.index = index;
@@ -80,6 +89,9 @@ public class FXisland {
 
     }
 
+    /**
+     * Utility method used to set the pawns' sprites
+     */
     private void colorPawns(){
 
         Image motherNature = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("images/mother_nature.png")));

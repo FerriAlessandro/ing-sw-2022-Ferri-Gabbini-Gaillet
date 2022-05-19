@@ -1,5 +1,10 @@
 package it.polimi.ingsw.view.gui;
 
+/**
+ * This class represents Coordinates as a couple of double values
+ * @author Alessandro F.
+ * @version 1.0
+ */
 public class Coordinates {
 
     private double x, y;
@@ -28,6 +33,12 @@ public class Coordinates {
         this.y=y;
     }
 
+    /**
+     * Method used to Sum two Coordinates
+     * @param c1 First Coordinate
+     * @param c2 Second Coordinate
+     * @return A coordinate representing the sum of the two parameters
+     */
     public static Coordinates sum(Coordinates c1, Coordinates c2){
         Coordinates res = new Coordinates();
         res.x = c1.x + c2.x;
@@ -36,6 +47,12 @@ public class Coordinates {
         return res;
     }
 
+    /**
+     * Method used to Subtract two Coordinates
+     * @param c1 First Coordinate
+     * @param c2 Second Coordinate
+     * @return A coordinate representing the subtraction of the two parameters
+     */
     public Coordinates subtract(Coordinates c1, Coordinates c2){
         Coordinates res = new Coordinates();
         res.x = c1.x - c2.x;

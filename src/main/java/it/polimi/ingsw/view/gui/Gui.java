@@ -42,7 +42,7 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void start(Stage stage) throws Exception {
 
-        loader = new FXMLLoader(getClass().getResource("/fxml/mainMenuScene.fxml"));
+        loader = new FXMLLoader(getClass().getResource("/fxml/GameBoard.fxml"));
         root = loader.load();
         controller = loader.getController();
         controller.setGui(this);

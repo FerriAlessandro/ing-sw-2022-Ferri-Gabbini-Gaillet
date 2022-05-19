@@ -1,16 +1,17 @@
 package it.polimi.ingsw.view.gui;
-
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
-import javafx.scene.transform.Rotate;
-
 import java.util.*;
+
+/**
+ * This class is used to store and modify the students, professors and towers on a player's playerboard
+ * @author Alessandro F.
+ * @version 1.0
+ */
 
 public class FXPlayerBoard {
 
@@ -27,20 +28,25 @@ public class FXPlayerBoard {
     private final Coordinates startingProfessor = new Coordinates(480, 745.5); //First pawn of the professors zone (green professor)
     private final Coordinates startingTower = new Coordinates(545,789); //First pawn of the tower zone (top left one)
     private final Coordinates label = new Coordinates (280, 628); //Coordinates of the nickname label
-    private final double entranceHorizontalOffset = 36;
-    private final double entranceVerticalOffset = 43.5;
-    private final double diningHorizontalOffset = 29;
-    private final double diningVerticaloffset = 43;
-    private final double professorsVerticalOffset = 43.5;
-    private final double playerBoardsHorizontalOffset = 620;
-    private final double towersHorizontalOffset = 35;
-    private final double towersVerticalOffset = 43;
-    private final double offset;
-    private final double radius = 12.5;
-    private final double professorsRadius = 16.5;
+    private final double entranceHorizontalOffset = 36; //Offset between pawns in the entrance
+    private final double entranceVerticalOffset = 43.5;//Offset between pawns in the entrance
+    private final double diningHorizontalOffset = 29;//Offset between pawns in the Dining Room
+    private final double diningVerticaloffset = 43;//Offset between pawns in the Dining Room
+    private final double professorsVerticalOffset = 43.5; //Offset between pawns in the Professors' area
+    private final double playerBoardsHorizontalOffset = 620; //Offset between playerboards
+    private final double towersHorizontalOffset = 35; //Offset between pawns in the Tower Zone
+    private final double towersVerticalOffset = 43; //Offset between pawns in the Tower Zone
+    private final double offset; //Offset of a given playerboard from the first one
+    private final double radius = 12.5; //Radius of the circles that represent the students
+    private final double professorsRadius = 16.5; //Radius of the circles that represent professors and towers
 
 
-
+    /**
+     * Constructor
+     * @param boardNumber Number of the playerBoard (1,2 or 3)
+     * @param gameBoardSceneController Controller that manages the GameBoard scene
+     * @param numOfPlayers Number of players in the game
+     */
     public FXPlayerBoard(int boardNumber, GameBoardSceneController gameBoardSceneController, int numOfPlayers){
         this.numOfPlayers = numOfPlayers;
         this.offset = playerBoardsHorizontalOffset * (boardNumber - 1);
@@ -60,6 +66,9 @@ public class FXPlayerBoard {
 
     }
 
+    /**
+     * Method used to create a full PlayerBoard
+     */
     public void createPlayerBoard(){
 
         createEntrance();
@@ -68,6 +77,10 @@ public class FXPlayerBoard {
         createTowerZone();
     }
 
+    /**
+     * Helper method used to create an Entrance, it creates the circles representing the students and adds them in an ArrayList (to be able to retrieve them when needed), then
+     * it adds them to the Scene Tree
+     */
     private void createEntrance(){ //We create every circle and set them to not visibile, when the player adds a pawn to the entrance i simply search for the first "not visible" circle and set it visibile with the right color sprite
 
         double horizontal_offset = 0;
@@ -88,6 +101,11 @@ public class FXPlayerBoard {
 
     }
 
+    /**
+     * Helper method used to create an Dining Room, it creates the circles representing the students and adds them in an ArrayList and stores the
+     * ArrayList in a Map. The Circles are already filled with the correct sprites and are hidden, when a student needs to appear to the board it will be set as Visible.
+     * The students are added to the Scene Tree
+     */
     private void createDiningRoom(){
 
         double horizontal_offset = 0;
@@ -120,6 +138,10 @@ public class FXPlayerBoard {
 
     }
 
+    /**
+     * Helper method used to create the professor zone, it creates the circles representing the professors and adds them in a Map, then it adds them to the Scene Tree.
+     * The sprites are already set and the pawns are hidden until they need to be shown
+     */
     private void createProfessorZone(){
 
         String imageColor;
@@ -142,7 +164,10 @@ public class FXPlayerBoard {
         }
 
     }
-
+    /**
+     * Helper method used to create the Tower Zone, it creates the circles representing the towers and adds them in an ArrayList, then it
+     * adds them to the Scene Tree
+     */
     private void createTowerZone(){
 
         double horizontalOffset = 0;
@@ -170,6 +195,11 @@ public class FXPlayerBoard {
         }
     }
 
+    /**
+     * Helper method used to get the vertical offset of the pawns in the Dining Room/Professor Zone based on the Color
+     * @param color The color of the pawns that need to be created
+     * @return The correct vertical offset 
+     */
     private double getVerticalOffset(Color color){
         double vertical_offset;
         switch(color){
