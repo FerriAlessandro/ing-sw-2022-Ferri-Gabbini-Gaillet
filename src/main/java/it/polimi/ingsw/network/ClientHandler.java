@@ -23,6 +23,8 @@ public class ClientHandler extends Thread {
     private final InputController controller;
     private String playerNickname = null;
     private final Timer timeout;
+
+    /** True when the current game has been restored from a save file, false otherwise */
     public static boolean restored = false;
 
     /**

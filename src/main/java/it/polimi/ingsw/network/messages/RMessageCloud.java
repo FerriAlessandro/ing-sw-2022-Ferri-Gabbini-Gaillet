@@ -7,6 +7,9 @@ package it.polimi.ingsw.network.messages;
  */
 public class RMessageCloud extends RMessage{
 
+    /**
+     * Index of the chosen {@link it.polimi.ingsw.model.CloudTile}
+     */
     public final int cloudIndex;
 
     /**
@@ -18,7 +21,7 @@ public class RMessageCloud extends RMessage{
 
         this.type = MessageType.R_CLOUD;
         this.cloudIndex = index;   // from 1 to 3
-        this.nickName = nickName;
+        this.nickname = nickName;
 
     }
 }

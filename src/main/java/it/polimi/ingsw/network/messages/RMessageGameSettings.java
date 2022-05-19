@@ -6,7 +6,9 @@ package it.polimi.ingsw.network.messages;
  * @version 1.0
  */
 public class RMessageGameSettings extends Message{
+    /** Desired number of players*/
     public final int numPlayers;
+    /** True if the game shall implement advanced rules, false otherwise*/
     public final boolean expert;
 
     /**

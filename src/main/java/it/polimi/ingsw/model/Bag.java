@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serial;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -18,6 +19,7 @@ import it.polimi.ingsw.model.enumerations.Color;
  * @see Color
  */
 public class Bag implements Serializable{
+    @Serial
     private static final long serialVersionUID = -8230183335476058063L;
     private final EnumMap<Color, Integer> numOfStudents;
     private static final int maxStudByColor = 26;

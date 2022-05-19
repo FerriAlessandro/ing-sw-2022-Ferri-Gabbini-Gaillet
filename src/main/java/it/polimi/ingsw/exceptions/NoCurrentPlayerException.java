@@ -5,11 +5,12 @@ package it.polimi.ingsw.exceptions;
  * @author Alessandro F.
  * @version 1.0
  */
-
 public class NoCurrentPlayerException extends RuntimeException{
 
+    /**
+     * Constructor.
+     */
     public NoCurrentPlayerException(){
-
         super("ERROR! There's not a current player");
     }
 }

@@ -25,18 +25,15 @@ public class CloudTile extends TileWithStudents {
     public CloudTile(int numOfPlayers) throws IllegalArgumentException {
         super();
         switch (numOfPlayers) {
-            case 2:
-                maxStudents = 3;
-                break;
-            case 3:
-                maxStudents = 4;
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal number of players");
-
+            case 2 -> maxStudents = 3;
+            case 3 -> maxStudents = 4;
+            default -> throw new IllegalArgumentException("Illegal number of players");
         }
     }
 
+    /**
+     * @return an int value representing the maximum number of students allowed on the tile.
+     */
     public int getMaxStudents() {
         return maxStudents;
     }

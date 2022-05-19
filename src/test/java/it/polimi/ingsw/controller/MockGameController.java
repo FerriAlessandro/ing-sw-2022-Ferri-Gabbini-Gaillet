@@ -47,12 +47,12 @@ public class MockGameController extends GameController{
     }
 
     @Override
-    public VirtualView getVirtualView(String nickName){
+    public VirtualView getVirtualView(String nickname){
        return null;
     }
 
     @Override
-    public void sendErrorMessage(String nickName, String msg){
+    public void sendErrorMessage(String nickname, String msg){
 
     }
 }

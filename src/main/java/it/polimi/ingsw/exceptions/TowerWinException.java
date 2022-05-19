@@ -6,6 +6,8 @@ package it.polimi.ingsw.exceptions;
  * @version 1.0
  */
 public class TowerWinException extends Exception{
-
+    /**
+     * Constructor.
+     */
     public TowerWinException(String message){super(message);}
 }

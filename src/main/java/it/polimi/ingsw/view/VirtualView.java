@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class VirtualView implements ViewInterface, Observer {
     private static final long serialVersionUID = 1L;
-    ClientHandler clientHandler;
+    private final ClientHandler clientHandler;
 
     /**
      * Constructor.
@@ -156,19 +156,6 @@ public class VirtualView implements ViewInterface, Observer {
     @Override
     public String getNickName() {
         return clientHandler.getPlayerNickname();
-    }
-
-    /**
-     * This method is deprecated, please use specific character methods instead
-     * (e.g. {@link VirtualView#grandmaHerbHeraldScene(SMessageGrandmaherbHerald)}).
-     * Ask additional information on chosen character effect when necessary.
-     *
-     * @param message request message
-     */
-    @Deprecated
-    @Override
-    public void askCharacterMove(SMessage message) {
-        clientHandler.sendMessage(message);
     }
 
     /**

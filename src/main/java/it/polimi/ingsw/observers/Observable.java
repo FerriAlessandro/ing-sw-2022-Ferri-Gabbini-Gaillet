@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * {@link it.polimi.ingsw.observers.Observer} registered on the given object.
  */
 public abstract class Observable {
-    ArrayList<Observer> observers  = new ArrayList<>();
+    private final ArrayList<Observer> observers  = new ArrayList<>();
 
     /**
      * Method that notifies all {@link Observer} objects registered on this {@link Observable} of a change.

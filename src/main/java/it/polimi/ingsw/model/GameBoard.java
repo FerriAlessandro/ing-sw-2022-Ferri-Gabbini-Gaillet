@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.exceptions.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -33,6 +34,7 @@ public class GameBoard implements Serializable {
     private final Bag bag;
     private final int maxCharacters;
     private static final int maxNumIslands = 12;
+    @Serial
     private static final long serialVersionUID = 1L;
 
 

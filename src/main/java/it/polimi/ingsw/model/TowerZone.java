@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.TowerWinException;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @version 2.0
  */
 public class TowerZone implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private int towers;
 
@@ -20,17 +22,15 @@ public class TowerZone implements Serializable {
      */
     public TowerZone(int numOfPlayer) throws IllegalArgumentException {
         switch (numOfPlayer) {
-            case 2:
-                this.towers = 8;
-                break;
-            case 3:
-                this.towers = 6;
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal number of players!");
+            case 2 -> this.towers = 8;
+            case 3 -> this.towers = 6;
+            default -> throw new IllegalArgumentException("Illegal number of players!");
         }
     }
 
+    /**
+     * @return an int value representing the number of towers present on this {@link TowerZone}.
+     */
     public int getNumOfTowers() {
         return this.towers;
     }

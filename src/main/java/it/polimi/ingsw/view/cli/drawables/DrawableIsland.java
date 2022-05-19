@@ -19,6 +19,8 @@ public class DrawableIsland extends Drawable{
     private final int forbiddenTokens;
     private final boolean motherNature;
     private final int index;
+
+    /** The height of the drawable object in number of lines */
     public final static int height = 8;
 
 

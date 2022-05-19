@@ -8,7 +8,9 @@ package it.polimi.ingsw.exceptions;
  */
 
 public class CardNotFoundException extends Exception{
-
+    /**
+     * Constructor.
+     */
     public CardNotFoundException(){
         super("You already played this Card! Please select another Card");
     }

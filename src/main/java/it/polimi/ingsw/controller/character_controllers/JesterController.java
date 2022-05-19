@@ -18,7 +18,11 @@ import java.util.EnumMap;
 
 public class JesterController extends CharacterController{
 
-
+    /**
+     * Constructor
+     * @param gameController The Game Controller
+     * @param characterName The Name of the Character Card
+     */
     public JesterController(GameController gameController, Characters characterName){
         super(gameController, characterName);
     }
@@ -32,7 +36,7 @@ public class JesterController extends CharacterController{
     public void use(String nickName){
         if(checkCoin()){
             gameController.getVirtualView(nickName)
-                    .askCharacterMove(new SMessageJesterBard(
+                    .jesterBardScene(new SMessageJesterBard(
                             new EnumMap<>(gameController.getCharacterByName(Characters.JESTER).getState()),
                             new EnumMap<>(getCurrentPlayerBoard().getEntrance().getState()),
                             Characters.JESTER));

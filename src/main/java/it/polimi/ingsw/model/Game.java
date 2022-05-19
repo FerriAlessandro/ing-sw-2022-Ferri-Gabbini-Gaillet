@@ -4,6 +4,7 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.*;
 import it.polimi.ingsw.observers.Observable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class Game extends Observable implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     private ArrayList<Player> players; //sorted based on the assistant cards played (lowest to highest)
     private Phase gamePhase;
@@ -266,7 +268,7 @@ public class Game extends Observable implements Serializable {
 
     /**
      * Finds the winner at the end of the game by checking the number of towers of each player and, in case of a tie, checks the number of Professors owned
-     * @return the nickName of the winner
+     * @return the nickname of the winner
      */
     public String checkWinner (){
 

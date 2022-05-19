@@ -8,7 +8,10 @@ import java.util.List;
  * @version 1.0
  */
 public class SMessageLobby extends SMessage{
+    /** List of the nicknames of connected players */
     public final List<String> currentPlayers;
+
+    /** Desired number of players for this game instance */
     public final int numPlayersTotal;
 
     /**

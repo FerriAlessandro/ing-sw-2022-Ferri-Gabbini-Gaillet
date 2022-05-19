@@ -11,18 +11,40 @@ import java.util.Map;
  * @version 1.0
  */
 public class SMessageGameState extends SMessage {
+    /** {@link Map} of nicknames and entrances (maps of Color and integer) */
     public final Map<String, Map<Color, Integer>> studEntrance;
+
+    /** {@link Map} of nicknames and dining rooms (maps of Color and integer) */
     public final Map<String, Map<Color, Integer>> studDining;
+
+    /** {@link Map} of nicknames and number of remaining towers (integer) */
     public final Map<String, Integer> towerNumber;
+
+    /** {@link Map} of nicknames and {@link TowerColor} */
     public final Map<String, TowerColor> towerColor;
+
+    /** {@link Map} of island id and students on the island (maps of Color and integer) */
     public final Map<Integer, Map<Color, Integer>> studIslands;
+
+    /** {@link Map} of island id and number of towers on the island */
     public final Map<Integer, Integer> numTowersIslands;
+
+    /** {@link Map} of island id and {@link TowerColor} of the tower present on the island */
     public final Map<Integer, TowerColor> colorTowerIslands;
+
+    /** {@link Map} of island id and number of "forbidden-tokens" present */
     public final Map<Integer, Integer> forbiddenTokens;
+
+    /** {@link Map} of cloud id and present students (maps of Color and integer) */
     public final Map<Integer, Map<Color, Integer>> studClouds;
+
+    /**  {@link Map} of Color and nickname of owner */
     public final Map<Color, String> professors;
+
+    /** int representing the id of the island where mother nature is */
     public final int motherNaturePosition;
 
+    /** {@link Map} of nicknames and number of coins owned (integer) */
     public final Map<String, Integer> coins;
 
     /**

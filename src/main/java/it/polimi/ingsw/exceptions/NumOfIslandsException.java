@@ -6,6 +6,9 @@ package it.polimi.ingsw.exceptions;
  * @version 1.0
  */
 public class NumOfIslandsException extends Exception{
+    /**
+     * Constructor.
+     */
     public NumOfIslandsException() {
         super("The minimum number of islands has been reached");
     }

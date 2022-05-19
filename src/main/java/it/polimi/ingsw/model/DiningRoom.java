@@ -12,10 +12,16 @@ import it.polimi.ingsw.model.enumerations.Color;
 public class DiningRoom extends TileWithStudents {
     private final int maxStudents = 10;
 
+    /**
+     * Constructor.
+     */
     public DiningRoom() {
         super();
     }
 
+    /**
+     * @return an int value representing the maximum number of students allowed in the {@link DiningRoom}.
+     */
     public int getMaxStudents() {
         return this.maxStudents;
     }

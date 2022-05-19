@@ -94,14 +94,6 @@ public interface ViewInterface {
     String getNickName();
 
     /**
-     * This method is deprecated, please use specific character methods instead
-     * (e.g. {@link ViewInterface#grandmaHerbHeraldScene(SMessageGrandmaherbHerald)}).
-     * Ask additional information on chosen character effect when necessary.
-     */
-    @Deprecated
-    void askCharacterMove(SMessage message);
-
-    /**
      * Asks additional information on chosen character effect of
      * {@link it.polimi.ingsw.model.enumerations.Characters#GRANDMA_HERB} or
      * {@link it.polimi.ingsw.model.enumerations.Characters#HERALD}.

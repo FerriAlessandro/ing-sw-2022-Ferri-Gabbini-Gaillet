@@ -21,6 +21,8 @@ public class DrawablePlayerBoard extends Drawable{
     private final TowerColor towerColor;
     private final ArrayList<Color> professors;
     private final String nickname;
+
+    /** The height of the drawable object in number of lines */
     public final static int height = 19;
 
     /**

@@ -18,9 +18,13 @@ import java.util.Map;
  * @see CharacterCard
  */
 public class SMessageCharacter extends SMessage{
+    /** List of available {@link Characters} */
     public final ArrayList<Characters> effects = new ArrayList<>();
+    /** Students currently present on each character that has them */
     public final Map <Characters, Map<Color, Integer>> students = new HashMap<>();
+    /** Cost in number of coins per character card */
     public final Map <Characters, Integer> cardCost = new HashMap<>();
+    /** Number of no-entry-tiles present on the {@link Characters#GRANDMA_HERB} card */
     public int noEntryTiles;
 
     /**

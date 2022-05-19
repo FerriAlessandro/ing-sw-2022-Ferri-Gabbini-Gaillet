@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Status;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -15,6 +16,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 public class Player implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private final int ID;
     private final String nickName;
@@ -134,7 +136,6 @@ public class Player implements Serializable {
      * @throws CardNotFoundException Thrown if the player doesn't have the selected card in its deck
      * @param card The card played by the Player
      */
-
     public void playAssistantCard (AssistantCard card) throws CardNotAvailableException, CardNotFoundException, EmptyDeckException {
 
         if(!(this.assistantDeck.getCards().contains(card)))

@@ -28,17 +28,21 @@ public class Cli implements ViewInterface {
      * Main function for the Command Line Interface
      */
     public void startGame(){
-        System.out.println( "\n\n" +
-                            "   ▄████████    ▄████████ ▄██   ▄      ▄████████ ███▄▄▄▄       ███      ▄█     ▄████████ \n" +
-                            "  ███    ███   ███    ███ ███   ██▄   ███    ███ ███▀▀▀██▄ ▀█████████▄ ███    ███    ███ \n" +
-                            "  ███    █▀    ███    ███ ███▄▄▄███   ███    ███ ███   ███    ▀███▀▀██ ███▌   ███    █▀  \n" +
-                            " ▄███▄▄▄      ▄███▄▄▄▄██▀ ▀▀▀▀▀▀███   ███    ███ ███   ███     ███   ▀ ███▌   ███        \n" +
-                            "▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ▄██   ███ ▀███████████ ███   ███     ███     ███▌ ▀███████████ \n" +
-                            "  ███    █▄  ▀███████████ ███   ███   ███    ███ ███   ███     ███     ███           ███ \n" +
-                            "  ███    ███   ███    ███ ███   ███   ███    ███ ███   ███     ███     ███     ▄█    ███ \n" +
-                            "  ██████████   ███    ███  ▀█████▀    ███    █▀   ▀█   █▀     ▄████▀   █▀    ▄████████▀  \n" +
-                            "               ███    ███                                                                \n" +
-                            "\n\nWelcome to the Eryantis board game"
+        System.out.println("""
+
+
+                   ▄████████    ▄████████ ▄██   ▄      ▄████████ ███▄▄▄▄       ███      ▄█     ▄████████\s
+                  ███    ███   ███    ███ ███   ██▄   ███    ███ ███▀▀▀██▄ ▀█████████▄ ███    ███    ███\s
+                  ███    █▀    ███    ███ ███▄▄▄███   ███    ███ ███   ███    ▀███▀▀██ ███▌   ███    █▀ \s
+                 ▄███▄▄▄      ▄███▄▄▄▄██▀ ▀▀▀▀▀▀███   ███    ███ ███   ███     ███   ▀ ███▌   ███       \s
+                ▀▀███▀▀▀     ▀▀███▀▀▀▀▀   ▄██   ███ ▀███████████ ███   ███     ███     ███▌ ▀███████████\s
+                  ███    █▄  ▀███████████ ███   ███   ███    ███ ███   ███     ███     ███           ███\s
+                  ███    ███   ███    ███ ███   ███   ███    ███ ███   ███     ███     ███     ▄█    ███\s
+                  ██████████   ███    ███  ▀█████▀    ███    █▀   ▀█   █▀     ▄████▀   █▀    ▄████████▀ \s
+                               ███    ███                                                               \s
+
+
+                Welcome to the Eryantis board game"""
         );
         String ip = "localhost";
         int port = 2351;
@@ -362,37 +366,6 @@ public class Cli implements ViewInterface {
     }
 
     /**
-     * Ask additional information on chosen character effect when necessary.
-     *
-     * @param message containing data required to perform the related operation
-     */
-    @Deprecated
-    @Override
-    public void askCharacterMove(SMessage message) {
-        switch (message.getType()){
-            case S_JESTERBARD:
-                jesterBardScene((SMessageJesterBard) message);
-                break;
-
-            case S_ROGUEMUSHROOMPICKER:
-                rogueMushroomPickerScene((SMessageRogueMushroomPicker) message);
-                break;
-
-            case S_MONKPRINCESS:
-                monkPrincessScene((SMessageMonkPrincess) message);
-                break;
-
-            case S_GRANDMAHERBHERALD:
-                grandmaHerbHeraldScene((SMessageGrandmaherbHerald) message);
-                break;
-
-            default:
-                new InvalidParameterException().printStackTrace();
-        }
-        System.out.print("\n");
-    }
-
-    /**
      * Asks additional information on chosen character effect of
      * {@link it.polimi.ingsw.model.enumerations.Characters#GRANDMA_HERB} or
      * {@link it.polimi.ingsw.model.enumerations.Characters#HERALD}.
@@ -462,16 +435,10 @@ public class Cli implements ViewInterface {
         System.out.println("You chose the: " + messageJesterBard.characterName);
         System.out.println("Effect: " + messageJesterBard.characterName.getEffect());
         System.out.print("These are the students available ");
-        switch (messageJesterBard.characterName){
-            case JESTER:
-                System.out.print("on the card: ");
-                break;
-            case BARD:
-                System.out.print("in the dining room: ");
-                break;
-            default:
-                new InvalidParameterException().printStackTrace();
-                break;
+        switch (messageJesterBard.characterName) {
+            case JESTER -> System.out.print("on the card: ");
+            case BARD -> System.out.print("in the dining room: ");
+            default -> new InvalidParameterException().printStackTrace();
         }
         printColorMap(messageJesterBard.origin);
 
@@ -479,16 +446,10 @@ public class Cli implements ViewInterface {
         printColorMap(messageJesterBard.entrance);
 
         System.out.print("\nPlease choose the students to be taken from the ");
-        switch (messageJesterBard.characterName){
-            case JESTER:
-                System.out.print("card\n");
-                break;
-            case BARD:
-                System.out.print("dining room\n");
-                break;
-            default:
-                new InvalidParameterException().printStackTrace();
-                break;
+        switch (messageJesterBard.characterName) {
+            case JESTER -> System.out.print("card\n");
+            case BARD -> System.out.print("dining room\n");
+            default -> new InvalidParameterException().printStackTrace();
         }
 
         System.out.print("You need to choose up to " + messageJesterBard.maxStudents + "students (one at a time) between ");

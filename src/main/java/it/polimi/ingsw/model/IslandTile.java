@@ -23,12 +23,21 @@ public class IslandTile extends TileWithStudents{
         this.numOfNoEntryTiles = 0;
     }
 
+    /**
+     * @return the color of the tower present on this island
+     */
     public TowerColor getTowerColor() {
         return this.towerColor;
     }
 
+    /**
+     * @return an int value representing the number of towers on this island
+     */
     public int getNumTowers() { return this.towers; }
 
+    /**
+     * @return an int value representing the number of no-entry-tiles present on this island
+     */
     public int getNumOfNoEntryTiles() {
         return this.numOfNoEntryTiles;
     }

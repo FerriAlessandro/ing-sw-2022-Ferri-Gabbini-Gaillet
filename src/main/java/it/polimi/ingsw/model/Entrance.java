@@ -21,14 +21,15 @@ public class Entrance extends TileWithStudents {
     public Entrance(int numOfPlayers) throws IllegalArgumentException {
         super();
         switch (numOfPlayers) {
-            case 2: maxStudents = 7;
-                    break;
-            case 3: maxStudents = 9;
-                    break;
-            default: throw new IllegalArgumentException("Illegal number of players");
+            case 2 -> maxStudents = 7;
+            case 3 -> maxStudents = 9;
+            default -> throw new IllegalArgumentException("Illegal number of players");
         }
     }
 
+    /**
+     * @return an int value representing the maximum number of students allowed in the {@link Entrance}
+     */
     public int getMaxStudents() {
         return this.maxStudents;
     }

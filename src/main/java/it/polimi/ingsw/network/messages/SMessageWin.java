@@ -7,6 +7,7 @@ package it.polimi.ingsw.network.messages;
  */
 public class SMessageWin extends SMessage{
 
+    /** String describing the win and who won */
     public final String winMessage;
 
     /**

@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class Gui implements ViewInterface {
 
     private Adapter adapter;
-    private HashMap<String, Scene> sceneMap = new HashMap<>();
+    private final HashMap<String, Scene> sceneMap = new HashMap<>();
     private Scene currentScene;
     private Game game;
 
@@ -105,11 +105,6 @@ public class Gui implements ViewInterface {
     @Override
     public String getNickName() {
         return null;
-    }
-
-    @Override
-    public void askCharacterMove(SMessage message) {
-
     }
 
     @Override

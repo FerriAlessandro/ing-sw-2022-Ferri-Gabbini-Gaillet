@@ -10,6 +10,7 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class SMessageShowDeck extends SMessage{
+    /** List of the assistant cards present in the player's deck */
     public final ArrayList<AssistantCard> cards;
 
     /**
