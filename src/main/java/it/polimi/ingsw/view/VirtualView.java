@@ -215,6 +215,16 @@ public class VirtualView implements ViewInterface, Observer {
     }
 
     /**
+     * Used to set the client flag for expert game handling.
+     *
+     * @param messageExpert message containing the flag value
+     */
+    @Override
+    public void setExpert(SMessageExpert messageExpert) {
+        clientHandler.sendMessage(messageExpert);
+    }
+
+    /**
      * Ask the player to move a student.
      */
     @Override

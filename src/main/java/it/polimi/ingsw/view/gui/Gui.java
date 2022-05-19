@@ -183,11 +183,6 @@ public class Gui extends Application implements ViewInterface {
     }
 
     @Override
-    public void askCharacterMove(SMessage message) {
-
-    }
-
-    @Override
     public void grandmaHerbHeraldScene(SMessageGrandmaherbHerald message) {
 
     }
@@ -209,6 +204,16 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askUseSavedGame() {
+
+    }
+
+    /**
+     * Used to set the client flag for expert game handling.
+     *
+     * @param messageExpert message containing the flag value
+     */
+    @Override
+    public void setExpert(SMessageExpert messageExpert) {
 
     }
 }

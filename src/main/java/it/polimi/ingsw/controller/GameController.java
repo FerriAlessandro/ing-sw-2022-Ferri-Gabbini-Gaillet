@@ -93,6 +93,9 @@ public class GameController implements Serializable {
             } else {
                 throw new NotExistingPlayerException();
             }
+
+            playerView.setExpert(new SMessageExpert(isExpert));
+
             if (playersView.size() == numOfPlayers) {
                 for(VirtualView v : playersView.values()){
                     game.addObserver(v);
@@ -137,6 +140,8 @@ public class GameController implements Serializable {
             nickNames.add(nickName);  // in order of arrival
 
             playersView.put(nickName, playerView);
+
+            playerView.setExpert(new SMessageExpert(isExpert));
 
             if (playersView.size() == numOfPlayers) {
                 game = new Game(nickNames);

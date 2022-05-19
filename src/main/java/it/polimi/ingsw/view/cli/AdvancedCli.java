@@ -17,12 +17,22 @@ import java.util.ArrayList;
 public class AdvancedCli extends Cli {
 
     /**
+     * Constructor.
+     */
+    public AdvancedCli(){
+        super();
+    }
+
+    /**
      * Shows the game status displaying the board.
      *
      * @param gameState message containing game status.
      */
     @Override
     public void showBoard(SMessageGameState gameState) {
+
+
+        System.out.println("EXPERT: " + expert);
 
         ArrayList<Drawable> playerBoards = new ArrayList<>();
         for (String player: gameState.studEntrance.keySet()){
