@@ -198,7 +198,7 @@ public class FXPlayerBoard {
     /**
      * Helper method used to get the vertical offset of the pawns in the Dining Room/Professor Zone based on the Color
      * @param color The color of the pawns that need to be created
-     * @return The correct vertical offset 
+     * @return The correct vertical offset
      */
     private double getVerticalOffset(Color color){
         double vertical_offset;

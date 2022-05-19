@@ -36,8 +36,12 @@ public class Gui extends Application implements ViewInterface {
     Parent root;
     SceneController controller;
     public static Message currentMessage;
-
-
+    
+    /**
+     * Method called when the gui starts. It sets the main menu scene.
+     * @param stage is the main stage
+     * @throws Exception
+     */
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -55,6 +59,11 @@ public class Gui extends Application implements ViewInterface {
         stage.show();
     }
 
+    /**
+     * Function called every time it's necessary change the current scene
+     * @param scene is the new scene that will be attached to the stage and showed
+     * @throws Exception
+     */
     public void changeScene(String scene) throws Exception{
 
         loader = new FXMLLoader();
@@ -92,6 +101,9 @@ public class Gui extends Application implements ViewInterface {
         });
     }
 
+    /**
+     * Ask the player to specify the game settings. It happens only for the first player.
+     */
     @Override
     public void askGameSettings() {
         Platform.runLater(()->{
@@ -154,6 +166,10 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
+    /**
+     * Ask the player to choose an assistant. Unavailable assistants are not clickable.
+     * @param message message containing available assistants
+     */
     @Override
     public void showAssistantChoice(SMessageShowDeck message) {
 
@@ -197,7 +213,7 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public String getNickName() {
-        return null;
+        return nickname;
     }
 
     @Override
@@ -220,9 +236,29 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
+    /**
+     * If game settings fits with a previous saved game, it asks the first player whether to use the saved game or not.
+     */
     @Override
     public void askUseSavedGame() {
 
+        Platform.runLater(()-> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Load saved game");
+            alert.setHeaderText("A saved game matching this settings has been found");
+            alert.setContentText("Do you want restore it?");
+            ButtonType buttonOne = new ButtonType("Yes");
+            ButtonType buttonTwo = new ButtonType("No");
+            alert.getButtonTypes().setAll(buttonOne, buttonTwo);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if(result.isPresent()) {
+                if(result.get() == buttonOne)
+                    adapter.sendMessage(new RMessageLoadGame(true));
+                else
+                    adapter.sendMessage(new RMessageLoadGame(false));
+            }
+        });
     }
 
     /**
@@ -232,6 +268,6 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void setExpert(SMessageExpert messageExpert) {
-
+        expert = messageExpert.expert;
     }
 }
