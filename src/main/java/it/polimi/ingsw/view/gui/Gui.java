@@ -24,7 +24,6 @@ import java.util.*;
 public class Gui extends Application implements ViewInterface {
 
     public Adapter adapter;
-    private final HashMap<String, Scene> sceneMap = new HashMap<>(); //Could be useful
     private Scene currentScene;
     private Stage stage;
     private String nickname;
@@ -33,7 +32,17 @@ public class Gui extends Application implements ViewInterface {
     private FXMLLoader loader;
     private Parent root;
     private SceneController controller;
-    public static Message currentMessage;
+    private Message currentMessage;
+    public static final String ASSISTANT = "/fxml/AssistantChoiceScene.fxml";
+    public static final String CHARACTER = "/fxml/CharacterChoiceScene.fxml";
+    public static final String GAMEBOARD = "/fxml/GameBoard.fxml";
+    public static final String LOGIN = "/fxml/LoginScene.fxml";
+    public static final String MENU = "/fxml/MainMenuScene.fxml";
+    public static final String NICKNAME = "/fxml/NicknameScene.fxml";
+    private HashMap<String, Scene> scenes = new HashMap<>();
+    private HashMap<String, SceneController> controllers = new HashMap<>();
+
+
 
     /** Coins owned by each player */
     private Map<String, Integer> coins;
@@ -47,18 +56,36 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void start(Stage stage) throws Exception {
 
+        initializeGui();
         coins = new HashMap<>();
-        loader = new FXMLLoader(getClass().getResource("/fxml/MainMenuScene.fxml"));
-        root = loader.load();
-        controller = loader.getController();
-        controller.setGui(this);
-        currentScene = new Scene(root);
+        currentScene = scenes.get(MENU);
         this.stage = stage;
         stage.setTitle("Eriantys");
         stage.setScene(currentScene);
         stage.setWidth(1920d);
         stage.setHeight(1080d);
         stage.show();
+    }
+
+    public void initializeGui(){
+
+        ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME));
+        for(String fxml : sceneFXML){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            try {
+                Parent root = loader.load();
+                scenes.put(fxml, new Scene(root));
+                SceneController controller = loader.getController();
+                controllers.put(fxml, controller);
+                controller.setGui(this);
+            }catch(Exception e){
+                e.printStackTrace();
+                return;
+            }
+
+
+        }
+
     }
 
     /**
@@ -68,15 +95,12 @@ public class Gui extends Application implements ViewInterface {
      */
     public void changeScene(String scene) throws Exception{
 
-        loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource(scene));
-        root = loader.load();
-        //Here happens initialize method
-        controller = loader.getController();
+
+        //Every scene is already initialized and every controller already instantiated
+        controller = controllers.get(scene);
         controller.setGui(this);
         controller.setMessage(currentMessage);
-        controller.createScene();
-        currentScene = new Scene(root);
+        currentScene = scenes.get(scene);
         stage.setScene(currentScene);
         stage.setWidth(1920d);
         stage.setHeight(1080d);
@@ -141,8 +165,17 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askMotherNatureMove(SMessageMotherNature message) {
-        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.getIslandChoice();
+        /*GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+        gameBoardSceneController.getIslandChoice();*/
+        Platform.runLater(() -> {
+            try {
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                gameBoardSceneController.getIslandChoice();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -177,7 +210,7 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void showBoard(SMessageGameState gameState) {
-        //TODO ancora tutto da fare
+      /*  //TODO ancora tutto da fare
         //Tutto quello che c'è scritto sotto è solo temporaneo per far funzionare la scelta carte personaggio
         for (String player: gameState.studEntrance.keySet()) {
             if (expert) {
@@ -194,17 +227,42 @@ public class Gui extends Application implements ViewInterface {
             catch (Exception e) {
                 e.printStackTrace();
             }
+<<<<<<< HEAD
         });
 
 /*
             try {
                 loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
                 changeScene("/fxml/GameBoard.fxml");
+=======
+        });*/
+
+        Platform.runLater(()-> {
+            try {
+                changeScene(GAMEBOARD);
+
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
-*/
+
+            GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+            gameBoardSceneController.refreshEntrances(gameState.studEntrance);
+            gameBoardSceneController.refreshDiningRooms(gameState.studDining);
+            gameBoardSceneController.refreshProfessors(gameState.professors);
+            gameBoardSceneController.refreshTowerZones(gameState.towerNumber);
+            /*gameBoardSceneController.refreshIslandsStudents(gameState.studIslands);
+            gameBoardSceneController.refreshIslandsTowersColor(gameState.colorTowerIslands);
+            gameBoardSceneController.refreshIslandsTowersNum(gameState.numTowersIslands);
+            gameBoardSceneController.refreshMotherNature(gameState.motherNaturePosition);
+            gameBoardSceneController.refreshNoEntryTiles(gameState.forbiddenTokens);
+            gameBoardSceneController.refreshClouds(gameState.studClouds);
+            gameBoardSceneController.refreshCoins(gameState.coins);*/
+
+
+
+        });
+
 
     }
 
@@ -238,8 +296,7 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(() -> {
             try {
                 currentMessage = message;
-                loader.setLocation(getClass().getResource("/fxml/AssistantChoiceScene.fxml"));
-                changeScene("/fxml/AssistantChoiceScene.fxml");
+                changeScene(ASSISTANT);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -257,8 +314,7 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(() -> {
             try {
                 currentMessage = messageCharacter;
-                loader.setLocation(getClass().getResource("/fxml/CharacterChoiceScene.fxml"));
-                changeScene("/fxml/CharacterChoiceScene.fxml");
+                changeScene(CHARACTER);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -270,9 +326,10 @@ public class Gui extends Application implements ViewInterface {
     public void askMove() {
         Platform.runLater(() -> {
             try {
-                loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
-                changeScene("/fxml/GameBoard.fxml");
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+
+                changeScene(GAMEBOARD);
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+
                 gameBoardSceneController.getEntranceChoice();
             }
             catch (Exception e) {
@@ -280,9 +337,14 @@ public class Gui extends Application implements ViewInterface {
             }
         });
 
+
         //controller = new GameBoardSceneController();
         //GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
         //gameBoardSceneController.getEntranceChoice();
+
+
+       /* GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+        gameBoardSceneController.getEntranceChoice();*/
 
 
 
@@ -291,9 +353,16 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askCloud() {
-        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.getCloudChoice();
+        Platform.runLater(() -> {
+            try {
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                gameBoardSceneController.getCloudChoice();
 
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**

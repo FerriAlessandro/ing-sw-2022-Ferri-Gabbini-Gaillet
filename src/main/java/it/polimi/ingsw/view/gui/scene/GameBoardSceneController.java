@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.scene;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.SMessageGameState;
 import it.polimi.ingsw.network.messages.SMessageMotherNature;
 import it.polimi.ingsw.view.gui.*;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * This class represents the main game scene
@@ -110,9 +112,10 @@ public class GameBoardSceneController implements SceneController {
             islands.get(i).createIsland(i+1);
         }
         for(int i=0;i<3;i++){
-            playerBoards.add(new FXPlayerBoard(i+1, this, 3, "Alessandro"));
+            playerBoards.add(new FXPlayerBoard(i+1, this, 2, "Alessandro"));
             playerBoards.get(i).createPlayerBoard();
         }
+        playerBoards.get(0).nickname = "Gui";
         player_name_1.setText("Alessandro");
         player_name_2.setText("Gabbo");
         player_name_3.setTextFill(Color.RED);
@@ -124,13 +127,13 @@ public class GameBoardSceneController implements SceneController {
             clouds.add(new FXCloud(i+1, this, 2, getCloudById(i+1)));
             clouds.get(i).createCloud();
         }
-        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.RED);
-        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.GREEN);
-        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.BLUE);
-        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
-        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.YELLOW);
-        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
-
+        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.RED);
+        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.GREEN);
+        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.BLUE);
+        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
+        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.YELLOW);
+        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
+        System.out.println("Schifo refreshed");
         clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.RED);
         clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.BLUE);
         clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.GREEN);
@@ -168,7 +171,8 @@ public class GameBoardSceneController implements SceneController {
     }
 
     public void getEntranceChoice(){
-        FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
+        //FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
+        FXPlayerBoard board = getPlayerBoardByNickname("Gui");
         board.makeEntranceSelectable();
     }
 
@@ -191,6 +195,32 @@ public class GameBoardSceneController implements SceneController {
 
     public void removeSelectableDiningRoom(it.polimi.ingsw.model.enumerations.Color color){
         getPlayerBoardByNickname(getGui().getNickName()).removeSelectableDiningRoom(color);
+    }
+
+    public void refreshEntrances(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> entrances){
+       /* for(String nickname : entrances.keySet())
+            getPlayerBoardByNickname(nickname).refreshEntrance(entrances.get(nickname));*/
+        getPlayerBoardByNickname("Gui").refreshEntrance(entrances.get("Gui"));
+
+    }
+
+    public void refreshDiningRooms(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> diningRooms){
+       /* for(String nickname : diningRooms.keySet())
+            getPlayerBoardByNickname(nickname).refreshDiningRooms(diningRooms.get(nickname));*/
+        getPlayerBoardByNickname("Gui").refreshDiningRooms(diningRooms.get("Gui"));
+    }
+
+    public void refreshProfessors(Map<it.polimi.ingsw.model.enumerations.Color, String> professors){
+        /*for(String nickname : professors.values())
+            getPlayerBoardByNickname(nickname).refreshProfessors(professors);*/
+        getPlayerBoardByNickname("Gui").refreshProfessors(professors);
+
+    }
+
+    public void refreshTowerZones(Map<String, Integer> towers){
+       /* for(String nickname : towers.keySet())
+            getPlayerBoardByNickname(nickname).refreshTowerZones(towers.get(nickname));*/
+        getPlayerBoardByNickname("Gui").refreshTowerZones(towers.get("Gui"));
     }
 
 
