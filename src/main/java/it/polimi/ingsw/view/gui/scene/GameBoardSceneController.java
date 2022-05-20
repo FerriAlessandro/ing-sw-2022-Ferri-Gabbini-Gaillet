@@ -149,6 +149,11 @@ public class GameBoardSceneController implements SceneController {
 
     }
 
+    @Override
+    public void createScene() {
+
+    }
+
     public void makeIslandsSelectable(){
         for(FXisland island : islands)
             island.makeSelectable();

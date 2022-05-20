@@ -43,9 +43,16 @@ public class LoginSceneController implements SceneController {
         gui.adapter = new Adapter(gui, ipAddress, port);
     }
 
+    @Override
     public void setGui(Gui gui) {
         this.gui = gui;
     }
 
+    @Override
     public void setMessage(Message message) { }
+
+    @Override
+    public void createScene() {
+
+    }
 }
