@@ -151,7 +151,12 @@ public class GameBoardSceneController implements SceneController {
 
     }
 
-    public void getIslandChoice(){ //This one is used for motherNature's movement
+
+    @Override
+    public void createScene() {
+    }
+
+    public void getIslandChoice(){ //this one is used for a student's movement
         for(FXisland island : islands)
             island.makeSelectable();
     }

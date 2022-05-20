@@ -219,7 +219,7 @@ public class Cli implements ViewInterface {
      */
     @Override
     public void showDisconnectionMessage() {
-        System.out.println("Someone lost connection - ending game");
+        System.out.println("Either you or all other remaining players lost connection - ending game");
     }
 
     /**

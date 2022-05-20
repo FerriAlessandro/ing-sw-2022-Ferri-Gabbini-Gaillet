@@ -10,15 +10,11 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * This class is the real Graphical User Interface.
@@ -29,15 +25,18 @@ public class Gui extends Application implements ViewInterface {
 
     public Adapter adapter;
     private final HashMap<String, Scene> sceneMap = new HashMap<>(); //Could be useful
-    public static Scene currentScene;
+    private Scene currentScene;
     private Stage stage;
     private String nickname;
     private boolean expert = false;
     private int numOfPlayer;
-    FXMLLoader loader;
-    Parent root;
-    SceneController controller;
-    public static Message currentMessage;
+    private FXMLLoader loader;
+    private Parent root;
+    private SceneController controller;
+    private Message currentMessage;
+
+    /** Coins owned by each player */
+    private Map<String, Integer> coins;
     
     /**
      * Method called when the gui starts. It sets the main menu scene.
@@ -48,6 +47,7 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void start(Stage stage) throws Exception {
 
+        coins = new HashMap<>();
         loader = new FXMLLoader(getClass().getResource("/fxml/MainMenuScene.fxml"));
         root = loader.load();
         controller = loader.getController();
@@ -71,10 +71,11 @@ public class Gui extends Application implements ViewInterface {
         loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(scene));
         root = loader.load();
+        //Here happens initialize method
         controller = loader.getController();
-        //For the moment currentMessage is a static attribute
-        //controller.setMessage(this.currentMessage);
         controller.setGui(this);
+        controller.setMessage(currentMessage);
+        controller.createScene();
         currentScene = new Scene(root);
         stage.setScene(currentScene);
         stage.setWidth(1920d);
@@ -144,19 +145,46 @@ public class Gui extends Application implements ViewInterface {
         gameBoardSceneController.getIslandChoice();
     }
 
+    /**
+     * Display lobby
+     * @param message containing information on connected and desired players.
+     */
     @Override
     public void showLobby(SMessageLobby message) {
-
+        Platform.runLater(()-> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Lobby information");
+            alert.setHeaderText("We can't start the game right now, we need other wizard(s)!");
+            alert.setContentText("Waiting for " + message.numPlayersTotal + " players to be connected...\n");
+            //TODO add currentPlayers connected list
+            alert.showAndWait();
+        });
     }
 
+    /**
+     * Display a disconnection alert
+     */
     @Override
     public void showDisconnectionMessage() {
-
+        Platform.runLater(()-> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Connection problem");
+            alert.setHeaderText("Someone lost connection - ending game");
+            alert.setContentText(null);
+            alert.showAndWait();
+        });
     }
 
     @Override
     public void showBoard(SMessageGameState gameState) {
-
+        //TODO ancora tutto da fare
+        //Tutto quello che c'è scritto sotto è solo temporaneo per far funzionare la scelta carte personaggio
+        for (String player: gameState.studEntrance.keySet()) {
+            if (expert) {
+                System.out.print("\t" + gameState.coins.get(player) + "coins\n");
+                coins.put(player, gameState.coins.get(player));
+            }
+        }
     }
 
     @Override
@@ -164,9 +192,19 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
+    /**
+     * Display an error alert dialog, the text content depends on the message received.
+     * @param message containing the {@link String} to be displayed.
+     */
     @Override
     public void showGenericMessage(SMessageInvalid message) {
-
+        Platform.runLater(()-> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error dialog");
+            alert.setHeaderText("\n" + message.error.toUpperCase() + "\n");
+            alert.setContentText(null);
+            alert.showAndWait();
+        });
     }
 
     /**
@@ -189,9 +227,22 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
+    /**
+     * Display the player the available character to be chosen.
+     * @param messageCharacter message containing available characters
+     */
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
-
+        Platform.runLater(() -> {
+            try {
+                currentMessage = messageCharacter;
+                loader.setLocation(getClass().getResource("/fxml/CharacterChoiceScene.fxml"));
+                changeScene("/fxml/CharacterChoiceScene.fxml");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -210,14 +261,34 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
+    /**
+     * Display an alert warning dialog when user performs a wrong action.
+     */
     @Override
     public void askAgain() {
-
+        Platform.runLater(()-> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Wrong action");
+            alert.setHeaderText("Invalid request. Please try again...\n");
+            alert.setContentText(null);
+            alert.showAndWait();
+        });
     }
 
+    /**
+     * Display an information alert dialog just to show who's playing right now
+     * @param messageCurrentPlayer contains the current player nickname
+     */
     @Override
     public void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer) {
-
+        if(!messageCurrentPlayer.nickname.equals(nickname))
+            Platform.runLater(()-> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Current player");
+                alert.setHeaderText("It's now " + messageCurrentPlayer.nickname + "'s turn\n");
+                alert.setContentText(null);
+                alert.showAndWait();
+            });
     }
 
     @Override
@@ -272,11 +343,15 @@ public class Gui extends Application implements ViewInterface {
 
     /**
      * Used to set the client flag for expert game handling.
-     *
      * @param messageExpert message containing the flag value
      */
     @Override
     public void setExpert(SMessageExpert messageExpert) {
         expert = messageExpert.expert;
     }
+
+    public Map<String,Integer> getCoins() {
+        return coins;
+    }
+
 }

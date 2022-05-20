@@ -30,9 +30,15 @@ public class MainMenuSceneController implements SceneController {
         System.exit(0);
     }
 
+    @Override
     public void setGui(Gui gui) {
         this.gui = gui;
     }
 
+    @Override
     public void setMessage(Message message) { }
+
+    @Override
+    public void createScene()  { }
+
 }

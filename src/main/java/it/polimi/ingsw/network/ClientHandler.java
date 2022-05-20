@@ -27,6 +27,9 @@ public class ClientHandler extends Thread {
     /** True when the current game has been restored from a save file, false otherwise */
     public static boolean restored = false;
 
+    /** True if a player was disconnected and the game is set up for them to reconnect, false otherwise */
+    public static boolean disconnectionResilient = false;
+
     /**
      * Constructor to be used for players that are not first.
      *
@@ -148,24 +151,34 @@ public class ClientHandler extends Thread {
                     if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
                         RMessageNickname nickMessage = (RMessageNickname) inMessage;
 
-                        if(restored) {
+                        if(restored || disconnectionResilient) {
 
-                            if(controller.getGameController().getNickNames().contains(nickMessage.nickname)){
-                                if(!controller.getGameController().playersView.containsKey(nickMessage.nickname)) {
-                                    System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                                    this.playerNickname = nickMessage.nickname;
+
+                            if(!controller.getGameController().playersView.containsKey(nickMessage.nickname)) {
+                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                                this.playerNickname = nickMessage.nickname;
+                                try {
+                                    VirtualView virtualView = new VirtualView(this);
+                                    controller.getGameController().restorePlayer(nickMessage.nickname, virtualView);
+                                    validNickName = true;
+
+                                } catch (FullGameException e) {
+                                    //Notifies of full game and closes the connection without notifying the controller
+                                    sendMessage(new SMessageInvalid("The current game is already full. Please try again later"));
+                                    e.printStackTrace();
                                     try {
-                                        VirtualView virtualView = new VirtualView(this);
-                                        controller.getGameController().restorePlayer(nickMessage.nickname, virtualView);
-                                        validNickName = true;
-                                    } catch (FullGameException | NotExistingPlayerException e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    sendMessage(new SMessageInvalid("Nickname already taken"));
+                                        out.flush();
+                                        clientSocket.close();
+                                    } catch (Exception ignored) {}
+                                    this.interrupt();
+
+                                } catch (NotExistingPlayerException e){
+                                    sendMessage(new SMessageInvalid("No pre-existing player had this nickname"));
+                                    e.printStackTrace();
                                 }
+
                             } else {
-                                sendMessage(new SMessageInvalid("No player of the saved game had this nickname"));
+                                sendMessage(new SMessageInvalid("Nickname already taken"));
                             }
 
                         }else {

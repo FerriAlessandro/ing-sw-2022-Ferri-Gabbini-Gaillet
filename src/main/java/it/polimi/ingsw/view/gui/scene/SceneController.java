@@ -11,4 +11,7 @@ public interface SceneController {
     void setGui(Gui gui);
 
     void setMessage(Message message);
+
+    void createScene();
+
 }

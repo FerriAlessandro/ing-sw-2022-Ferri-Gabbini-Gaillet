@@ -27,6 +27,8 @@ public class Player implements Serializable {
     private final TowerColor towerColor;
     private AssistantCard playedCard;
 
+    private boolean isConnected;
+
     /**
      * Constructor of the Player Class, the status is set to "True".
      */
@@ -39,6 +41,7 @@ public class Player implements Serializable {
         this.isPlayerTurn = isPlayerTurn;
         this.towerColor = color;
         this.playerStatus = Status.ONLINE;
+        this.isConnected = true;
 
     }
 
@@ -150,6 +153,14 @@ public class Player implements Serializable {
 
         if(assistantDeck.currNumOfCards() == 0)
             throw new EmptyDeckException(getNickName() + " played his last card, this is the last Round!");
+    }
+
+    public void setConnected(boolean value){
+        this.isConnected = value;
+    }
+
+    public boolean isConnected(){
+        return isConnected;
     }
 
 }

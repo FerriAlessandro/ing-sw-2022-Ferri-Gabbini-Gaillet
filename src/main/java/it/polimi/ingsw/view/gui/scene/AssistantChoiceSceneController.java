@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AssistantChoiceSceneController implements SceneController {
 
     private Gui gui;
-
+    private SMessageShowDeck message;
     private final ArrayList<ImageView> imageViews = new ArrayList<>();
 
     @FXML
@@ -49,22 +49,6 @@ public class AssistantChoiceSceneController implements SceneController {
 
     @FXML
     void initialize() {
-
-        SMessageShowDeck message = (SMessageShowDeck) Gui.currentMessage; //for the moment message is a static Gui attribute
-
-        for(int i = 1; i <= 10; i++)
-            listOfCards.add(i);
-
-        for(AssistantCard cards : message.cards)
-            listOfCardsAvailable.add(cards.getCardValue());
-
-        for(Integer num : listOfCards) {
-            if(!listOfCardsAvailable.contains(num)) {
-                gridPane.getChildren().get(num - 1).setOpacity(0.5);
-                gridPane.getChildren().get(num-1).setCursor(Cursor.DEFAULT);
-                gridPane.getChildren().get(num-1).setDisable(true);
-            }
-        }
 
     }
 
@@ -118,12 +102,32 @@ public class AssistantChoiceSceneController implements SceneController {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.TURTLE, gui.getNickName()));
     }
 
+
+    @Override
     public void setGui(Gui gui) {
         this.gui = gui;
     }
 
+    @Override
     public void setMessage(Message message) {
-        //this.message = (SMessageShowDeck)message;
+        this.message = (SMessageShowDeck)message;
+    }
+
+    @Override
+    public void createScene() {
+        for(int i = 1; i <= 10; i++)
+            listOfCards.add(i);
+
+        for(AssistantCard cards : message.cards)
+            listOfCardsAvailable.add(cards.getCardValue());
+
+        for(Integer num : listOfCards) {
+            if(!listOfCardsAvailable.contains(num)) {
+                gridPane.getChildren().get(num - 1).setOpacity(0.5);
+                gridPane.getChildren().get(num-1).setCursor(Cursor.DEFAULT);
+                gridPane.getChildren().get(num-1).setDisable(true);
+            }
+        }
     }
 
 }
