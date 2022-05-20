@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Phase;
+import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
@@ -101,20 +102,8 @@ public class GameController implements Serializable {
                     game.addObserver(v);
                 }
                 game.notifyObservers();
-                broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-                switch (gamePhase) {
-                    case CHOOSE_ASSISTANT_CARD ->
-                            getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
-                    case CHOOSE_CHARACTER_CARD_1, CHOOSE_CHARACTER_CARD_2, CHOOSE_CHARACTER_CARD_3 ->
-                            getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
-                    case MOVE_STUDENTS ->
-                            getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
-                    case MOVE_MOTHERNATURE ->
-                            getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
-                    case CHOOSE_CLOUD ->
-                            getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
-                    default ->
-                            throw new RuntimeException("Error while restoring the old game");
+                if(!ClientHandler.disconnectionResilient) {
+                    restartFromPhase();
                 }
             } else {
                 for(VirtualView v : playersView.values()){
@@ -203,9 +192,75 @@ public class GameController implements Serializable {
      */
     public void playerDisconnected(String nickname) {
         playersView.remove(nickname);
-        for (VirtualView v : playersView.values())
-            v.showDisconnectionMessage();
-        //TODO resilienza alle disconnessioni?
+
+        if(playersView.size() == 1) {
+            //End game
+            for (VirtualView v : playersView.values()) {
+                v.showWinMessage(new SMessageWin("You won"));
+                v.showDisconnectionMessage();
+            }
+        }else{
+            //Set-up for reconnection
+            ClientHandler.disconnectionResilient = true;
+
+
+            //Continue without the player that was disconnected
+            Optional<Player> disconnectedPlayer = game.getPlayers().stream().filter(x -> x.getNickName().equals(nickname)).findFirst();
+            disconnectedPlayer.ifPresent(x -> x.setConnected(false));
+            disconnectedPlayer.ifPresent(x->{
+
+                broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect",MessageType.S_INVALID);
+
+                if(game.getCurrentPlayer().equals(x)){
+                    try {
+                        game.endPlayerTurn(x);
+
+                        restartFromPhase();
+
+                    } catch (EndRoundException e) {
+                        if(gamePhase.equals(Phase.CHOOSE_ASSISTANT_CARD)){
+                            game.sortPlayersActionTurn();
+                            for(AssistantCard assistant : AssistantCard.values())
+                                assistant.resetPlayed();  //Reset the already played assistants
+                            askMoveOrCharacter();
+                        }else{
+                            //Phase is Choose cloud
+                            if(isLastRound) {
+                                checkWin();
+                            }
+                            else{
+                                setupNewRound();
+                            }
+                        }
+                    }
+                }
+
+            });
+
+        }
+
+    }
+
+    /**
+     * Prompts next player to perform an action (depending on the phase) after a load of saved game or disconnection of
+     * current player.
+     */
+    private void restartFromPhase() {
+        broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+        switch (gamePhase) {
+            case CHOOSE_ASSISTANT_CARD ->
+                    getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
+            case CHOOSE_CHARACTER_CARD_1, CHOOSE_CHARACTER_CARD_2, CHOOSE_CHARACTER_CARD_3 ->
+                    getVirtualView(game.getCurrentPlayer().getNickName()).showCharacterChoice(createCharacterMessage());
+            case MOVE_STUDENTS ->
+                    getVirtualView(game.getCurrentPlayer().getNickName()).askMove();
+            case MOVE_MOTHERNATURE ->
+                    getVirtualView(game.getCurrentPlayer().getNickName()).askMotherNatureMove(new SMessageMotherNature(game.getCurrentPlayer().getPlayedCard().getMotherNatureMovement()));
+            case CHOOSE_CLOUD ->
+                    getVirtualView(getGame().getCurrentPlayer().getNickName()).askCloud();
+            default ->
+                    throw new RuntimeException("Error while restoring the old game or disconnecting the current player");
+        }
     }
 
     /**
@@ -290,6 +345,13 @@ public class GameController implements Serializable {
      * Utility method to prepare the controller for a new round
      */
     private void setupNewRound(){
+
+        for(Player p : game.getPlayers()){
+            if(playersView.containsKey(p.getNickName())) {
+                p.setConnected(true);
+            }
+        }
+
         game.sortPlayersAssistantTurn();
         broadcastMessage("A new Round is starting!", MessageType.S_INVALID);
         hasPlayedCharacter = false;
@@ -299,9 +361,9 @@ public class GameController implements Serializable {
             isLastRound = true;
             broadcastMessage("The bag is empty, this is the last round!", MessageType.S_INVALID);
         }
-        broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
         gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
         game.notifyObservers(); //Notifies the view in case the round is over
+        broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
         DiskManager.saveGame(this);
         getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
     }

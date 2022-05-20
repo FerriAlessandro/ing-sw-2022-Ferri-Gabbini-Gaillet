@@ -28,8 +28,8 @@ public class Server {
      */
     public static void main(String[] args){
         int port = 2351;
-        int numCurrentGame = 0;
-        int numRequiredGame = 0;
+        boolean firstPlayer = true;
+        int numRequiredGame;
         InputController controller = null;
 
 
@@ -47,7 +47,7 @@ public class Server {
                 System.out.println("Waiting for next player");
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected - address: " + socket.getInetAddress().toString());
-                if (numCurrentGame == 0) {
+                if (firstPlayer) {
                     System.out.println("This is the first player");
                     //IF PLAYER IS FIRST PLAYER OF CURRENT GAME:
                     try {
@@ -90,7 +90,7 @@ public class Server {
                         }
 
                         new ClientHandler(socket, inputStream, outputStream, controller).start();
-                        numCurrentGame += 1;
+                        firstPlayer = false;
 
                     } catch (IOException ioException) {
                         System.out.println("Unable to get a stream");
@@ -105,13 +105,6 @@ public class Server {
                     }catch (IOException e){
                         e.printStackTrace();
                         System.out.println("Unable to create clientHandler");
-                    }
-                    numCurrentGame += 1;
-                    if (numRequiredGame == numCurrentGame) {
-                        //Reset for new game
-                        //PLEASE NOTE THAT MULTIPLE GAMES ARE CURRENTLY UNSUPPORTED!!
-                        // TODO: add support for multiple concurrent games or for multiple consecutive games
-                        numCurrentGame = 0;
                     }
                 }
              }

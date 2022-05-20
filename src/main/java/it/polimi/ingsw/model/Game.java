@@ -141,13 +141,17 @@ public class Game extends Observable implements Serializable {
      * @param currentPlayer The player that's ending its turn
      * @throws EndRoundException Thrown if the round is over
      */
-    private void endPlayerTurn(Player currentPlayer) throws EndRoundException {
+    public void endPlayerTurn(Player currentPlayer) throws EndRoundException {
 
         if(players.indexOf(currentPlayer) == players.size()-1)
             throw new EndRoundException();
         else {
             currentPlayer.setPlayerTurn(false);
-            players.get(players.indexOf(currentPlayer)+1).setPlayerTurn(true); // the players are sorted based on their played assistant cards
+            Player nextPlayer = players.get(players.indexOf(currentPlayer) + 1);
+            nextPlayer.setPlayerTurn(true); // the players are sorted based on their played assistant cards
+            if(!nextPlayer.isConnected()){
+                endPlayerTurn(nextPlayer);
+            }
         }
 
     }
@@ -221,9 +225,15 @@ public class Game extends Observable implements Serializable {
     public void sortPlayersActionTurn() {
 
         players.get(numOfPlayers-1).setPlayerTurn(false);
+
+        ArrayList<Player> nonConnected = players.stream().filter(x -> !x.isConnected()).collect(Collectors.toCollection(ArrayList :: new));
+
         players = players.stream()
+                .filter(Player::isConnected)
                 .sorted(Comparator.comparingInt((p) -> p.getPlayedCard().getCardValue()))
                 .collect(Collectors.toCollection(ArrayList :: new));
+
+        players.addAll(nonConnected);
 
         Objects.requireNonNull(getFirstPlayer()).setFirst(false);
         players.get(0).setFirst(true);
@@ -263,7 +273,16 @@ public class Game extends Observable implements Serializable {
             }
         }
         players = p;
-        getFirstPlayer().setPlayerTurn(true);
+        if (getFirstPlayer().isConnected()) {
+            getFirstPlayer().setPlayerTurn(true);
+        }else{
+            try {
+                endPlayerTurn(getFirstPlayer());
+            }catch (EndRoundException e){
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**
