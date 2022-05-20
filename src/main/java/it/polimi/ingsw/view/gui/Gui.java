@@ -33,7 +33,7 @@ public class Gui extends Application implements ViewInterface {
     private FXMLLoader loader;
     private Parent root;
     private SceneController controller;
-    private Message currentMessage;
+    public static Message currentMessage;
 
     /** Coins owned by each player */
     private Map<String, Integer> coins;
@@ -185,6 +185,27 @@ public class Gui extends Application implements ViewInterface {
                 coins.put(player, gameState.coins.get(player));
             }
         }
+
+        Platform.runLater(() -> {
+            try {
+                loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
+                changeScene("/fxml/GameBoard.fxml");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+/*
+            try {
+                loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
+                changeScene("/fxml/GameBoard.fxml");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+*/
+
     }
 
     @Override
@@ -247,8 +268,22 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askMove() {
-        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.getEntranceChoice();
+        Platform.runLater(() -> {
+            try {
+                loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
+                changeScene("/fxml/GameBoard.fxml");
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                gameBoardSceneController.getEntranceChoice();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        //controller = new GameBoardSceneController();
+        //GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+        //gameBoardSceneController.getEntranceChoice();
+
 
 
 

@@ -70,6 +70,7 @@ public class ClientSocket extends Thread {
                     if(!Thread.currentThread().isInterrupted()){
                         System.out.println(System.nanoTime());
                         System.out.println("Invalid input or corrupted input stream\n");
+                        e.printStackTrace();
                         closeConnection();
                     }else{
                         closeConnection();
