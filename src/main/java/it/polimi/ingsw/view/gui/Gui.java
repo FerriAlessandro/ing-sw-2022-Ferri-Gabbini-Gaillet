@@ -210,33 +210,6 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void showBoard(SMessageGameState gameState) {
-      /*  //TODO ancora tutto da fare
-        //Tutto quello che c'è scritto sotto è solo temporaneo per far funzionare la scelta carte personaggio
-        for (String player: gameState.studEntrance.keySet()) {
-            if (expert) {
-                System.out.print("\t" + gameState.coins.get(player) + "coins\n");
-                coins.put(player, gameState.coins.get(player));
-            }
-        }
-
-        Platform.runLater(() -> {
-            try {
-                loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
-                changeScene("/fxml/GameBoard.fxml");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-<<<<<<< HEAD
-        });
-
-/*
-            try {
-                loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
-                changeScene("/fxml/GameBoard.fxml");
-=======
-        });*/
-
         Platform.runLater(()-> {
             try {
                 changeScene(GAMEBOARD);
