@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.network.messages.RMessageMotherNature;
+import it.polimi.ingsw.network.messages.RMessageMove;
 import it.polimi.ingsw.network.messages.SMessageMotherNature;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import javafx.scene.Cursor;
@@ -31,7 +32,7 @@ public class FXisland {
     private double islandsVerticalDistance = 205;
     private double pawnsRadius = 12.5;
     private double labelsVerticalOffset = 10.5;
-    private double labelsHorizontalOffset = 12.5;
+    private double labelsHorizontalOffset = 6.5;
     private double pawnsHorizontalOffset = 35.5;
     private double pawnsVerticalOffset = 46;
     private ImageView island;
@@ -61,14 +62,16 @@ public class FXisland {
 
         pawns.add(new Circle(towers.getX() + offset, towers.getY(), pawnsRadius)); //Tower (12.5 is the radius)
         quantity.add(new Label());
-        quantity.get(0).setLayoutX(towers.getX() + offset - labelsHorizontalOffset); //each label is shifted of -12.5 in X and +10.5 on Y from its pawn's coordinates
+        quantity.get(0).setLayoutX(towers.getX() + offset - labelsHorizontalOffset); //each label is shifted of -6.5 in X and +10.5 on Y from its pawn's coordinates
         quantity.get(0).setLayoutY(towers.getY() + labelsVerticalOffset);
+        quantity.get(0).setText("0");
 
 
         pawns.add(new Circle((towers.getX() + pawnsHorizontalOffset) + offset, towers.getY() , pawnsRadius)); //MotherNature
         quantity.add(new Label());
         quantity.get(1).setLayoutX(towers.getX() + pawnsHorizontalOffset + offset - labelsHorizontalOffset);
         quantity.get(1).setLayoutY(towers.getY() + labelsVerticalOffset);
+        quantity.get(1).setText("0");
 
         double horizontal_offset = 0;
         double vertical_offset = 0;
@@ -81,6 +84,7 @@ public class FXisland {
                 quantity.add(new Label());
                 quantity.get(labelCounter).setLayoutX(green_student.getX() +  horizontal_offset + offset - labelsHorizontalOffset);
                 quantity.get(labelCounter).setLayoutY(green_student.getY() + vertical_offset + labelsVerticalOffset);
+                quantity.get(labelCounter).setText("0");
 
             }
         }
@@ -133,19 +137,55 @@ public class FXisland {
 
     }
 
+    public Circle getPawnByColor(it.polimi.ingsw.model.enumerations.Color color){
+        return switch(color){
+            case GREEN ->  pawns.get(2);
+            case RED ->  pawns.get(3);
+            case YELLOW ->  pawns.get(4);
+            case PINK ->  pawns.get(5);
+            case BLUE ->  pawns.get(6);
+        };
+    }
+
+    public Label getLabelByColor(it.polimi.ingsw.model.enumerations.Color color){
+        return switch(color){
+            case GREEN ->  quantity.get(2);
+            case RED ->  quantity.get(3);
+            case YELLOW ->  quantity.get(4);
+            case PINK ->  quantity.get(5);
+            case BLUE ->  quantity.get(6);
+        };
+    }
+
     /**
-     * Makes the island selectable and, if clicked, sends the server the message containing the id of the clicked island, then makes all islands not clickable
+     * Makes the island selectable and, if clicked, sends the server the message containing the id of the clicked island, then makes all islands not clickable.
+     * This method is used when the islands are made clickable for mother nature movement
      */
     public void makeSelectable(){
 
         island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
         island.setOnMouseClicked(mouseEvent -> {gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMotherNature(index, gameBoardSceneController.getGui().getNickName()));
-                                                gameBoardSceneController.removeIslandsSelectable();});
-
+                                                gameBoardSceneController.removeSelectableIslands();});
 
 
     }
-
+    /**
+     * Makes the island selectable and, if clicked, makes the DiningRooms (and all the islands) not clickable, increases the counter of the students of the given color and
+     * sends a message containing the selected color and the island's index.
+     * This method is used when the islands are made clickable for a Move action.
+     */
+    public void makeSelectable(FXStudent entranceStudent){
+        island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
+        island.setOnMouseClicked(mouseEvent -> {
+                                                entranceStudent.setOpacity(0);
+                                                gameBoardSceneController.removeSelectableIslands();
+                                                gameBoardSceneController.removeSelectableDiningRoom(entranceStudent.getColor());
+                                                getPawnByColor(entranceStudent.getColor()).setVisible(true);
+                                                int num = Integer.parseInt(getLabelByColor(entranceStudent.getColor()).getText());
+                                                getLabelByColor(entranceStudent.getColor()).setText(Integer.toString(num+1));
+                                                getLabelByColor(entranceStudent.getColor()).setVisible(true);
+                                                gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMove(entranceStudent.getColor(), index, gameBoardSceneController.getGui().getNickName()));});
+    }
     /**
      * Method to make an island not selectable
      */

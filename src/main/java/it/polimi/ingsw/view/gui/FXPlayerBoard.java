@@ -1,7 +1,9 @@
 package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
+import it.polimi.ingsw.network.messages.RMessageMove;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
+import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -16,11 +18,12 @@ import java.util.*;
 public class FXPlayerBoard {
 
     private TowerColor towerColor;
+    private String nickname;
     private final int boardNumber; //Number of the board to set the right coordinates for the pawns
     private final int numOfPlayers;
     private final ArrayList<FXStudent> entrance = new ArrayList<>();
-    private final Map<Color, ArrayList<FXStudent>> diningRooms = new HashMap<>();
-    private final Map<Color, FXStudent> professorZone = new HashMap<>();
+    private final HashMap<Color, ArrayList<FXStudent>> diningRooms = new HashMap<>();
+    private final HashMap<Color, FXStudent> professorZone = new HashMap<>();
     private final ArrayList<Circle> towerZone = new ArrayList<>();
     private final GameBoardSceneController gameBoardSceneController;
     private final Coordinates startingEntrance = new Coordinates(68,745.5); // First pawn of the entrance (Top left one), there is no pawn there
@@ -47,7 +50,8 @@ public class FXPlayerBoard {
      * @param gameBoardSceneController Controller that manages the GameBoard scene
      * @param numOfPlayers Number of players in the game
      */
-    public FXPlayerBoard(int boardNumber, GameBoardSceneController gameBoardSceneController, int numOfPlayers){
+    public FXPlayerBoard(int boardNumber, GameBoardSceneController gameBoardSceneController, int numOfPlayers, String nickname){
+        this.nickname = nickname;
         this.numOfPlayers = numOfPlayers;
         this.offset = playerBoardsHorizontalOffset * (boardNumber - 1);
         this.boardNumber = boardNumber;
@@ -96,7 +100,8 @@ public class FXPlayerBoard {
 
         for (int i=0;i<9;i++) {
             gameBoardSceneController.mainPane.getChildren().add(entrance.get(i));
-            entrance.get(i).setVisible(false);
+            entrance.get(i).setOpacity(0); //Same as setVisible(false), but with opacity mouse events can be triggered
+            entrance.get(i).setStroke(javafx.scene.paint.Color.BLACK);
         }
 
     }
@@ -128,7 +133,7 @@ public class FXPlayerBoard {
                 gameBoardSceneController.mainPane.getChildren().add(diningRooms.get(color).get(i));
 
 
-               // diningRooms.get(color).get(i).setVisible(false);
+                diningRooms.get(color).get(i).setOpacity(0.0); //We can't use set visible here, i need them to be clickable even if they're not visibile... SetVisibile(false) disables mouse events
 
             }
             horizontal_offset = 0;
@@ -219,5 +224,86 @@ public class FXPlayerBoard {
         }
         return vertical_offset;
     }
+
+    public void makeEntranceSelectable(){
+        for(FXStudent student : entrance){
+            if(student.getOpacity() == 1) {
+                student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.HAND));
+                student.setOnMouseClicked(mouseEvent -> {
+                    gameBoardSceneController.getIslandChoice(student);
+                    makeDiningRoomSelectable(student);
+                    removeSelectableEntrance();
+                });
+            }
+        }
+    }
+
+    public void makeDiningRoomSelectable(FXStudent entranceStudent){
+        for(FXStudent student : diningRooms.get(entranceStudent.getColor())){
+            if(student.getOpacity() == 0.0) { //if the student is not visible
+                student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.HAND));
+                student.setOnMouseClicked(mouseEvent -> {
+                    entranceStudent.setOpacity(0);
+                    student.setOpacity(1);
+                    gameBoardSceneController.removeSelectableIslands();
+                    removeSelectableDiningRoom(student.getColor());
+                    gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMove(student.getColor(), 0, nickname));
+                });
+                break;
+            }
+        }
+    }
+
+    public void removeSelectableDiningRoom(Color color){
+        for(FXStudent student : diningRooms.get(color)){
+            student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.DEFAULT));
+            student.setOnMouseClicked(null);
+        }
+    }
+
+    public void removeSelectableEntrance(){
+        for(FXStudent student : entrance){
+            student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.DEFAULT));
+            student.setOnMouseClicked(null);
+        }
+    }
+
+    public String getNickname(){
+        return this.nickname;
+    }
+
+    public ArrayList<FXStudent> getEntrance(){
+        return this.entrance;
+    }
+
+    public ArrayList<Circle> getTowerZone(){
+        return this.towerZone;
+    }
+
+    public HashMap<Color, ArrayList<FXStudent>> getDiningRoom(){
+        return this.diningRooms;
+    }
+
+    public HashMap<Color, FXStudent> getProfessorZone(){
+        return this.professorZone;
+    }
+
+    public void addStudentEntrance(Color color){
+        String imageColor;
+        String imagePath;
+        imageColor = color.toString().toLowerCase(Locale.ROOT);
+        imagePath = "images/student_"+imageColor+".png";
+        Image image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
+        for(FXStudent student : entrance){
+            if(student.getOpacity() == 0){
+                student.setColor(color);
+                student.setFill(new ImagePattern(image));
+                student.setOpacity(1);
+                break; //We fill only the first student we encounter
+            }
+        }
+    }
+
+
 
 }

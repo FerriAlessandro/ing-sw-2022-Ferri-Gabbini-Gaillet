@@ -495,7 +495,6 @@ public class GameController implements Serializable {
         }
         else {
             try {
-                System.out.println("CIao");
                 game.moveMotherNature(numOfSteps);
 
             } catch (TowerWinException e) {

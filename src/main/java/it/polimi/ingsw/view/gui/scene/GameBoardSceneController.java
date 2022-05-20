@@ -1,10 +1,7 @@
 package it.polimi.ingsw.view.gui.scene;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.SMessageMotherNature;
-import it.polimi.ingsw.view.gui.FXCloud;
-import it.polimi.ingsw.view.gui.FXPlayerBoard;
-import it.polimi.ingsw.view.gui.FXisland;
-import it.polimi.ingsw.view.gui.Gui;
+import it.polimi.ingsw.view.gui.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -113,7 +110,7 @@ public class GameBoardSceneController implements SceneController {
             islands.get(i).createIsland(i+1);
         }
         for(int i=0;i<3;i++){
-            playerBoards.add(new FXPlayerBoard(i+1, this, 3));
+            playerBoards.add(new FXPlayerBoard(i+1, this, 3, "Alessandro"));
             playerBoards.get(i).createPlayerBoard();
         }
         player_name_1.setText("Alessandro");
@@ -124,14 +121,19 @@ public class GameBoardSceneController implements SceneController {
         player_name_2.setStyle("-fx-font-weight: bold;");
         player_name_3.setStyle("-fx-font-weight: bold;");
         for(int i=0;i<3;i++){
-            clouds.add(new FXCloud(i+1, this, 2));
+            clouds.add(new FXCloud(i+1, this, 2, getCloudById(i+1)));
             clouds.get(i).createCloud();
         }
+        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.RED);
+        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.GREEN);
+        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.BLUE);
+        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
+        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.YELLOW);
+        getPlayerBoardByNickname("Alessandro").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
 
-
-
-
-
+        clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.RED);
+        clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.BLUE);
+        clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.GREEN);
     }
 
 
@@ -149,16 +151,45 @@ public class GameBoardSceneController implements SceneController {
 
     }
 
-    public void makeIslandsSelectable(){
+    public void getIslandChoice(){ //This one is used for motherNature's movement
         for(FXisland island : islands)
             island.makeSelectable();
     }
 
-    public void removeIslandsSelectable(){
+    public void getIslandChoice(FXStudent student){ //This one is used for a student's movement
+        for(FXisland island : islands){
+            island.makeSelectable(student);
+        }
+    }
+
+    public void getEntranceChoice(){
+        FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
+        board.makeEntranceSelectable();
+    }
+
+    public void getCloudChoice(){
+        for(FXCloud cloud : clouds){
+            cloud.makeSelectable();
+        }
+    }
+
+    public void removeSelectableCloud(){
+        for(FXCloud cloud : clouds)
+            cloud.removeSelectableCloud();
+    }
+
+
+    public void removeSelectableIslands(){
         for(FXisland island : islands)
             island.removeSelectable();
     }
 
+    public void removeSelectableDiningRoom(it.polimi.ingsw.model.enumerations.Color color){
+        getPlayerBoardByNickname(getGui().getNickName()).removeSelectableDiningRoom(color);
+    }
+
+
+    // ---------------------UTILITY METHODS -----------------------
     private ImageView getIslandById(int id){
         return switch (id) {
             case 1 -> island_1;
@@ -173,8 +204,25 @@ public class GameBoardSceneController implements SceneController {
             case 10 -> island_10;
             case 11 -> island_11;
             case 12 -> island_12;
-            default -> null;
+            default->null;
         };
     }
+
+    private ImageView getCloudById(int id){
+        return switch(id){
+            case 1->cloud_1;
+            case 2->cloud_2;
+            case 3->cloud_3;
+            default->null;
+        };
+    }
+
+    private FXPlayerBoard getPlayerBoardByNickname(String nickname){
+        for(FXPlayerBoard playerboard : playerBoards)
+            if(playerboard.getNickname().equals(nickname))
+                return playerboard;
+            return null;
+    }
+
 }
 

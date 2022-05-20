@@ -1,6 +1,15 @@
 package it.polimi.ingsw.view.gui;
+import it.polimi.ingsw.model.enumerations.Color;
+import it.polimi.ingsw.network.messages.RMessageCloud;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
+import javafx.scene.Cursor;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.ImagePattern;
+
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * This class is used to store and modify the students (represented as Circles) present on a cloud tile
@@ -20,6 +29,7 @@ public class FXCloud {
     private int cloudIndex;
     private int numOfPlayers;
     private double radius = 12.5;
+    private ImageView cloud;
 
 
     /**
@@ -28,8 +38,9 @@ public class FXCloud {
      * @param gameBoardSceneController The Controller that controls the scene on which the clouds appear*
      * @param numOfPlayers The number of players in the game, based on which the third cloud is instantiated or not
      */
-    public FXCloud(int index, GameBoardSceneController gameBoardSceneController, int numOfPlayers){
+    public FXCloud(int index, GameBoardSceneController gameBoardSceneController, int numOfPlayers, ImageView cloud){
 
+        this.cloud = cloud;
         this.numOfPlayers = numOfPlayers;
         this.cloudIndex = index;
         this.gameBoardSceneController = gameBoardSceneController;
@@ -62,11 +73,40 @@ public class FXCloud {
                 if(i!=1 || j!=1 || numOfPlayers == 3){
                     students.add(new FXStudent(firstStudent.getX() + cloudAbsoluteHorizontalOffset + horizontalOffset, firstStudent.getY() + verticalOffset + cloudAbsoluteVerticalOffset, radius));
                     gameBoardSceneController.mainPane.getChildren().add(students.get(count));
-                    students.get(count).setVisible(false);
+                    students.get(count).setOpacity(0);
                 }
 
             }
         }
     }
 
+    public void makeSelectable(){
+        cloud.setOnMouseEntered(mouseEvent -> cloud.setCursor(Cursor.HAND));
+        cloud.setOnMouseClicked(mouseEvent -> {for(FXStudent student : students)
+                                                student.setOpacity(0);
+                                                gameBoardSceneController.getGui().adapter.sendMessage(new RMessageCloud(cloudIndex, gameBoardSceneController.getGui().getNickName()));
+                                                gameBoardSceneController.removeSelectableCloud();});
+    }
+
+    public void removeSelectableCloud(){
+        cloud.setOnMouseEntered(mouseEvent -> cloud.setCursor(Cursor.DEFAULT));
+        cloud.setOnMouseClicked(null);
+    }
+
+
+    public void addStudentCloud(Color color){
+        String imageColor;
+        String imagePath;
+        imageColor = color.toString().toLowerCase(Locale.ROOT);
+        imagePath = "images/student_"+imageColor+".png";
+        Image image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
+        for(FXStudent student : students){
+            if(student.getOpacity() == 0){
+                student.setColor(color);
+                student.setFill(new ImagePattern(image));
+                student.setOpacity(1);
+                break; //We fill only the first student we encounter
+            }
+        }
+    }
 }

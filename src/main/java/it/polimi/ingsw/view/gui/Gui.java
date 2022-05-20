@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
@@ -47,7 +48,7 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void start(Stage stage) throws Exception {
 
-        loader = new FXMLLoader(getClass().getResource("/fxml/GameBoard.fxml"));
+        loader = new FXMLLoader(getClass().getResource("/fxml/MainMenuScene.fxml"));
         root = loader.load();
         controller = loader.getController();
         controller.setGui(this);
@@ -58,7 +59,6 @@ public class Gui extends Application implements ViewInterface {
         stage.setWidth(1920d);
         stage.setHeight(1080d);
         stage.show();
-        this.askMotherNatureMove(new SMessageMotherNature(5));
     }
 
     /**
@@ -141,7 +141,7 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void askMotherNatureMove(SMessageMotherNature message) {
         GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.makeIslandsSelectable();
+        gameBoardSceneController.getIslandChoice();
     }
 
     @Override
@@ -196,11 +196,17 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askMove() {
+        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+        gameBoardSceneController.getEntranceChoice();
+
+
 
     }
 
     @Override
     public void askCloud() {
+        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+        gameBoardSceneController.getCloudChoice();
 
     }
 
