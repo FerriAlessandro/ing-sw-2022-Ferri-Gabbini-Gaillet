@@ -18,7 +18,7 @@ import java.util.*;
 public class FXPlayerBoard {
 
     private TowerColor towerColor;
-    private String nickname;
+    public String nickname;
     private final int boardNumber; //Number of the board to set the right coordinates for the pawns
     private final int numOfPlayers;
     private final ArrayList<FXStudent> entrance = new ArrayList<>();
@@ -102,6 +102,7 @@ public class FXPlayerBoard {
             gameBoardSceneController.mainPane.getChildren().add(entrance.get(i));
             entrance.get(i).setOpacity(0); //Same as setVisible(false), but with opacity mouse events can be triggered
             entrance.get(i).setStroke(javafx.scene.paint.Color.BLACK);
+
         }
 
     }
@@ -164,7 +165,7 @@ public class FXPlayerBoard {
             gameBoardSceneController.mainPane.getChildren().add(professorZone.get(color));
 
 
-            //professorZone.get(color).setVisible(false);
+            professorZone.get(color).setOpacity(0);
 
         }
 
@@ -195,6 +196,7 @@ public class FXPlayerBoard {
                     Image towerImage = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
                     towerZone.get(counter).setFill(new ImagePattern(towerImage));
                     gameBoardSceneController.mainPane.getChildren().add(towerZone.get(counter));
+                    towerZone.get(counter).setOpacity(1);
                 }
             }
         }
@@ -243,8 +245,8 @@ public class FXPlayerBoard {
             if(student.getOpacity() == 0.0) { //if the student is not visible
                 student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.HAND));
                 student.setOnMouseClicked(mouseEvent -> {
-                    entranceStudent.setOpacity(0);
-                    student.setOpacity(1);
+                    //entranceStudent.setOpacity(0);
+                    //student.setOpacity(1);
                     gameBoardSceneController.removeSelectableIslands();
                     removeSelectableDiningRoom(student.getColor());
                     gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMove(student.getColor(), 0, nickname));
@@ -288,7 +290,7 @@ public class FXPlayerBoard {
         return this.professorZone;
     }
 
-    public void addStudentEntrance(Color color){
+    public void addStudentEntrance(Color color){ //TODO REMOVE THIS METHOD
         String imageColor;
         String imagePath;
         imageColor = color.toString().toLowerCase(Locale.ROOT);
@@ -302,6 +304,82 @@ public class FXPlayerBoard {
                 break; //We fill only the first student we encounter
             }
         }
+    }
+
+    public void refreshEntrance(Map<Color, Integer> students){
+        String imageColor;
+        String imagePath;
+        Image image;
+        int counter = 0;
+        for(Color color : students.keySet()){
+            while(students.get(color) > 0){
+                if(entrance.get(counter).getColor() == null || !entrance.get(counter).getColor().equals(color)) {
+                    imageColor = color.toString().toLowerCase(Locale.ROOT);
+                    imagePath = "images/student_" + imageColor + ".png";
+                    image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
+                    entrance.get(counter).setFill(new ImagePattern(image));
+                    entrance.get(counter).setOpacity(1);
+                    entrance.get(counter).setColor(color);
+                    counter += 1;
+                    students.put(color, students.get(color) - 1);
+                }
+                else if(entrance.get(counter).getOpacity() == 0){
+                    entrance.get(counter).setOpacity(1);
+                    counter+=1;
+                    students.put(color, students.get(color) - 1);
+                }
+                else{
+                    counter+=1;
+                    students.put(color, students.get(color) - 1);
+                }
+            }
+        }
+        for(int i= counter; i<entrance.size(); i++)
+            entrance.get(i).setOpacity(0);
+
+
+    }
+
+    public void refreshDiningRooms(Map<Color, Integer> diningRooms){
+
+        int counter = 0;
+
+        for(Color color : diningRooms.keySet()){
+
+            while(diningRooms.get(color) > 0){
+                if(this.diningRooms.get(color).get(counter).getOpacity() == 0){
+                    this.diningRooms.get(color).get(counter).setOpacity(1);
+
+                }
+                counter+=1;
+                diningRooms.put(color, diningRooms.get(color)-1);
+
+            }
+            for(int i=counter; i<10;i++)
+                this.diningRooms.get(color).get(i).setOpacity(0);
+
+            counter=0;
+        }
+
+    }
+
+    public void refreshProfessors(Map<Color, String> professors){
+        for(Color color : professors.keySet()){
+            if(!professors.get(color).equals(nickname))
+                this.professorZone.get(color).setOpacity(0);
+            else this.professorZone.get(color).setOpacity(1);
+        }
+    }
+
+    public void refreshTowerZones(Integer towers) {
+
+        int counter = 0;
+        for (int i=0;i<towers;i++){
+            towerZone.get(i).setOpacity(1);
+            counter+=1;
+        }
+        for(int i=counter; i<towerZone.size();i++)
+            towerZone.get(i).setOpacity(0);
     }
 
 
