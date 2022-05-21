@@ -24,7 +24,6 @@ import java.util.*;
 public class Gui extends Application implements ViewInterface {
 
     public Adapter adapter;
-    private final HashMap<String, Scene> sceneMap = new HashMap<>(); //Could be useful
     private Scene currentScene;
     private Stage stage;
     private String nickname;
@@ -42,6 +41,7 @@ public class Gui extends Application implements ViewInterface {
     public static final String NICKNAME = "/fxml/NicknameScene.fxml";
     private HashMap<String, Scene> scenes = new HashMap<>();
     private HashMap<String, SceneController> controllers = new HashMap<>();
+
 
 
     /** Coins owned by each player */
@@ -210,28 +210,10 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void showBoard(SMessageGameState gameState) {
-      /*  //TODO ancora tutto da fare
-        //Tutto quello che c'è scritto sotto è solo temporaneo per far funzionare la scelta carte personaggio
-        for (String player: gameState.studEntrance.keySet()) {
-            if (expert) {
-                System.out.print("\t" + gameState.coins.get(player) + "coins\n");
-                coins.put(player, gameState.coins.get(player));
-            }
-        }
-
-        Platform.runLater(() -> {
-            try {
-                loader.setLocation(getClass().getResource("/fxml/GameBoard.fxml"));
-                changeScene("/fxml/GameBoard.fxml");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        });*/
-
         Platform.runLater(()-> {
             try {
                 changeScene(GAMEBOARD);
+
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -253,6 +235,7 @@ public class Gui extends Application implements ViewInterface {
 
 
         });
+
 
     }
 
@@ -316,16 +299,26 @@ public class Gui extends Application implements ViewInterface {
     public void askMove() {
         Platform.runLater(() -> {
             try {
+
                 changeScene(GAMEBOARD);
                 GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+
                 gameBoardSceneController.getEntranceChoice();
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         });
+
+
+        //controller = new GameBoardSceneController();
+        //GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+        //gameBoardSceneController.getEntranceChoice();
+
+
        /* GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
         gameBoardSceneController.getEntranceChoice();*/
+
 
 
 
