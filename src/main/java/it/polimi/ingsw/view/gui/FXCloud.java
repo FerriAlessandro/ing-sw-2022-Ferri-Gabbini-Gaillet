@@ -9,6 +9,7 @@ import javafx.scene.paint.ImagePattern;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -106,6 +107,33 @@ public class FXCloud {
                 student.setFill(new ImagePattern(image));
                 student.setOpacity(1);
                 break; //We fill only the first student we encounter
+            }
+        }
+    }
+
+    public void refreshClouds(Map<Color, Integer> students){
+
+        String imageColor;
+        String imagePath;
+        Image image;
+        int counter = 0;
+        int numEmpty = 0;
+        for(Color color : students.keySet()){
+            if(students.get(color) == 0)
+                numEmpty+=1;
+            while(students.get(color) > 0){
+                imageColor = color.toString().toLowerCase(Locale.ROOT);
+                imagePath = "images/student_" + imageColor + ".png";
+                image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
+                this.students.get(counter).setFill(new ImagePattern(image));
+                this.students.get(counter).setOpacity(1);
+                counter+=1;
+                students.put(color, students.get(color)-1);
+            }
+        }
+        if(numEmpty == 5){
+            for(int i=0;i<this.students.size();i++){
+                this.students.get(i).setOpacity(0);
             }
         }
     }

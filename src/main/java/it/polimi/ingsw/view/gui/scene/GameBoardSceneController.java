@@ -1,4 +1,5 @@
 package it.polimi.ingsw.view.gui.scene;
+import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.SMessageGameState;
 import it.polimi.ingsw.network.messages.SMessageMotherNature;
@@ -221,6 +222,42 @@ public class GameBoardSceneController implements SceneController {
        /* for(String nickname : towers.keySet())
             getPlayerBoardByNickname(nickname).refreshTowerZones(towers.get(nickname));*/
         getPlayerBoardByNickname("Gui").refreshTowerZones(towers.get("Gui"));
+    }
+
+    public void refreshIslandsStudents(Map<Integer, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> islands){
+        for(int i=islands.keySet().size(); i<12;i++)
+            this.islands.get(i).hideIsland();
+        for(Integer index : islands.keySet()){
+            this.islands.get(index).refreshStudents(islands.get(index));
+        }
+    }
+
+    public void refreshIslandsTowersColor(Map<Integer, TowerColor> islandsTowerColor){
+        for(Integer index : islandsTowerColor.keySet())
+            this.islands.get(index).refreshIslandsTowersColor(islandsTowerColor.get(index));
+    }
+
+    public void refreshIslandsTowersNum(Map<Integer, Integer> islandsTowersNum){
+        for(Integer index : islandsTowersNum.keySet()){
+            this.islands.get(index).refreshIslandsTowersNum(islandsTowersNum.get(index));
+        }
+    }
+
+    public void refreshMotherNature(int position){
+        for(FXisland island : islands){
+            island.refreshMotherNature(position);
+        }
+    }
+
+    public void refreshNoEntryTiles(Map<Integer, Integer> tokens){
+        for(Integer index : tokens.keySet())
+            islands.get(index).refreshNoEntryTiles(tokens.get(index));
+    }
+
+    public void refreshClouds(Map<Integer, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> clouds){
+        for(Integer index : clouds.keySet()){
+            this.clouds.get(index).refreshClouds(clouds.get(index));
+        }
     }
 
 

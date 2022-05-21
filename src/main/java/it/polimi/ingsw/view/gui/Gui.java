@@ -98,8 +98,8 @@ public class Gui extends Application implements ViewInterface {
 
         //Every scene is already initialized and every controller already instantiated
         controller = controllers.get(scene);
-        controller.setGui(this);
         controller.setMessage(currentMessage);
+        controller.createScene();
         currentScene = scenes.get(scene);
         stage.setScene(currentScene);
         stage.setWidth(1920d);
@@ -242,13 +242,13 @@ public class Gui extends Application implements ViewInterface {
             gameBoardSceneController.refreshDiningRooms(gameState.studDining);
             gameBoardSceneController.refreshProfessors(gameState.professors);
             gameBoardSceneController.refreshTowerZones(gameState.towerNumber);
-            /*gameBoardSceneController.refreshIslandsStudents(gameState.studIslands);
+            gameBoardSceneController.refreshIslandsStudents(gameState.studIslands);
             gameBoardSceneController.refreshIslandsTowersColor(gameState.colorTowerIslands);
             gameBoardSceneController.refreshIslandsTowersNum(gameState.numTowersIslands);
             gameBoardSceneController.refreshMotherNature(gameState.motherNaturePosition);
             gameBoardSceneController.refreshNoEntryTiles(gameState.forbiddenTokens);
             gameBoardSceneController.refreshClouds(gameState.studClouds);
-            gameBoardSceneController.refreshCoins(gameState.coins);*/
+           /* gameBoardSceneController.refreshCoins(gameState.coins);*/
 
 
 
