@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * This class implements a very basic Command Line Interface.
  * @author A.G. Gaillet
- * @version 1.0
+ * @version 1.2
  */
 public class Cli implements ViewInterface {
     private final Scanner in = new Scanner(System.in);
@@ -515,6 +515,20 @@ public class Cli implements ViewInterface {
     @Override
     public void setExpert(SMessageExpert messageExpert) {
         expert = messageExpert.expert;
+    }
+
+    /**
+     * Used to notify all clients and update the assistant card chosen by a player.
+     *
+     * @param messageAssistantStatus containing nickname and chosen assistant
+     */
+    @Override
+    public void showAssistantStatus(SMessageAssistantStatus messageAssistantStatus) {
+        System.out.println(
+                messageAssistantStatus.nickname + " chose the " + messageAssistantStatus.chosenAssistant + " assistant card. " +
+                        "Value: " + messageAssistantStatus.chosenAssistant.getCardValue() + ", movements: " +
+                        messageAssistantStatus.chosenAssistant.getMotherNatureMovement()
+        );
     }
 
     /**

@@ -427,6 +427,16 @@ public class Gui extends Application implements ViewInterface {
         expert = messageExpert.expert;
     }
 
+    /**
+     * Used to notify all clients and update the assistant card chosen by a player.
+     *
+     * @param messageAssistantStatus containing nickname and chosen assistant
+     */
+    @Override
+    public void showAssistantStatus(SMessageAssistantStatus messageAssistantStatus) {
+        //TODO: implement method. It shall update the assistant card shown on the board of the given player.
+    }
+
     public Map<String,Integer> getCoins() {
         return coins;
     }

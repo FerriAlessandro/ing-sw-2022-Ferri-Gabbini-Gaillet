@@ -6,7 +6,7 @@ import it.polimi.ingsw.network.messages.*;
  * Generic interface to be implemented by every View.
  *
  * @author A.G. Gaillet
- * @version 1.0
+ * @version 1.1
  */
 public interface ViewInterface {
 
@@ -135,4 +135,10 @@ public interface ViewInterface {
      * @param messageExpert message containing the flag value
      */
     void setExpert(SMessageExpert messageExpert);
+
+    /**
+     * Used to notify all clients and update the assistant card chosen by a player.
+     * @param messageAssistantStatus containing nickname and chosen assistant
+     */
+    void showAssistantStatus(SMessageAssistantStatus messageAssistantStatus);
 }
