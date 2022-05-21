@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * This class represents the Game Controller, which is the one that transforms a user message into an action in the Game
  * @author Alessandro F.
- * @version 1.0
+ * @version 1.1
  */
 
 public class GameController implements Serializable {
@@ -410,6 +410,10 @@ public class GameController implements Serializable {
         System.out.println("PLAYED CARD: " + assistantMessage.playedAssistant);
         try {
             game.playAssistantCard(assistantMessage.playedAssistant);
+            for(VirtualView v : playersView.values()){
+                //Notifies all players of the choice made
+                v.showAssistantStatus(new SMessageAssistantStatus(assistantMessage.nickname, assistantMessage.playedAssistant));
+            }
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
 
@@ -436,6 +440,10 @@ public class GameController implements Serializable {
 
         }
         catch(EndRoundException e){
+            for(VirtualView v : playersView.values()){
+                //Notifies all players of the choice made
+                v.showAssistantStatus(new SMessageAssistantStatus(assistantMessage.nickname, assistantMessage.playedAssistant));
+            }
             game.sortPlayersActionTurn();
             for(AssistantCard assistant : AssistantCard.values())
                 assistant.resetPlayed();  //Reset the already played assistants
