@@ -1,11 +1,13 @@
 package it.polimi.ingsw.view.gui.scene;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.SMessageAssistantStatus;
 import it.polimi.ingsw.network.messages.SMessageGameState;
 import it.polimi.ingsw.network.messages.SMessageMotherNature;
 import it.polimi.ingsw.view.gui.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -14,6 +16,7 @@ import javafx.scene.shape.Circle;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class represents the main game scene
@@ -119,6 +122,9 @@ public class GameBoardSceneController implements SceneController {
             islands.get(i).createIsland(i + 1);
 
         }
+        chosen_assistant_1.setVisible(false);
+        chosen_assistant_2.setVisible(false);
+        chosen_assistant_3.setVisible(false);
     }
 
     public void setupGameBoard(int numOfPlayers, boolean expert, SMessageGameState firstGameState){
@@ -280,8 +286,25 @@ public class GameBoardSceneController implements SceneController {
             getPlayerBoardByNickname(nickname).refreshCoins(coins.get(nickname));
 
         }
-        //getPlayerBoardByNickname("Gui").refreshCoins(coins.get("Gui"));
 
+    }
+
+    public void refreshAssistant (SMessageAssistantStatus message){
+        String imagePath = "images/"+message.chosenAssistant.toString().toUpperCase(Locale.ROOT)+".png";
+        if(message.nickname.equals(player_name_1.getText())) {
+            chosen_assistant_1.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+            chosen_assistant_1.setVisible(true);
+        }
+
+        else if(message.nickname.equals(player_name_2.getText())) {
+            chosen_assistant_2.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+            chosen_assistant_2.setVisible(true);
+        }
+
+        else if(message.nickname.equals(player_name_3.getText())){
+            chosen_assistant_3.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath))));
+            chosen_assistant_3.setVisible(true);
+        }
     }
 
     public void colorCurrentPlayer(String nickname){

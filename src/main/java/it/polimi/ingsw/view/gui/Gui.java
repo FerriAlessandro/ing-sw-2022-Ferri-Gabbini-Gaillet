@@ -439,7 +439,10 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showAssistantStatus(SMessageAssistantStatus messageAssistantStatus) {
-        //TODO: implement method. It shall update the assistant card shown on the board of the given player.
+
+        Platform.runLater(()->{ GameBoardSceneController controller =  (GameBoardSceneController) controllers.get(GAMEBOARD);
+                               controller.refreshAssistant(messageAssistantStatus);
+        });
     }
 
     public Map<String,Integer> getCoins() {

@@ -133,6 +133,10 @@ public class Adapter {
                 view.setExpert((SMessageExpert) message);
                 break;
 
+            case S_ASSISTANTSTATUS:
+                view.showAssistantStatus((SMessageAssistantStatus) message);
+                break;
+
             default:
                 new UnsupportedOperationException().printStackTrace();
                 break;
