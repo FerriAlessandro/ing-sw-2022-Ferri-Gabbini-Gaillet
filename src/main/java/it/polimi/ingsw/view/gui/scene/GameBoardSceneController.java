@@ -9,8 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -105,39 +107,50 @@ public class GameBoardSceneController implements SceneController {
 
     private ArrayList<FXCloud> clouds = new ArrayList<>();
 
+    private ArrayList<Label> nicknames = new ArrayList<>();
+
+    private int numPlayers;
 
     @FXML
-    public void initialize(){
-        for(int i=0; i<12; i++){
-            islands.add(new FXisland(this, getIslandById(i+1)));
-            islands.get(i).createIsland(i+1);
+    public void initialize() {
+
+        for (int i = 0; i < 12; i++) {
+            islands.add(new FXisland(this, getIslandById(i + 1)));
+            islands.get(i).createIsland(i + 1);
+
         }
-        for(int i=0;i<3;i++){
-            playerBoards.add(new FXPlayerBoard(i+1, this, 2, "Alessandro"));
+    }
+
+    public void setupGameBoard(int numOfPlayers, boolean expert, SMessageGameState firstGameState){
+
+        ArrayList<String> nicknames = new ArrayList<>(firstGameState.towerNumber.keySet());
+        player_name_1.setText(nicknames.get(0));
+        this.nicknames.add(player_name_1);
+        player_name_2.setText(nicknames.get(1));
+        this.nicknames.add(player_name_2);
+        if(numOfPlayers == 3) {
+            player_name_3.setText(nicknames.get(2));
+            this.nicknames.add(player_name_3);
+        }
+        else{
+            playerboard_3.setVisible(false);
+            cloud_3.setVisible(false);
+        }
+        for(int i=0;i<nicknames.size();i++){
+            playerBoards.add(new FXPlayerBoard(i+1, this, numOfPlayers, nicknames.get(i)));
             playerBoards.get(i).createPlayerBoard();
-        }
-        playerBoards.get(0).nickname = "Gui";
-        player_name_1.setText("Alessandro");
-        player_name_2.setText("Gabbo");
-        player_name_3.setTextFill(Color.RED);
-        player_name_3.setText("Angelo");
-        player_name_1.setStyle("-fx-font-weight: bold;");
-        player_name_2.setStyle("-fx-font-weight: bold;");
-        player_name_3.setStyle("-fx-font-weight: bold;");
-        for(int i=0;i<3;i++){
-            clouds.add(new FXCloud(i+1, this, 2, getCloudById(i+1)));
+            if(expert)
+                playerBoards.get(i).createCoins();
+
+            clouds.add(new FXCloud(i+1, this, nicknames.size(), getCloudById(i+1)));
             clouds.get(i).createCloud();
         }
-        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.RED);
-        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.GREEN);
-        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.BLUE);
-        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
-        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.YELLOW);
-        getPlayerBoardByNickname("Gui").addStudentEntrance(it.polimi.ingsw.model.enumerations.Color.PINK);
-        System.out.println("Schifo refreshed");
-        clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.RED);
-        clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.BLUE);
-        clouds.get(0).addStudentCloud(it.polimi.ingsw.model.enumerations.Color.GREEN);
+
+        for(Label label : this.nicknames)
+            label.setStyle("-fx-font-weight: bold;");
+
+
+
     }
 
 
@@ -149,6 +162,8 @@ public class GameBoardSceneController implements SceneController {
     public Gui getGui(){
         return this.gui;
     }
+
+
 
     @Override
     public void setMessage(Message message) {
@@ -172,8 +187,8 @@ public class GameBoardSceneController implements SceneController {
     }
 
     public void getEntranceChoice(){
-        //FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
-        FXPlayerBoard board = getPlayerBoardByNickname("Gui");
+        FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
+       // FXPlayerBoard board = getPlayerBoardByNickname("Gui");
         board.makeEntranceSelectable();
     }
 
@@ -199,29 +214,29 @@ public class GameBoardSceneController implements SceneController {
     }
 
     public void refreshEntrances(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> entrances){
-       /* for(String nickname : entrances.keySet())
-            getPlayerBoardByNickname(nickname).refreshEntrance(entrances.get(nickname));*/
-        getPlayerBoardByNickname("Gui").refreshEntrance(entrances.get("Gui"));
+        for(String nickname : entrances.keySet())
+            getPlayerBoardByNickname(nickname).refreshEntrance(entrances.get(nickname));
+        //getPlayerBoardByNickname("Gui").refreshEntrance(entrances.get("Gui"));
 
     }
 
     public void refreshDiningRooms(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> diningRooms){
-       /* for(String nickname : diningRooms.keySet())
-            getPlayerBoardByNickname(nickname).refreshDiningRooms(diningRooms.get(nickname));*/
-        getPlayerBoardByNickname("Gui").refreshDiningRooms(diningRooms.get("Gui"));
+        for(String nickname : diningRooms.keySet())
+            getPlayerBoardByNickname(nickname).refreshDiningRooms(diningRooms.get(nickname));
+       // getPlayerBoardByNickname("Gui").refreshDiningRooms(diningRooms.get("Gui"));
     }
 
     public void refreshProfessors(Map<it.polimi.ingsw.model.enumerations.Color, String> professors){
-        /*for(String nickname : professors.values())
-            getPlayerBoardByNickname(nickname).refreshProfessors(professors);*/
-        getPlayerBoardByNickname("Gui").refreshProfessors(professors);
+        for(String nickname : professors.values())
+            getPlayerBoardByNickname(nickname).refreshProfessors(professors);
+        //getPlayerBoardByNickname("Gui").refreshProfessors(professors);
 
     }
 
     public void refreshTowerZones(Map<String, Integer> towers){
-       /* for(String nickname : towers.keySet())
-            getPlayerBoardByNickname(nickname).refreshTowerZones(towers.get(nickname));*/
-        getPlayerBoardByNickname("Gui").refreshTowerZones(towers.get("Gui"));
+       for(String nickname : towers.keySet())
+            getPlayerBoardByNickname(nickname).refreshTowerZones(towers.get(nickname));
+       // getPlayerBoardByNickname("Gui").refreshTowerZones(towers.get("Gui"));
     }
 
     public void refreshIslandsStudents(Map<Integer, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> islands){
@@ -257,6 +272,23 @@ public class GameBoardSceneController implements SceneController {
     public void refreshClouds(Map<Integer, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> clouds){
         for(Integer index : clouds.keySet()){
             this.clouds.get(index).refreshClouds(clouds.get(index));
+        }
+    }
+
+    public void refreshCoins(Map<String, Integer> coins){
+        for(String nickname : coins.keySet()){
+            getPlayerBoardByNickname(nickname).refreshCoins(coins.get(nickname));
+
+        }
+        //getPlayerBoardByNickname("Gui").refreshCoins(coins.get("Gui"));
+
+    }
+
+    public void colorCurrentPlayer(String nickname){
+        for(Label playername : nicknames){
+            if(playername.getText().toLowerCase(Locale.ROOT).equals(nickname.toLowerCase(Locale.ROOT)))
+                playername.setTextFill(Color.RED);
+            else playername.setTextFill(Color.BLACK);
         }
     }
 

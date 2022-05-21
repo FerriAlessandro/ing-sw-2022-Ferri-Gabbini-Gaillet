@@ -4,9 +4,12 @@ import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.messages.RMessageMove;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import javafx.scene.Cursor;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+
 import java.util.*;
 
 /**
@@ -21,10 +24,13 @@ public class FXPlayerBoard {
     public String nickname;
     private final int boardNumber; //Number of the board to set the right coordinates for the pawns
     private final int numOfPlayers;
+
     private final ArrayList<FXStudent> entrance = new ArrayList<>();
     private final HashMap<Color, ArrayList<FXStudent>> diningRooms = new HashMap<>();
     private final HashMap<Color, FXStudent> professorZone = new HashMap<>();
     private final ArrayList<Circle> towerZone = new ArrayList<>();
+    private Circle coins;
+    private Label coinsNum;
     private final GameBoardSceneController gameBoardSceneController;
     private final Coordinates startingEntrance = new Coordinates(68,745.5); // First pawn of the entrance (Top left one), there is no pawn there
     private final Coordinates startingDiningRoom = new Coordinates(162, 745.5); // First pawn of the Dining Room (Top left one, the first green)
@@ -56,12 +62,6 @@ public class FXPlayerBoard {
         this.offset = playerBoardsHorizontalOffset * (boardNumber - 1);
         this.boardNumber = boardNumber;
         this.gameBoardSceneController = gameBoardSceneController;
-       /* this.nickname = new Label(nickname);
-        this.nickname.setLayoutX(label.getX() + offset);
-        this.nickname.setLayoutY(label.getY());
-        this.nickname.setFont(new Font("Arial", 35));
-        this.nickname.setStyle("-fx-font-weight: bold;");
-        this.gameBoardSceneController.mainPane.getChildren().add(this.nickname);*/
         if(boardNumber == 1)
             towerColor = TowerColor.WHITE;
         else if(boardNumber == 2)
@@ -202,29 +202,40 @@ public class FXPlayerBoard {
         }
     }
 
+    public void createCoins(){
+
+        double radius = 40;
+        Coordinates starting_coordinates = new Coordinates(547.5, 641.5);
+        Circle circle = new Circle(starting_coordinates.getX() + offset, starting_coordinates.getY(), radius);
+        Image coin = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("images/Moneta_base.png")));
+        circle.setFill(new ImagePattern(coin));
+        circle.setVisible(true);
+        Label label = new Label();
+        label.setLayoutX(540 + offset);
+        label.setLayoutY(675);
+        label.setText("x0");
+        label.setFont(new Font("Arial", 15));
+        label.setStyle("-fx-font-weight: bold;");
+        label.setVisible(true);
+        gameBoardSceneController.mainPane.getChildren().addAll(circle, label);
+        this.coins = circle;
+        this.coinsNum = label;
+
+        }
+
     /**
      * Helper method used to get the vertical offset of the pawns in the Dining Room/Professor Zone based on the Color
      * @param color The color of the pawns that need to be created
      * @return The correct vertical offset
      */
     private double getVerticalOffset(Color color){
-        double vertical_offset;
-        switch(color){
-            case GREEN:
-                vertical_offset=0;
-                break;
-            case RED:
-                vertical_offset=diningVerticaloffset;
-                break;
-            case YELLOW:
-                vertical_offset=diningVerticaloffset*2;
-                break;
-            case PINK:
-                vertical_offset=diningVerticaloffset*3;
-                break;
-            default: vertical_offset = diningVerticaloffset*4;
-        }
-        return vertical_offset;
+        return switch (color) {
+            case GREEN -> 0;
+            case RED -> diningVerticaloffset;
+            case YELLOW -> diningVerticaloffset * 2;
+            case PINK -> diningVerticaloffset * 3;
+            default -> diningVerticaloffset * 4;
+        };
     }
 
     public void makeEntranceSelectable(){
@@ -245,8 +256,6 @@ public class FXPlayerBoard {
             if(student.getOpacity() == 0.0) { //if the student is not visible
                 student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.HAND));
                 student.setOnMouseClicked(mouseEvent -> {
-                    //entranceStudent.setOpacity(0);
-                    //student.setOpacity(1);
                     gameBoardSceneController.removeSelectableIslands();
                     removeSelectableDiningRoom(student.getColor());
                     gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMove(student.getColor(), 0, nickname));
@@ -290,21 +299,6 @@ public class FXPlayerBoard {
         return this.professorZone;
     }
 
-    public void addStudentEntrance(Color color){ //TODO REMOVE THIS METHOD
-        String imageColor;
-        String imagePath;
-        imageColor = color.toString().toLowerCase(Locale.ROOT);
-        imagePath = "images/student_"+imageColor+".png";
-        Image image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
-        for(FXStudent student : entrance){
-            if(student.getOpacity() == 0){
-                student.setColor(color);
-                student.setFill(new ImagePattern(image));
-                student.setOpacity(1);
-                break; //We fill only the first student we encounter
-            }
-        }
-    }
 
     public void refreshEntrance(Map<Color, Integer> students){
         String imageColor;
@@ -380,6 +374,10 @@ public class FXPlayerBoard {
         }
         for(int i=counter; i<towerZone.size();i++)
             towerZone.get(i).setOpacity(0);
+    }
+
+    public void refreshCoins(Integer coins){
+        coinsNum.setText("x"+coins.toString());
     }
 
 

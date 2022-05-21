@@ -184,7 +184,6 @@ public class FXisland {
     public void makeSelectable(FXStudent entranceStudent){
         island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
         island.setOnMouseClicked(mouseEvent -> {
-                                                entranceStudent.setOpacity(0);
                                                 gameBoardSceneController.removeSelectableIslands();
                                                 gameBoardSceneController.removeSelectableDiningRoom(entranceStudent.getColor());
                                                 getPawnByColor(entranceStudent.getColor()).setVisible(true);

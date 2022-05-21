@@ -49,7 +49,9 @@ public class AssistantChoiceSceneController implements SceneController {
 
     @FXML
     void initialize() {
-
+        for(int i = 1; i <= 10; i++) { //inizializziamo qui perchè tanto questo non cambia mai, il controller non viene più istanziato ogni volta!
+            listOfCards.add(i);
+        }
     }
 
     @FXML
@@ -115,15 +117,15 @@ public class AssistantChoiceSceneController implements SceneController {
 
     @Override
     public void createScene() {
-        for(int i = 1; i <= 10; i++)
-            listOfCards.add(i);
 
-        for(AssistantCard cards : message.cards)
+        listOfCardsAvailable = new ArrayList<>(); //Qui dobbiamo ridichiararlo, altrimenti visto che il controller è creato una sola volta si tiene in memoria le vecchie carte
+        for(AssistantCard cards : message.cards) {
             listOfCardsAvailable.add(cards.getCardValue());
+        }
 
         for(Integer num : listOfCards) {
             if(!listOfCardsAvailable.contains(num)) {
-                gridPane.getChildren().get(num - 1).setOpacity(0.5);
+                gridPane.getChildren().get(num - 1).setOpacity(0.25);
                 gridPane.getChildren().get(num-1).setCursor(Cursor.DEFAULT);
                 gridPane.getChildren().get(num-1).setDisable(true);
             }

@@ -83,8 +83,7 @@ public class FXCloud {
 
     public void makeSelectable(){
         cloud.setOnMouseEntered(mouseEvent -> cloud.setCursor(Cursor.HAND));
-        cloud.setOnMouseClicked(mouseEvent -> {for(FXStudent student : students)
-                                                student.setOpacity(0);
+        cloud.setOnMouseClicked(mouseEvent -> {
                                                 gameBoardSceneController.getGui().adapter.sendMessage(new RMessageCloud(cloudIndex, gameBoardSceneController.getGui().getNickName()));
                                                 gameBoardSceneController.removeSelectableCloud();});
     }
@@ -94,22 +93,6 @@ public class FXCloud {
         cloud.setOnMouseClicked(null);
     }
 
-
-    public void addStudentCloud(Color color){
-        String imageColor;
-        String imagePath;
-        imageColor = color.toString().toLowerCase(Locale.ROOT);
-        imagePath = "images/student_"+imageColor+".png";
-        Image image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
-        for(FXStudent student : students){
-            if(student.getOpacity() == 0){
-                student.setColor(color);
-                student.setFill(new ImagePattern(image));
-                student.setOpacity(1);
-                break; //We fill only the first student we encounter
-            }
-        }
-    }
 
     public void refreshClouds(Map<Color, Integer> students){
 

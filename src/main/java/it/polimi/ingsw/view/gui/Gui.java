@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
@@ -28,6 +29,7 @@ public class Gui extends Application implements ViewInterface {
     private Stage stage;
     private String nickname;
     private boolean expert = false;
+    private boolean firstGameStateMessage = true;
     private int numOfPlayer;
     private FXMLLoader loader;
     private Parent root;
@@ -165,11 +167,11 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askMotherNatureMove(SMessageMotherNature message) {
-        /*GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.getIslandChoice();*/
+
         Platform.runLater(() -> {
             try {
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                changeScene(GAMEBOARD);
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
                 gameBoardSceneController.getIslandChoice();
             }
             catch (Exception e) {
@@ -210,6 +212,7 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void showBoard(SMessageGameState gameState) {
+
         Platform.runLater(()-> {
             try {
                 changeScene(GAMEBOARD);
@@ -220,6 +223,13 @@ public class Gui extends Application implements ViewInterface {
             }
 
             GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+            if(firstGameStateMessage){
+                firstGameStateMessage = false;
+                gameBoardSceneController.setupGameBoard(gameState.towerNumber.keySet().size(),expert, gameState);
+
+            }
+
+
             gameBoardSceneController.refreshEntrances(gameState.studEntrance);
             gameBoardSceneController.refreshDiningRooms(gameState.studDining);
             gameBoardSceneController.refreshProfessors(gameState.professors);
@@ -230,8 +240,10 @@ public class Gui extends Application implements ViewInterface {
             gameBoardSceneController.refreshMotherNature(gameState.motherNaturePosition);
             gameBoardSceneController.refreshNoEntryTiles(gameState.forbiddenTokens);
             gameBoardSceneController.refreshClouds(gameState.studClouds);
-           /* gameBoardSceneController.refreshCoins(gameState.coins);*/
-
+            if(expert) {
+                gameBoardSceneController.refreshCoins(gameState.coins);
+                this.coins = new HashMap<>(gameState.coins); //CHIEDERE A GABBO
+            }
 
 
         });
@@ -310,25 +322,14 @@ public class Gui extends Application implements ViewInterface {
             }
         });
 
-
-        //controller = new GameBoardSceneController();
-        //GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        //gameBoardSceneController.getEntranceChoice();
-
-
-       /* GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.getEntranceChoice();*/
-
-
-
-
     }
 
     @Override
     public void askCloud() {
         Platform.runLater(() -> {
             try {
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                changeScene(GAMEBOARD);
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
                 gameBoardSceneController.getCloudChoice();
 
             }
@@ -358,6 +359,10 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer) {
+
+        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+        Platform.runLater(() ->gameBoardSceneController.colorCurrentPlayer(messageCurrentPlayer.nickname));
+
         if(!messageCurrentPlayer.nickname.equals(nickname))
             Platform.runLater(()-> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -427,6 +432,7 @@ public class Gui extends Application implements ViewInterface {
         expert = messageExpert.expert;
     }
 
+    
     public Map<String,Integer> getCoins() {
         return coins;
     }

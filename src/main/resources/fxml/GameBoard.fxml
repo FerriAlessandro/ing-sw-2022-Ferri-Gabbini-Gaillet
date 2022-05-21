@@ -110,12 +110,12 @@
       </ImageView>
       <ImageView fx:id="chosen_assistant_2" fitHeight="178.0" fitWidth="153.0" pickOnBounds="true" preserveRatio="true" x="655.0" y="502.0">
          <image>
-            <Image url="@../images/Assistente.png" />
+            <Image url="@../images/DOG.png" />
          </image>
       </ImageView>
       <ImageView fx:id="chosen_assistant_3" fitHeight="178.0" fitWidth="153.0" pickOnBounds="true" preserveRatio="true" x="1275.0" y="502.0">
          <image>
-            <Image url="@../images/Assistente (5).png" />
+            <Image url="@../images/OCTOPUS.png" />
          </image>
       </ImageView>
       <Label fx:id="player_name_1" layoutX="280.0" layoutY="628.0" prefHeight="52.0" prefWidth="195.0" textAlignment="CENTER">
