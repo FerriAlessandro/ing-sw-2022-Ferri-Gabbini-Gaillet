@@ -20,17 +20,17 @@ import java.util.Objects;
 
 public class FXCloud {
 
-    private double cloudHorizontalOffset = 50 ; //Offset between students on the cloud
-    private double cloudVerticalOffset = 50;//Offset between students on the cloud
-    private double cloudAbsoluteHorizontalOffset; //Horizontal offset between clouds
-    private double cloudAbsoluteVerticalOffset; //Vertical offset between clouds
-    private Coordinates firstStudent = new Coordinates(1460, 115); //first student of the first cloud
-    private GameBoardSceneController gameBoardSceneController;
-    private ArrayList<FXStudent> students= new ArrayList<> (); //We store the Circles representing the students to have a way of retrieving them from the Scene Tree
-    private int cloudIndex;
-    private int numOfPlayers;
-    private double radius = 12.5;
-    private ImageView cloud;
+    private final double cloudHorizontalOffset = 50 ; //Offset between students on the cloud
+    private final double cloudVerticalOffset = 50;//Offset between students on the cloud
+    private final double cloudAbsoluteHorizontalOffset; //Horizontal offset between clouds
+    private final double cloudAbsoluteVerticalOffset; //Vertical offset between clouds
+    private final Coordinates firstStudent = new Coordinates(1460, 115); //first student of the first cloud
+    private final GameBoardSceneController gameBoardSceneController;
+    private final ArrayList<FXStudent> students= new ArrayList<> (); //We store the Circles representing the students to have a way of retrieving them from the Scene Tree
+    private final int cloudIndex;
+    private final int numOfPlayers;
+    private final double radius = 12.5;
+    private final ImageView cloud;
 
 
     /**
@@ -81,6 +81,9 @@ public class FXCloud {
         }
     }
 
+    /**
+     * Makes a cloud selectable and, when clicked, sends a message to the server containing the index of the clicked cloud and the nickname of the player that clicked it
+     */
     public void makeSelectable(){
         cloud.setOnMouseEntered(mouseEvent -> cloud.setCursor(Cursor.HAND));
         cloud.setOnMouseClicked(mouseEvent -> {
@@ -88,12 +91,18 @@ public class FXCloud {
                                                 gameBoardSceneController.removeSelectableCloud();});
     }
 
+    /**
+     * Makes a cloud not selectable
+     */
     public void removeSelectableCloud(){
         cloud.setOnMouseEntered(mouseEvent -> cloud.setCursor(Cursor.DEFAULT));
         cloud.setOnMouseClicked(null);
     }
 
-
+    /**
+     * Updates the students on a cloud
+     * @param students The Map containing the number of students on the cloud for each color
+     */
     public void refreshClouds(Map<Color, Integer> students){
 
         String imageColor;
@@ -115,8 +124,8 @@ public class FXCloud {
             }
         }
         if(numEmpty == 5){
-            for(int i=0;i<this.students.size();i++){
-                this.students.get(i).setOpacity(0);
+            for (FXStudent student : this.students) {
+                student.setOpacity(0);
             }
         }
     }

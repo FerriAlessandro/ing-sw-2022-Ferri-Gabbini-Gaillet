@@ -144,6 +144,11 @@ public class FXisland {
 
     }
 
+    /**
+     * Utility method to get a circle representing a pawn by its color
+     * @param color the color of the pawn
+     * @return The circle representing the pawn of the given color
+     */
     public Circle getPawnByColor(it.polimi.ingsw.model.enumerations.Color color){
         return switch(color){
             case GREEN ->  pawns.get(2);
@@ -154,6 +159,11 @@ public class FXisland {
         };
     }
 
+    /**
+     * Utility method to get a label representing the number of pawns of a given color
+     * @param color the color of the pawn
+     * @return The label representing the number of pawn of the given color
+     */
     public Label getLabelByColor(it.polimi.ingsw.model.enumerations.Color color){
         return switch(color){
             case GREEN ->  quantity.get(2);
@@ -202,6 +212,9 @@ public class FXisland {
 
     }
 
+    /**
+     * Hides an island from the scene
+     */
     public void hideIsland(){
         for(Circle pawn : pawns)
             pawn.setVisible(false);
@@ -211,7 +224,10 @@ public class FXisland {
     }
 
 
-
+    /**
+     * Updates the number of student of an island
+     * @param students A Map containing the number of students for each color
+     */
     public void refreshStudents(Map<it.polimi.ingsw.model.enumerations.Color,Integer> students){
         for(it.polimi.ingsw.model.enumerations.Color color : students.keySet()){
             if(students.get(color) > 0){
@@ -227,6 +243,10 @@ public class FXisland {
         }
     }
 
+    /**
+     * Updates the color of the towers on an island
+     * @param color The color of the towers on the island
+     */
     public void refreshIslandsTowersColor(TowerColor color){
         if(color.equals(TowerColor.NONE)) {
             pawns.get(0).setVisible(false);
@@ -241,6 +261,10 @@ public class FXisland {
         pawns.get(0).setFill(new ImagePattern(tower));
     }
 
+    /**
+     * Updates the number of towers on an island
+     * @param num The number of towers on the island
+     */
     public void refreshIslandsTowersNum(Integer num){
         if(num <= 0){
             pawns.get(0).setVisible(false);
@@ -255,12 +279,20 @@ public class FXisland {
         }
     }
 
+    /**
+     * Updates mother nature's position
+     * @param position The index of the island containing mother nature
+     */
     public void refreshMotherNature(int position){
         if(position == index-1)
             pawns.get(1).setVisible(true);
         else pawns.get(1).setVisible(false);
     }
 
+    /**
+     * Updates the number of no entry tiles on an island
+     * @param tiles The number of no entry tiles on the island
+     */
     public void refreshNoEntryTiles(Integer tiles){
         if(tiles <= 0){
             pawns.get(7).setVisible(false);

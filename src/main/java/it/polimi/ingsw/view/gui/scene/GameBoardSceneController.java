@@ -114,6 +114,10 @@ public class GameBoardSceneController implements SceneController {
 
     private int numPlayers;
 
+
+    /**
+     * Initialize Method, it's called by JavaFX when the FXML is loaded, it constructs everything that does not depend on parameters
+     */
     @FXML
     public void initialize() {
 
@@ -127,6 +131,12 @@ public class GameBoardSceneController implements SceneController {
         chosen_assistant_3.setVisible(false);
     }
 
+    /**
+     * Setup method, it's used to create the parts of the board that depend on parameters given by the user
+     * @param numOfPlayers Number of players in the game
+     * @param expert Flag to represent an expert game
+     * @param firstGameState First message that comunicates the state of the board (entrances, clouds, motherNature position, students on islands)
+     */
     public void setupGameBoard(int numOfPlayers, boolean expert, SMessageGameState firstGameState){
 
         ArrayList<String> nicknames = new ArrayList<>(firstGameState.towerNumber.keySet());
@@ -181,44 +191,69 @@ public class GameBoardSceneController implements SceneController {
     public void createScene() {
     }
 
+    /**
+     * Method called when the user needs to select an island as a destination for mother nature, it makes the island clickable and, if clicked, moves mother nature there
+     */
     public void getIslandChoice(){ //this one is used for a student's movement
         for(FXisland island : islands)
             island.makeSelectable();
     }
 
+    /**
+     * Method called when the user needs to select an island as a destination for a student, it makes the island clickable and, if clicked, puts the student there
+     */
     public void getIslandChoice(FXStudent student){ //This one is used for a student's movement
         for(FXisland island : islands){
             island.makeSelectable(student);
         }
     }
 
+    /**
+     * Method called when the user needs to select a student from the entrance, it makes the entrance selectable and, if clicked, makes the dining Room and islands selectable as destinations
+     */
     public void getEntranceChoice(){
         FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
        // FXPlayerBoard board = getPlayerBoardByNickname("Gui");
         board.makeEntranceSelectable();
     }
 
+    /**
+     * Method called when the user needs to select a student from the cloud, it makes the cloud selectable and, if clicked, moves the students from the cloud to the player's entrance
+     */
     public void getCloudChoice(){
         for(FXCloud cloud : clouds){
             cloud.makeSelectable();
         }
     }
 
+    /**
+     * Makes a cloud not selectable
+     */
     public void removeSelectableCloud(){
         for(FXCloud cloud : clouds)
             cloud.removeSelectableCloud();
     }
 
-
+    /**
+     * Makes an island not selectable
+     */
     public void removeSelectableIslands(){
         for(FXisland island : islands)
             island.removeSelectable();
     }
 
+    /**
+     * Makes a dining room of a color not selectable
+     * @param color The color of the dining room
+     */
     public void removeSelectableDiningRoom(it.polimi.ingsw.model.enumerations.Color color){
         getPlayerBoardByNickname(getGui().getNickName()).removeSelectableDiningRoom(color);
     }
 
+    /**
+     * Updates the entrances with the informations sent from the server
+     * @param entrances The map containing the updates, maps a user's nickname to another Map that maps a color with the number of students of that color
+     */
     public void refreshEntrances(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> entrances){
         for(String nickname : entrances.keySet())
             getPlayerBoardByNickname(nickname).refreshEntrance(entrances.get(nickname));
@@ -226,12 +261,20 @@ public class GameBoardSceneController implements SceneController {
 
     }
 
+    /**
+     * Updates the Dining Rooms with the informations sent from the server
+     * @param diningRooms The map containing the updates, maps a user's nickname to another Map that maps a color with the number of students of that color
+     */
     public void refreshDiningRooms(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> diningRooms){
         for(String nickname : diningRooms.keySet())
             getPlayerBoardByNickname(nickname).refreshDiningRooms(diningRooms.get(nickname));
        // getPlayerBoardByNickname("Gui").refreshDiningRooms(diningRooms.get("Gui"));
     }
 
+    /**
+     * Updates the Professors Zone with the informations sent from the server
+     * @param professors The map containing the updates, maps a color to the nickname of the owner of the professor of that color
+     */
     public void refreshProfessors(Map<it.polimi.ingsw.model.enumerations.Color, String> professors){
         for(String nickname : professors.values())
             getPlayerBoardByNickname(nickname).refreshProfessors(professors);
@@ -239,12 +282,20 @@ public class GameBoardSceneController implements SceneController {
 
     }
 
+    /**
+     * Updates the Towers Zone with the informations sent from the server
+     * @param towers The map containing the updates, maps a user's nickname to the number of towers in its dining room
+     */
     public void refreshTowerZones(Map<String, Integer> towers){
        for(String nickname : towers.keySet())
             getPlayerBoardByNickname(nickname).refreshTowerZones(towers.get(nickname));
        // getPlayerBoardByNickname("Gui").refreshTowerZones(towers.get("Gui"));
     }
 
+    /**
+     * Updates the islands with the informations sent from the server (Updates the students)
+     * @param islands The map containing the updates, maps an island's index to a Map that maps a color to the number of students of that color on the island
+     */
     public void refreshIslandsStudents(Map<Integer, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> islands){
         for(int i=islands.keySet().size(); i<12;i++)
             this.islands.get(i).hideIsland();
@@ -253,42 +304,69 @@ public class GameBoardSceneController implements SceneController {
         }
     }
 
+    /**
+     * Updates the islands with the informations sent from the server (Updates the towers color)
+     * @param islandsTowerColor The map containing the updates, maps an island's index to the color of the tower on that island
+     */
     public void refreshIslandsTowersColor(Map<Integer, TowerColor> islandsTowerColor){
         for(Integer index : islandsTowerColor.keySet())
             this.islands.get(index).refreshIslandsTowersColor(islandsTowerColor.get(index));
     }
 
+    /**
+     * Updates the islands with the informations sent from the server (updates the towers number)
+     * @param islandsTowersNum The map containing the updates, maps an island's index to the number of towers on that island
+     */
     public void refreshIslandsTowersNum(Map<Integer, Integer> islandsTowersNum){
         for(Integer index : islandsTowersNum.keySet()){
             this.islands.get(index).refreshIslandsTowersNum(islandsTowersNum.get(index));
         }
     }
 
+    /**
+     * Updates mother nature's position
+     * @param position The index of the island containing mother nature
+     */
     public void refreshMotherNature(int position){
         for(FXisland island : islands){
             island.refreshMotherNature(position);
         }
     }
 
+    /**
+     * Updates the islands with the informations sent from the server (Updates the number of No Entry Tiles)
+     * @param tokens The map containing the updates, maps an island's index to the number of No Entry Tiles on that island
+     */
     public void refreshNoEntryTiles(Map<Integer, Integer> tokens){
         for(Integer index : tokens.keySet())
             islands.get(index).refreshNoEntryTiles(tokens.get(index));
     }
 
+    /**
+     * Updates the clouds with the informations sent from the server
+     * @param clouds The map containing the updates, maps a cloud's index to a Map that maps a color to the number of students of that color on the cloud
+     */
     public void refreshClouds(Map<Integer, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> clouds){
         for(Integer index : clouds.keySet()){
             this.clouds.get(index).refreshClouds(clouds.get(index));
         }
     }
 
+    /**
+     * Updates the number of coins of each player
+     * @param coins The map containing the coins, maps a player's nickname to its number of coins
+     */
     public void refreshCoins(Map<String, Integer> coins){
         for(String nickname : coins.keySet()){
             getPlayerBoardByNickname(nickname).refreshCoins(coins.get(nickname));
 
         }
-
     }
 
+    /**
+     * Updates the Assistant Card image based on the player's played assistant
+     * @param message The message containing the played assistant and the nickname of the player who played it
+     */
     public void refreshAssistant (SMessageAssistantStatus message){
         String imagePath = "images/"+message.chosenAssistant.toString().toUpperCase(Locale.ROOT)+".png";
         if(message.nickname.equals(player_name_1.getText())) {
@@ -307,6 +385,10 @@ public class GameBoardSceneController implements SceneController {
         }
     }
 
+    /**
+     * Colors the nickname of the current player
+     * @param nickname The nickname of the current player
+     */
     public void colorCurrentPlayer(String nickname){
         for(Label playername : nicknames){
             if(playername.getText().toLowerCase(Locale.ROOT).equals(nickname.toLowerCase(Locale.ROOT)))

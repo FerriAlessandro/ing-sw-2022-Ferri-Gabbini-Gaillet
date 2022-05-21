@@ -202,6 +202,9 @@ public class FXPlayerBoard {
         }
     }
 
+    /**
+     * Method that draws on the screen the coins of the player
+     */
     public void createCoins(){
 
         double radius = 40;
@@ -238,6 +241,9 @@ public class FXPlayerBoard {
         };
     }
 
+    /**
+     * Makes students on the Entrance selectable and, when clicked, makes islands and dining room selectable and removes the selectable property from the Entrance
+     */
     public void makeEntranceSelectable(){
         for(FXStudent student : entrance){
             if(student.getOpacity() == 1) {
@@ -251,6 +257,11 @@ public class FXPlayerBoard {
         }
     }
 
+    /**
+     * Makes the first empty space on the Dining Room of the given color selectable, when clicked removes the selectable property from the Dining Room and the Islands and sends
+     * a message to the server containing the student's destination
+     * @param entranceStudent The Students that can be placed in the Dining Room
+     */
     public void makeDiningRoomSelectable(FXStudent entranceStudent){
         for(FXStudent student : diningRooms.get(entranceStudent.getColor())){
             if(student.getOpacity() == 0.0) { //if the student is not visible
@@ -265,6 +276,10 @@ public class FXPlayerBoard {
         }
     }
 
+    /**
+     * Makes the Dining Room not selectable
+     * @param color The color of the Dining Room to make non-selectable
+     */
     public void removeSelectableDiningRoom(Color color){
         for(FXStudent student : diningRooms.get(color)){
             student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.DEFAULT));
@@ -272,6 +287,9 @@ public class FXPlayerBoard {
         }
     }
 
+    /**
+     * Makes the Entrance not selectable
+     */
     public void removeSelectableEntrance(){
         for(FXStudent student : entrance){
             student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.DEFAULT));
@@ -299,7 +317,10 @@ public class FXPlayerBoard {
         return this.professorZone;
     }
 
-
+    /**
+     * Updates the entrance with the informations passed
+     * @param students A Map containing the number of students for each color
+     */
     public void refreshEntrance(Map<Color, Integer> students){
         String imageColor;
         String imagePath;
@@ -334,6 +355,10 @@ public class FXPlayerBoard {
 
     }
 
+    /**
+     * Updates the dining rooms with the informations passed
+     * @param diningRooms A Map containing the number of students for each color
+     */
     public void refreshDiningRooms(Map<Color, Integer> diningRooms){
 
         int counter = 0;
@@ -357,6 +382,10 @@ public class FXPlayerBoard {
 
     }
 
+    /**
+     * Updates the professors zone
+     * @param professors A Map containing the possessor of each professor
+     */
     public void refreshProfessors(Map<Color, String> professors){
         for(Color color : professors.keySet()){
             if(!professors.get(color).equals(nickname))
@@ -365,6 +394,10 @@ public class FXPlayerBoard {
         }
     }
 
+    /**
+     * Updates the Tower Zone
+     * @param towers The number of towers in the tower zone
+     */
     public void refreshTowerZones(Integer towers) {
 
         int counter = 0;
@@ -376,6 +409,10 @@ public class FXPlayerBoard {
             towerZone.get(i).setOpacity(0);
     }
 
+    /**
+     * Updates the number of coins
+     * @param coins The number of coins
+     */
     public void refreshCoins(Integer coins){
         coinsNum.setText("x"+coins.toString());
     }

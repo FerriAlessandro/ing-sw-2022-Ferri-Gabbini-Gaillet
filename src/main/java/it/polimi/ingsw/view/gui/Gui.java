@@ -445,6 +445,7 @@ public class Gui extends Application implements ViewInterface {
         });
     }
 
+    
     public Map<String,Integer> getCoins() {
         return coins;
     }
