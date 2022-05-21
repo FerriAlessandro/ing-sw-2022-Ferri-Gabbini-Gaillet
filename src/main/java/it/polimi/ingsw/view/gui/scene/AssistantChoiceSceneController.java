@@ -57,51 +57,62 @@ public class AssistantChoiceSceneController implements SceneController {
     @FXML
     void onCatClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.CAT, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onCheetahClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.CHEETAH, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onDogClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.DOG, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onEagleClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.EAGLE, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onElephantClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.ELEPHANT, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onFoxClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.FOX, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onLizardClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.LIZARD, gui.getNickName()));
+        gameBoardScene();
+
     }
 
     @FXML
     void onOctopusClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.OCTOPUS, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onOstrichClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.OSTRICH, gui.getNickName()));
+        gameBoardScene();
     }
 
     @FXML
     void onTurtleClicked(MouseEvent event) {
         gui.adapter.sendMessage(new RMessageAssistant(AssistantCard.TURTLE, gui.getNickName()));
+        gameBoardScene();
     }
 
 
@@ -129,6 +140,15 @@ public class AssistantChoiceSceneController implements SceneController {
                 gridPane.getChildren().get(num-1).setCursor(Cursor.DEFAULT);
                 gridPane.getChildren().get(num-1).setDisable(true);
             }
+        }
+    }
+
+    public void gameBoardScene(){
+        try{
+            gui.changeScene(Gui.GAMEBOARD);
+            gui.getScenes().get(Gui.GAMEBOARD).getRoot().setCursor(Cursor.DEFAULT);
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 

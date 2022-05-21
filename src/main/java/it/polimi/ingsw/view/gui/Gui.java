@@ -378,6 +378,14 @@ public class Gui extends Application implements ViewInterface {
         return nickname;
     }
 
+    public HashMap<String, SceneController> getControllers() {
+        return controllers;
+    }
+
+    public HashMap<String, Scene> getScenes() {
+        return scenes;
+    }
+
     @Override
     public void grandmaHerbHeraldScene(SMessageGrandmaherbHerald message) {
 
@@ -445,7 +453,7 @@ public class Gui extends Application implements ViewInterface {
         });
     }
 
-    
+
     public Map<String,Integer> getCoins() {
         return coins;
     }
