@@ -27,6 +27,7 @@ public class Gui extends Application implements ViewInterface {
     private Stage stage;
     private String nickname;
     private boolean expert = false;
+    private boolean firstGameStateMessage = true;
     private int numOfPlayer;
     private FXMLLoader loader;
     private Parent root;
@@ -97,7 +98,6 @@ public class Gui extends Application implements ViewInterface {
 
         //Every scene is already initialized and every controller already instantiated
         controller = controllers.get(scene);
-        controller.setGui(this);
         controller.setMessage(currentMessage);
         controller.createScene();
         currentScene = scenes.get(scene);
@@ -165,10 +165,10 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askMotherNatureMove(SMessageMotherNature message) {
-        /*GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.getIslandChoice();*/
+
         Platform.runLater(() -> {
             try {
+                changeScene(GAMEBOARD);
                 GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
                 gameBoardSceneController.getIslandChoice();
             }
@@ -210,11 +210,7 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void showBoard(SMessageGameState gameState) {
-        for (String player: gameState.studEntrance.keySet()) {
-            if (expert) {
-                coins.put(player, gameState.coins.get(player));
-            }
-        }
+
         Platform.runLater(()-> {
             try {
                 changeScene(GAMEBOARD);
@@ -225,18 +221,27 @@ public class Gui extends Application implements ViewInterface {
             }
 
             GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+            if(firstGameStateMessage){
+                firstGameStateMessage = false;
+                gameBoardSceneController.setupGameBoard(gameState.towerNumber.keySet().size(),expert, gameState);
+
+            }
+
+
             gameBoardSceneController.refreshEntrances(gameState.studEntrance);
             gameBoardSceneController.refreshDiningRooms(gameState.studDining);
             gameBoardSceneController.refreshProfessors(gameState.professors);
             gameBoardSceneController.refreshTowerZones(gameState.towerNumber);
-            /*gameBoardSceneController.refreshIslandsStudents(gameState.studIslands);
+            gameBoardSceneController.refreshIslandsStudents(gameState.studIslands);
             gameBoardSceneController.refreshIslandsTowersColor(gameState.colorTowerIslands);
             gameBoardSceneController.refreshIslandsTowersNum(gameState.numTowersIslands);
             gameBoardSceneController.refreshMotherNature(gameState.motherNaturePosition);
             gameBoardSceneController.refreshNoEntryTiles(gameState.forbiddenTokens);
             gameBoardSceneController.refreshClouds(gameState.studClouds);
-            gameBoardSceneController.refreshCoins(gameState.coins);*/
-
+            if(expert) {
+                gameBoardSceneController.refreshCoins(gameState.coins);
+                this.coins = new HashMap<>(gameState.coins); //CHIEDERE A GABBO
+            }
 
 
         });
@@ -289,13 +294,12 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
-        //Per il momento questo non fa passare correttamente dalla assistantChoice alla gameBoard
-        //if (messageCharacter.effects.stream().anyMatch(x -> x.getCost() <= coins.get(nickname))) {
-        Platform.runLater(() -> {
+        Platform.runLater(() -> { //TODO non mostrare se non si può giocare nulla
             try {
                 currentMessage = messageCharacter;
                 changeScene(CHARACTER);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -316,24 +320,13 @@ public class Gui extends Application implements ViewInterface {
             }
         });
 
-
-        //controller = new GameBoardSceneController();
-        //GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        //gameBoardSceneController.getEntranceChoice();
-
-
-       /* GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
-        gameBoardSceneController.getEntranceChoice();*/
-
-
-
-
     }
 
     @Override
     public void askCloud() {
         Platform.runLater(() -> {
             try {
+                changeScene(GAMEBOARD);
                 GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
                 gameBoardSceneController.getCloudChoice();
 
@@ -364,6 +357,10 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showCurrentPlayer(SMessageCurrentPlayer messageCurrentPlayer) {
+
+        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+        Platform.runLater(() ->gameBoardSceneController.colorCurrentPlayer(messageCurrentPlayer.nickname));
+
         if(!messageCurrentPlayer.nickname.equals(nickname))
             Platform.runLater(()-> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -377,6 +374,14 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public String getNickName() {
         return nickname;
+    }
+
+    public HashMap<String, SceneController> getControllers() {
+        return controllers;
+    }
+
+    public HashMap<String, Scene> getScenes() {
+        return scenes;
     }
 
     @Override
@@ -432,6 +437,20 @@ public class Gui extends Application implements ViewInterface {
     public void setExpert(SMessageExpert messageExpert) {
         expert = messageExpert.expert;
     }
+
+    /**
+     * Used to notify all clients and update the assistant card chosen by a player.
+     *
+     * @param messageAssistantStatus containing nickname and chosen assistant
+     */
+    @Override
+    public void showAssistantStatus(SMessageAssistantStatus messageAssistantStatus) {
+
+        Platform.runLater(()->{ GameBoardSceneController controller =  (GameBoardSceneController) controllers.get(GAMEBOARD);
+            controller.refreshAssistant(messageAssistantStatus);
+        });
+    }
+
 
     public Map<String,Integer> getCoins() {
         return coins;

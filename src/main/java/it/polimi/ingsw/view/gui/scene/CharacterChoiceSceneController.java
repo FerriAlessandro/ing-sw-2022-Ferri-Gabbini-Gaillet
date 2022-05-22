@@ -87,6 +87,7 @@ public class CharacterChoiceSceneController implements SceneController {
     private Image yellowStudent = new Image("/images/student_yellow.png");
     private Image pinkStudent = new Image("/images/student_pink.png");
     private Image noEntryTiles = new Image("/images/deny_island_icon.png");
+
     /**
      * It build the scene with the available choice
      */
@@ -153,7 +154,7 @@ public class CharacterChoiceSceneController implements SceneController {
         gridPane.add(imageView, index, 0);
 
         if (character.getCost() > gui.getCoins().get(nickname)) {
-            imageView.setOpacity(0.5);
+            imageView.setOpacity(0.25);
             imageView.setCursor(Cursor.DEFAULT); //forse superflua
             gridPane.getChildren().get(index).setCursor(Cursor.DEFAULT);
             gridPane.getChildren().get(index).setDisable(true);
