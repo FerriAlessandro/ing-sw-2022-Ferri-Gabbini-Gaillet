@@ -9,6 +9,7 @@ import javafx.scene.paint.ImagePattern;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -19,17 +20,17 @@ import java.util.Objects;
 
 public class FXCloud {
 
-    private double cloudHorizontalOffset = 50 ; //Offset between students on the cloud
-    private double cloudVerticalOffset = 50;//Offset between students on the cloud
-    private double cloudAbsoluteHorizontalOffset; //Horizontal offset between clouds
-    private double cloudAbsoluteVerticalOffset; //Vertical offset between clouds
-    private Coordinates firstStudent = new Coordinates(1460, 115); //first student of the first cloud
-    private GameBoardSceneController gameBoardSceneController;
-    private ArrayList<FXStudent> students= new ArrayList<> (); //We store the Circles representing the students to have a way of retrieving them from the Scene Tree
-    private int cloudIndex;
-    private int numOfPlayers;
-    private double radius = 12.5;
-    private ImageView cloud;
+    private final double cloudHorizontalOffset = 50 ; //Offset between students on the cloud
+    private final double cloudVerticalOffset = 50;//Offset between students on the cloud
+    private final double cloudAbsoluteHorizontalOffset; //Horizontal offset between clouds
+    private final double cloudAbsoluteVerticalOffset; //Vertical offset between clouds
+    private final Coordinates firstStudent = new Coordinates(1460, 115); //first student of the first cloud
+    private final GameBoardSceneController gameBoardSceneController;
+    private final ArrayList<FXStudent> students= new ArrayList<> (); //We store the Circles representing the students to have a way of retrieving them from the Scene Tree
+    private final int cloudIndex;
+    private final int numOfPlayers;
+    private final double radius = 12.5;
+    private final ImageView cloud;
 
 
     /**
@@ -80,32 +81,51 @@ public class FXCloud {
         }
     }
 
+    /**
+     * Makes a cloud selectable and, when clicked, sends a message to the server containing the index of the clicked cloud and the nickname of the player that clicked it
+     */
     public void makeSelectable(){
         cloud.setOnMouseEntered(mouseEvent -> cloud.setCursor(Cursor.HAND));
-        cloud.setOnMouseClicked(mouseEvent -> {for(FXStudent student : students)
-                                                student.setOpacity(0);
+        cloud.setOnMouseClicked(mouseEvent -> {
                                                 gameBoardSceneController.getGui().adapter.sendMessage(new RMessageCloud(cloudIndex, gameBoardSceneController.getGui().getNickName()));
                                                 gameBoardSceneController.removeSelectableCloud();});
     }
 
+    /**
+     * Makes a cloud not selectable
+     */
     public void removeSelectableCloud(){
         cloud.setOnMouseEntered(mouseEvent -> cloud.setCursor(Cursor.DEFAULT));
         cloud.setOnMouseClicked(null);
     }
 
+    /**
+     * Updates the students on a cloud
+     * @param students The Map containing the number of students on the cloud for each color
+     */
+    public void refreshClouds(Map<Color, Integer> students){
 
-    public void addStudentCloud(Color color){
         String imageColor;
         String imagePath;
-        imageColor = color.toString().toLowerCase(Locale.ROOT);
-        imagePath = "images/student_"+imageColor+".png";
-        Image image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
-        for(FXStudent student : students){
-            if(student.getOpacity() == 0){
-                student.setColor(color);
-                student.setFill(new ImagePattern(image));
-                student.setOpacity(1);
-                break; //We fill only the first student we encounter
+        Image image;
+        int counter = 0;
+        int numEmpty = 0;
+        for(Color color : students.keySet()){
+            if(students.get(color) == 0)
+                numEmpty+=1;
+            while(students.get(color) > 0){
+                imageColor = color.toString().toLowerCase(Locale.ROOT);
+                imagePath = "images/student_" + imageColor + ".png";
+                image = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
+                this.students.get(counter).setFill(new ImagePattern(image));
+                this.students.get(counter).setOpacity(1);
+                counter+=1;
+                students.put(color, students.get(color)-1);
+            }
+        }
+        if(numEmpty == 5){
+            for (FXStudent student : this.students) {
+                student.setOpacity(0);
             }
         }
     }

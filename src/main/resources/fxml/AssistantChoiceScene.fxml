@@ -27,7 +27,7 @@
          <children>
             <ImageView fx:id="cheetahView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onCheetahClicked">
                <image>
-                  <Image url="@../images/Assistente (1).png" />
+                  <Image url="@../images/CHEETAH.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -35,7 +35,7 @@
             </ImageView>
             <ImageView fx:id="ostrichView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onOstrichClicked" GridPane.columnIndex="1">
                <image>
-                  <Image url="@../images/Assistente (2).png" />
+                  <Image url="@../images/OSTRICH.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -43,7 +43,7 @@
             </ImageView>
             <ImageView fx:id="catView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onCatClicked" GridPane.columnIndex="2">
                <image>
-                  <Image url="@../images/Assistente (3).png" />
+                  <Image url="@../images/CAT.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -51,7 +51,7 @@
             </ImageView>
             <ImageView fx:id="eagleView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onEagleClicked" GridPane.columnIndex="3">
                <image>
-                  <Image url="@../images/Assistente (4).png" />
+                  <Image url="@../images/EAGLE.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -59,7 +59,7 @@
             </ImageView>
             <ImageView fx:id="foxView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onFoxClicked" GridPane.columnIndex="4">
                <image>
-                  <Image url="@../images/Assistente (5).png" />
+                  <Image url="@../images/FOX.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -67,7 +67,7 @@
             </ImageView>
             <ImageView fx:id="lizardView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onLizardClicked" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../images/Assistente (6).png" />
+                  <Image url="@../images/LIZARD.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -75,7 +75,7 @@
             </ImageView>
             <ImageView fx:id="octopusView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onOctopusClicked" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../images/Assistente (7).png" />
+                  <Image url="@../images/OCTOPUS.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -83,7 +83,7 @@
             </ImageView>
             <ImageView fx:id="dogView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onDogClicked" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../images/Assistente (8).png" />
+                  <Image url="@../images/DOG.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -91,7 +91,7 @@
             </ImageView>
             <ImageView fx:id="elephantView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onElephantClicked" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../images/Assistente (9).png" />
+                  <Image url="@../images/ELEPHANT.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -99,7 +99,7 @@
             </ImageView>
             <ImageView fx:id="turtleView" fitHeight="400.0" fitWidth="272.0" onMouseClicked="#onTurtleClicked" GridPane.columnIndex="4" GridPane.rowIndex="1">
                <image>
-                  <Image url="@../images/Assistente (10).png" />
+                  <Image url="@../images/TURTLE.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />

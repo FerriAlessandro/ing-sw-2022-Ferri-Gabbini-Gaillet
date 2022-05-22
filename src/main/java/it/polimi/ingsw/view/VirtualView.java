@@ -19,7 +19,7 @@ import java.util.*;
  * Virtual view to implement the MVC pattern on the server.
  *
  * @author A.G. Gaillet
- * @version 1.0
+ * @version 1.1
  */
 public class VirtualView implements ViewInterface, Observer {
     private static final long serialVersionUID = 1L;
@@ -222,6 +222,16 @@ public class VirtualView implements ViewInterface, Observer {
     @Override
     public void setExpert(SMessageExpert messageExpert) {
         clientHandler.sendMessage(messageExpert);
+    }
+
+    /**
+     * Used to notify all clients and update the assistant card chosen by a player.
+     *
+     * @param messageAssistantStatus containing nickname and chosen assistant
+     */
+    @Override
+    public void showAssistantStatus(SMessageAssistantStatus messageAssistantStatus) {
+        clientHandler.sendMessage(messageAssistantStatus);
     }
 
     /**

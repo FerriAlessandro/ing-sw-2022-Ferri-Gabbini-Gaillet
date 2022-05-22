@@ -1,4 +1,5 @@
 package it.polimi.ingsw.view.gui;
+import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.messages.RMessageMotherNature;
 import it.polimi.ingsw.network.messages.RMessageMove;
 import it.polimi.ingsw.network.messages.SMessageMotherNature;
@@ -12,6 +13,8 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -43,6 +46,10 @@ public class FXisland {
 
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     /**
      * Method used to create the FXIsland
      * @param index the index of the island that's being created
@@ -55,7 +62,7 @@ public class FXisland {
 
         if(index >= 7) {
             towers.setY(towers.getY() + islandsVerticalDistance); //top middle circle of the first island of the second row
-            offset = islandsHorizontalDistance * (index % 7); //island 7 doesn't have an offset, is below island 1
+            offset = islandsHorizontalDistance * 5 - islandsHorizontalDistance * (index % 7); //island 7 doesn't have an offset, is below island 1
             green_student.setY(green_student.getY() + islandsVerticalDistance);
         }
 
@@ -137,6 +144,11 @@ public class FXisland {
 
     }
 
+    /**
+     * Utility method to get a circle representing a pawn by its color
+     * @param color the color of the pawn
+     * @return The circle representing the pawn of the given color
+     */
     public Circle getPawnByColor(it.polimi.ingsw.model.enumerations.Color color){
         return switch(color){
             case GREEN ->  pawns.get(2);
@@ -147,6 +159,11 @@ public class FXisland {
         };
     }
 
+    /**
+     * Utility method to get a label representing the number of pawns of a given color
+     * @param color the color of the pawn
+     * @return The label representing the number of pawn of the given color
+     */
     public Label getLabelByColor(it.polimi.ingsw.model.enumerations.Color color){
         return switch(color){
             case GREEN ->  quantity.get(2);
@@ -177,7 +194,6 @@ public class FXisland {
     public void makeSelectable(FXStudent entranceStudent){
         island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
         island.setOnMouseClicked(mouseEvent -> {
-                                                entranceStudent.setOpacity(0);
                                                 gameBoardSceneController.removeSelectableIslands();
                                                 gameBoardSceneController.removeSelectableDiningRoom(entranceStudent.getColor());
                                                 getPawnByColor(entranceStudent.getColor()).setVisible(true);
@@ -194,6 +210,100 @@ public class FXisland {
         island.setOnMouseClicked(null);
 
 
+    }
+
+    /**
+     * Hides an island from the scene
+     */
+    public void hideIsland(){
+        for(Circle pawn : pawns)
+            pawn.setVisible(false);
+        for(Label label : quantity)
+            label.setVisible(false);
+        this.island.setVisible(false);
+    }
+
+
+    /**
+     * Updates the number of student of an island
+     * @param students A Map containing the number of students for each color
+     */
+    public void refreshStudents(Map<it.polimi.ingsw.model.enumerations.Color,Integer> students){
+        for(it.polimi.ingsw.model.enumerations.Color color : students.keySet()){
+            if(students.get(color) > 0){
+                getPawnByColor(color).setVisible(true);
+                getLabelByColor(color).setVisible(true);
+                getLabelByColor(color).setText(Integer.toString(students.get(color)));
+            }
+            else{
+                getPawnByColor(color).setVisible(false);
+                getLabelByColor(color).setVisible(false);
+                getLabelByColor(color).setText("0");
+            }
+        }
+    }
+
+    /**
+     * Updates the color of the towers on an island
+     * @param color The color of the towers on the island
+     */
+    public void refreshIslandsTowersColor(TowerColor color){
+        if(color.equals(TowerColor.NONE)) {
+            pawns.get(0).setVisible(false);
+            quantity.get(0).setVisible(false);
+            return;
+        }
+        String imagePath;
+        String towercolor;
+        towercolor = color.toString().toLowerCase(Locale.ROOT);
+        imagePath = "images/"+towercolor+"_tower.png";
+        Image tower = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
+        pawns.get(0).setFill(new ImagePattern(tower));
+    }
+
+    /**
+     * Updates the number of towers on an island
+     * @param num The number of towers on the island
+     */
+    public void refreshIslandsTowersNum(Integer num){
+        if(num <= 0){
+            pawns.get(0).setVisible(false);
+            quantity.get(0).setVisible(false);
+            quantity.get(0).setText("0");
+        }
+        else {
+            quantity.get(0).setText(Integer.toString(num));
+            pawns.get(0).setVisible(true);
+            quantity.get(0).setVisible(true);
+
+        }
+    }
+
+    /**
+     * Updates mother nature's position
+     * @param position The index of the island containing mother nature
+     */
+    public void refreshMotherNature(int position){
+        if(position == index-1)
+            pawns.get(1).setVisible(true);
+        else pawns.get(1).setVisible(false);
+    }
+
+    /**
+     * Updates the number of no entry tiles on an island
+     * @param tiles The number of no entry tiles on the island
+     */
+    public void refreshNoEntryTiles(Integer tiles){
+        if(tiles <= 0){
+            pawns.get(7).setVisible(false);
+            quantity.get(7).setVisible(false);
+            quantity.get(7).setText("0");
+        }
+        else{
+            quantity.get(7).setText(Integer.toString(tiles));
+            pawns.get(7).setVisible(true);
+            quantity.get(7).setVisible(true);
+        }
     }
 
 
