@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.model.enumerations.TowerColor;
+import it.polimi.ingsw.network.messages.RMessageGrandmaherbHerald;
 import it.polimi.ingsw.network.messages.RMessageMotherNature;
 import it.polimi.ingsw.network.messages.RMessageMove;
 import it.polimi.ingsw.network.messages.SMessageMotherNature;
@@ -186,6 +187,16 @@ public class FXisland {
 
 
     }
+
+    /**
+     * Makes the island selectable for the choice of grandmaHerb or herald character cards.
+     */
+    public void makeSelectableGrandmaHerald() {
+        island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
+        island.setOnMouseClicked(mouseEvent -> {gameBoardSceneController.getGui().adapter.sendMessage(new RMessageGrandmaherbHerald(gameBoardSceneController.getGui().getCharacter(), gameBoardSceneController.getGui().getNickName(), index));
+            gameBoardSceneController.removeSelectableIslands();});
+    }
+
     /**
      * Makes the island selectable and, if clicked, makes the DiningRooms (and all the islands) not clickable, increases the counter of the students of the given color and
      * sends a message containing the selected color and the island's index.

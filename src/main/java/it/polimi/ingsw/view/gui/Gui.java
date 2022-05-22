@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.enumerations.Characters;
+import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
@@ -30,6 +31,7 @@ public class Gui extends Application implements ViewInterface {
     private boolean expert = false;
     private boolean firstGameStateMessage = true;
     private int numOfPlayer;
+    private Characters characterChosen = Characters.NONE;
     private FXMLLoader loader;
     private Parent root;
     private SceneController controller;
@@ -403,9 +405,38 @@ public class Gui extends Application implements ViewInterface {
         return scenes;
     }
 
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#GRANDMA_HERB} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#HERALD}.
+     * @param message request message
+     */
     @Override
     public void grandmaHerbHeraldScene(SMessageGrandmaherbHerald message) {
 
+        Platform.runLater(() -> {
+            Characters characterChosen = message.characterName;
+            String text;
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Disclaimer");
+            alert.setHeaderText("You have chosen " + characterChosen.name() + " card");
+            if(characterChosen.equals(Characters.GRANDMA_HERB))
+                text = "Select the island where the no entry tile will be applied";
+            else
+                text = "Select the island to resolve";
+            alert.setContentText(text);
+
+            try {
+                changeScene(GAMEBOARD);
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                gameBoardSceneController.getIslandChoiceGrandmaHerald();
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
     }
 
     @Override
@@ -416,6 +447,28 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void rogueMushroomPickerScene(SMessageRogueMushroomPicker message) {
 
+        Platform.runLater(() -> {
+            Characters characterChosen = message.characterName;
+            String text;
+            List<Color> choices = new ArrayList<>();
+            choices.add(Color.RED);
+            choices.add(Color.GREEN);
+            choices.add(Color.BLUE);
+            choices.add(Color.YELLOW);
+            choices.add(Color.PINK);
+
+            ChoiceDialog<Color> dialog = new ChoiceDialog(choices.get(0), choices);
+            dialog.setTitle("Disclaimer");
+            dialog.setHeaderText("You have chosen " + characterChosen.name() + " card");
+            if(characterChosen.equals(Characters.ROGUE))
+                text = "Select the color of the three students that every wizard must return";
+            else
+                text = "Select the color that will not count during this turn's influence calculation";
+            dialog.setContentText(text);
+            Optional<Color> result = dialog.showAndWait();
+            if(result.isPresent())
+                adapter.sendMessage(new RMessageRogueMushroomPicker(characterChosen, nickname, result.get()));
+        });
     }
 
     @Override
@@ -475,4 +528,11 @@ public class Gui extends Application implements ViewInterface {
         return coins;
     }
 
+    public void setCharacter(Characters character) {
+        characterChosen = character;
+    }
+
+    public Characters getCharacter() {
+        return characterChosen;
+    }
 }

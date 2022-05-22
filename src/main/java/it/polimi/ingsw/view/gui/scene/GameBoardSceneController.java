@@ -213,6 +213,12 @@ public class GameBoardSceneController implements SceneController {
             island.makeSelectable();
     }
 
+    //Per ora gestisce il caso di scelta di grandmaHerb o Herald
+    public void getIslandChoiceGrandmaHerald() {
+        for(FXisland island : islands)
+            island.makeSelectableGrandmaHerald();
+    }
+
     /**
      * Method called when the user needs to select an island as a destination for a student, it makes the island clickable and, if clicked, puts the student there
      */
