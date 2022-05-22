@@ -213,7 +213,18 @@ public class GameBoardSceneController implements SceneController {
             island.makeSelectable();
     }
 
-    //Per ora gestisce il caso di scelta di grandmaHerb o Herald
+    /**
+     * Method called when the user needs to select an island as a choice for character card Monk.
+     * @param color is the color of the student that will be added on the chosen island.
+     */
+    public void getIslandChoiceMonk(it.polimi.ingsw.model.enumerations.Color color) {
+        for(FXisland island : islands)
+            island.makeSelectableMonk(color);
+    }
+
+    /**
+     * Method called when the user needs to select an island as a choice for character card GrandmaHerb or Herald.
+     */
     public void getIslandChoiceGrandmaHerald() {
         for(FXisland island : islands)
             island.makeSelectableGrandmaHerald();

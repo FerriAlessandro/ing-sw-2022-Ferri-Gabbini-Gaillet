@@ -419,7 +419,7 @@ public class Gui extends Application implements ViewInterface {
             String text;
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Disclaimer");
-            alert.setHeaderText("You have chosen " + characterChosen.name() + " card");
+            alert.setHeaderText("You have chosen " + characterChosen.name() + " card!");
             if(characterChosen.equals(Characters.GRANDMA_HERB))
                 text = "Select the island where the no entry tile will be applied";
             else
@@ -439,9 +439,50 @@ public class Gui extends Application implements ViewInterface {
         });
     }
 
+    /**
+     * Asks additional information on chosen character effect of
+     * {@link it.polimi.ingsw.model.enumerations.Characters#MONK} or
+     * {@link it.polimi.ingsw.model.enumerations.Characters#SPOILED_PRINCESS}.
+     * @param message request message
+     */
     @Override
     public void monkPrincessScene(SMessageMonkPrincess message) {
+        Platform.runLater(() -> {
+            Characters characterChosen = message.characterName;
+            int islandChosenIndex = -1;
+            String text;
+            //This for cycle build a list of the color of the students on the character card
+            ArrayList<Color> list = new ArrayList<>();
+            for(Color color : message.colors.keySet()) {
+                if(message.colors.get(color) > 0)
+                    list.add(color);
+            }
 
+            ChoiceDialog<Color> dialog = new ChoiceDialog<>(list.get(0), list);
+            dialog.setTitle("Disclaimer");
+            dialog.setHeaderText("You have chosen " + characterChosen.name() + " card!");
+            if(characterChosen.equals(Characters.MONK))
+                text = "Select the color of the student to put on the island that you desire";
+            else
+                text = "Select the color of the student to add to your dining room";
+            dialog.setContentText(text);
+
+            Optional<Color> result = dialog.showAndWait();
+
+            if(result.isPresent()) {
+                if (characterChosen.equals(Characters.MONK)) {
+                    try {
+                        changeScene(GAMEBOARD);
+                        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                        gameBoardSceneController.getIslandChoiceMonk(result.get());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else { //Case PRINCESS
+                    adapter.sendMessage(new RMessageMonkPrincess(characterChosen, nickname, islandChosenIndex, result.get()));
+                }
+            }
+        });
     }
 
     @Override
@@ -459,7 +500,7 @@ public class Gui extends Application implements ViewInterface {
 
             ChoiceDialog<Color> dialog = new ChoiceDialog(choices.get(0), choices);
             dialog.setTitle("Disclaimer");
-            dialog.setHeaderText("You have chosen " + characterChosen.name() + " card");
+            dialog.setHeaderText("You have chosen " + characterChosen.name() + " card!");
             if(characterChosen.equals(Characters.ROGUE))
                 text = "Select the color of the three students that every wizard must return";
             else

@@ -1,9 +1,7 @@
 package it.polimi.ingsw.view.gui;
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.TowerColor;
-import it.polimi.ingsw.network.messages.RMessageGrandmaherbHerald;
-import it.polimi.ingsw.network.messages.RMessageMotherNature;
-import it.polimi.ingsw.network.messages.RMessageMove;
-import it.polimi.ingsw.network.messages.SMessageMotherNature;
+import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
@@ -194,7 +192,16 @@ public class FXisland {
     public void makeSelectableGrandmaHerald() {
         island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
         island.setOnMouseClicked(mouseEvent -> {gameBoardSceneController.getGui().adapter.sendMessage(new RMessageGrandmaherbHerald(gameBoardSceneController.getGui().getCharacter(), gameBoardSceneController.getGui().getNickName(), index));
-            gameBoardSceneController.removeSelectableIslands();});
+                                                gameBoardSceneController.removeSelectableIslands();});
+    }
+
+    /**
+     * Makes the island selectable for the choice of Monk character card.
+     * @param color is the color of the student that will be added on the chosen island.
+     */
+    public void makeSelectableMonk(it.polimi.ingsw.model.enumerations.Color color) {
+        island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
+        island.setOnMouseClicked(mouseEvent -> {gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMonkPrincess(Characters.MONK, gameBoardSceneController.getGui().getNickName(), index, color));});
     }
 
     /**
