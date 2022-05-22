@@ -660,6 +660,7 @@ public class GameController implements Serializable {
      */
     public void elaborateActivation(Message message){
         characterController.activate(message);
+        game.notifyObservers();
         sceneAfterCharacter();
     }
 

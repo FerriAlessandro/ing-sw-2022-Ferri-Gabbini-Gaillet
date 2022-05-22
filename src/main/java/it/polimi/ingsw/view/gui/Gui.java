@@ -240,7 +240,7 @@ public class Gui extends Application implements ViewInterface {
             gameBoardSceneController.refreshClouds(gameState.studClouds);
             if(expert) {
                 gameBoardSceneController.refreshCoins(gameState.coins);
-                this.coins = new HashMap<>(gameState.coins); //CHIEDERE A GABBO
+                this.coins = new HashMap<>(gameState.coins);
             }
 
 
