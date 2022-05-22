@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
@@ -100,6 +99,7 @@ public class Gui extends Application implements ViewInterface {
         controller = controllers.get(scene);
         controller.setGui(this);
         controller.setMessage(currentMessage);
+        controller.createScene();
         currentScene = scenes.get(scene);
         stage.setScene(currentScene);
         stage.setWidth(1920d);
@@ -210,6 +210,11 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void showBoard(SMessageGameState gameState) {
+        for (String player: gameState.studEntrance.keySet()) {
+            if (expert) {
+                coins.put(player, gameState.coins.get(player));
+            }
+        }
         Platform.runLater(()-> {
             try {
                 changeScene(GAMEBOARD);
@@ -284,12 +289,13 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
+        //Per il momento questo non fa passare correttamente dalla assistantChoice alla gameBoard
+        //if (messageCharacter.effects.stream().anyMatch(x -> x.getCost() <= coins.get(nickname))) {
         Platform.runLater(() -> {
             try {
                 currentMessage = messageCharacter;
                 changeScene(CHARACTER);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

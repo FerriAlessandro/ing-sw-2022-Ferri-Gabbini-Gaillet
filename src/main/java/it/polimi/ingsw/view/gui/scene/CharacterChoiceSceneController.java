@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui.scene;
 
 import it.polimi.ingsw.model.enumerations.Characters;
+import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.RMessageCharacter;
 import it.polimi.ingsw.network.messages.SMessageCharacter;
@@ -13,8 +14,10 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CharacterChoiceSceneController implements SceneController{
+public class CharacterChoiceSceneController implements SceneController {
 
     private Gui gui;
     private Characters characterChosen;
@@ -23,6 +26,43 @@ public class CharacterChoiceSceneController implements SceneController{
 
     @FXML
     private GridPane gridPane;
+
+    @FXML
+    private ImageView stud11;
+    @FXML
+    private ImageView stud12;
+    @FXML
+    private ImageView stud13;
+    @FXML
+    private ImageView stud14;
+    @FXML
+    private ImageView stud15;
+    @FXML
+    private ImageView stud16;
+    @FXML
+    private ImageView stud21;
+    @FXML
+    private ImageView stud22;
+    @FXML
+    private ImageView stud23;
+    @FXML
+    private ImageView stud24;
+    @FXML
+    private ImageView stud25;
+    @FXML
+    private ImageView stud26;
+    @FXML
+    private ImageView stud31;
+    @FXML
+    private ImageView stud32;
+    @FXML
+    private ImageView stud33;
+    @FXML
+    private ImageView stud34;
+    @FXML
+    private ImageView stud35;
+    @FXML
+    private ImageView stud36;
 
     @FXML
     private Button cardOneButton;
@@ -36,11 +76,40 @@ public class CharacterChoiceSceneController implements SceneController{
     @FXML
     private Button noneButton;
 
+    private ArrayList<ImageView> imageNode = new ArrayList<>();
+
+
+    private Map<Color, Integer> mapOfStudents = new HashMap<>();
+
+    private Image redStudent = new Image("/images/student_red.png");
+    private Image greenStudent = new Image("/images/student_green.png");
+    private Image blueStudent = new Image("/images/student_blue.png");
+    private Image yellowStudent = new Image("/images/student_yellow.png");
+    private Image pinkStudent = new Image("/images/student_pink.png");
+    private Image noEntryTiles = new Image("/images/deny_island_icon.png");
     /**
      * It build the scene with the available choice
      */
     @FXML
     void initialize() {
+        imageNode.add(stud11);
+        imageNode.add(stud12);
+        imageNode.add(stud13);
+        imageNode.add(stud14);
+        imageNode.add(stud15);
+        imageNode.add(stud16);
+        imageNode.add(stud21);
+        imageNode.add(stud22);
+        imageNode.add(stud23);
+        imageNode.add(stud24);
+        imageNode.add(stud25);
+        imageNode.add(stud26);
+        imageNode.add(stud31);
+        imageNode.add(stud32);
+        imageNode.add(stud33);
+        imageNode.add(stud34);
+        imageNode.add(stud35);
+        imageNode.add(stud36);
 
     }
 
@@ -71,8 +140,9 @@ public class CharacterChoiceSceneController implements SceneController{
 
     /**
      * Utility method to avoid code repetitions. It adds the correct character to the gridPane
+     *
      * @param character is the actual character to add
-     * @param index position on the gridPane
+     * @param index     position on the gridPane
      */
     private void addCharacterCard(Characters character, int index) {
         Image characterToAdd = new Image("/images/characters/" + character + ".jpg");
@@ -82,17 +152,17 @@ public class CharacterChoiceSceneController implements SceneController{
         imageView.setImage(characterToAdd);
         gridPane.add(imageView, index, 0);
 
-        if(character.getCost() > gui.getCoins().get(nickname)) {
+        if (character.getCost() > gui.getCoins().get(nickname)) {
             imageView.setOpacity(0.5);
             imageView.setCursor(Cursor.DEFAULT); //forse superflua
             gridPane.getChildren().get(index).setCursor(Cursor.DEFAULT);
             gridPane.getChildren().get(index).setDisable(true);
-        }
-        else {
+        } else {
             imageView.setCursor(Cursor.HAND);
             gridPane.getChildren().get(index).setCursor(Cursor.HAND); //forse superflua
             gridPane.getChildren().get(index).setDisable(false);
         }
+        //TODO aggiugnere la finestrina di informazioni quando si passa con il mouse su una delle carte
     }
 
     /**
@@ -113,17 +183,90 @@ public class CharacterChoiceSceneController implements SceneController{
     }
 
     /**
+     * Display students on the cards that have them.
+     */
+    private void addStudents() {
+        for (Characters character : message.effects)
+            if (message.students.get(character) != null && !message.students.get(character).values().stream().allMatch(x -> x == 0)) {
+                int studentAdded = 0;
+                for (int j = 0, k = 1; j < 3; j++, k++) {
+                    mapOfStudents = message.students.get((message.effects.get(j)));
+                    for (Color color : mapOfStudents.keySet()) {
+                        switch (color) {
+                            case GREEN -> {
+                                for (int i = 0; i < mapOfStudents.get(color); i++) {
+                                    imageNode.get(studentAdded).setImage(greenStudent);
+                                    studentAdded++;
+                                }
+                            }
+                            case PINK -> {
+                                for (int i = 0; i < mapOfStudents.get(color); i++) {
+                                    imageNode.get(studentAdded).setImage(pinkStudent);
+                                    studentAdded++;
+                                }
+                            }
+                            case RED -> {
+                                for (int i = 0; i < mapOfStudents.get(color); i++) {
+                                    imageNode.get(studentAdded).setImage(redStudent);
+                                    studentAdded++;
+                                }
+                            }
+                            case YELLOW -> {
+                                for (int i = 0; i < mapOfStudents.get(color); i++) {
+                                    imageNode.get(studentAdded).setImage(yellowStudent);
+                                    studentAdded++;
+                                }
+                            }
+                            case BLUE -> {
+                                for (int i = 0; i < mapOfStudents.get(color); i++) {
+                                    imageNode.get(studentAdded).setImage(blueStudent);
+                                    studentAdded++;
+                                }
+                            }
+
+                        }
+                    }
+                    studentAdded = k * 6;
+                }
+            }
+    }
+
+    /**
+     * Displays no entry tiles on grandmaHerb card, if present.
+     */
+    private void addNoEntryTiles() {
+        int numOfNoEntryTiles;
+        int grandMaIndex;
+        int imageViewIndex;
+
+        for(Characters character : message.effects) {
+            if(character.equals(Characters.GRANDMA_HERB)) {
+                numOfNoEntryTiles = message.noEntryTiles;
+                grandMaIndex = message.effects.indexOf(character);
+                imageViewIndex = grandMaIndex * 6;
+
+                for(int i = 0; i < numOfNoEntryTiles; i++, imageViewIndex++)
+                    imageNode.get(imageViewIndex).setImage(noEntryTiles);
+            }
+        }
+    }
+
+
+    /**
      * It builds the scene with the available choice
      */
     @Override
     public void createScene() {
+
         nickname = gui.getNickName();
         ArrayList<Characters> charactersAvailable = message.effects;
-        int i = 0;
 
-        for(Characters character : charactersAvailable) {
+        int i = 0;
+        for (Characters character : charactersAvailable) {
             addCharacterCard(character, i);
-            i ++;
+            i++;
         }
+        addStudents();
+        addNoEntryTiles();
     }
 }
