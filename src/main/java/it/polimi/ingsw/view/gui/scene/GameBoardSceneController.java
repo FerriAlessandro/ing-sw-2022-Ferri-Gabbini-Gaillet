@@ -139,16 +139,30 @@ public class GameBoardSceneController implements SceneController {
      */
     public void setupGameBoard(int numOfPlayers, boolean expert, SMessageGameState firstGameState){
 
-        ArrayList<String> nicknames = new ArrayList<>(firstGameState.towerNumber.keySet());
-        player_name_1.setText(nicknames.get(0));
+        ArrayList<String> nicknames = new ArrayList<>(firstGameState.towerColor.keySet());
+        for(String name : nicknames){
+            if(firstGameState.towerColor.get(name).equals(TowerColor.WHITE))
+                player_name_1.setText(name);
+            else if(firstGameState.towerColor.get(name).equals(TowerColor.BLACK))
+                player_name_2.setText(name);
+            else player_name_3.setText(name);
+        }
+        nicknames = new ArrayList<>();
+        nicknames.add(player_name_1.getText());
+        nicknames.add(player_name_2.getText());
+        nicknames.add(player_name_3.getText());
+        this.nicknames.add(player_name_1);
+        this.nicknames.add(player_name_2);
+        this.nicknames.add(player_name_3);
+        /*player_name_1.setText(nicknames.get(0));
         this.nicknames.add(player_name_1);
         player_name_2.setText(nicknames.get(1));
         this.nicknames.add(player_name_2);
         if(numOfPlayers == 3) {
             player_name_3.setText(nicknames.get(2));
             this.nicknames.add(player_name_3);
-        }
-        else{
+        }*/
+        if (numOfPlayers != 3) {
             playerboard_3.setVisible(false);
             cloud_3.setVisible(false);
         }
