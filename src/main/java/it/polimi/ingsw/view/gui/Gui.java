@@ -170,6 +170,11 @@ public class Gui extends Application implements ViewInterface {
     public void askMotherNatureMove(SMessageMotherNature message) {
 
         Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Next move");
+            alert.setHeaderText("Choose the destination of mother nature");
+            alert.setContentText(null);
+            alert.showAndWait();
             try {
                 changeScene(GAMEBOARD);
                 GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
@@ -346,6 +351,11 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void askCloud() {
         Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Next move");
+            alert.setHeaderText("Choose the cloud tile to pick students from");
+            alert.setContentText(null);
+            alert.showAndWait();
             try {
                 changeScene(GAMEBOARD);
                 GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
