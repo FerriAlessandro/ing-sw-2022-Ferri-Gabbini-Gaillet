@@ -141,35 +141,51 @@ public class CharacterChoiceSceneController implements SceneController {
 
     /**
      * Utility method to avoid code repetitions. It adds the correct character to the gridPane
-     *
      * @param character is the actual character to add
      * @param index     position on the gridPane
      */
     private void addCharacterCard(Characters character, int index) {
+        boolean isPlayable = !(character.getCost() > gui.getCoins().get(nickname));
         Image characterToAdd = new Image("/images/characters/" + character + ".jpg");
         ImageView imageView = new ImageView();
         imageView.setFitHeight(569.5);
         imageView.setFitWidth(342.5);
         imageView.setImage(characterToAdd);
-        gridPane.add(imageView, index, 0);
 
-        if (character.getCost() > gui.getCoins().get(nickname)) {
-            imageView.setOpacity(0.25);
-            imageView.setCursor(Cursor.DEFAULT); //forse superflua
-            gridPane.getChildren().get(index).setCursor(Cursor.DEFAULT);
-            gridPane.getChildren().get(index).setDisable(true);
-        } else {
-            imageView.setCursor(Cursor.HAND);
-            gridPane.getChildren().get(index).setCursor(Cursor.HAND); //forse superflua
-            gridPane.getChildren().get(index).setDisable(false);
+        switch (index) {
+            case 0 -> attachImageToButton(cardOneButton, imageView, isPlayable);
+            case 1 -> attachImageToButton(cardTwoButton, imageView, isPlayable);
+            case 2 -> attachImageToButton(cardThreeButton, imageView, isPlayable);
+            default -> {}
         }
         //TODO aggiugnere la finestrina di informazioni quando si passa con il mouse su una delle carte
+    }
+
+    /**
+     * Utility method that attaches the character card image to the button.
+     * @param button is the button on which the image will be attached on.
+     * @param imageView contains the image of the character card.
+     * @param isPlayable indicates if the character card is playable.
+     */
+    private void attachImageToButton(Button button, ImageView imageView, boolean isPlayable) {
+        button.setGraphic(imageView);
+        if(isPlayable) {
+            imageView.setCursor(Cursor.HAND);
+            button.setDisable(false);
+        }
+        else {
+            imageView.setCursor(Cursor.DEFAULT);
+            imageView.setOpacity(0.25);
+            button.setDisable(true);
+        }
+
     }
 
     /**
      * send the effective message to the adapter.
      */
     private void sendChoice() {
+        gui.setCharacter(characterChosen);
         gui.adapter.sendMessage(new RMessageCharacter(characterChosen, gui.getNickName()));
     }
 
@@ -258,10 +274,8 @@ public class CharacterChoiceSceneController implements SceneController {
      */
     @Override
     public void createScene() {
-
         nickname = gui.getNickName();
         ArrayList<Characters> charactersAvailable = message.effects;
-
         int i = 0;
         for (Characters character : charactersAvailable) {
             addCharacterCard(character, i);

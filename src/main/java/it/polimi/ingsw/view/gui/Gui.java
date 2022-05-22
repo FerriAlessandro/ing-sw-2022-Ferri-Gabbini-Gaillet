@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
@@ -200,11 +201,12 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void showDisconnectionMessage() {
         Platform.runLater(()-> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Connection problem");
-            alert.setHeaderText("Someone lost connection - ending game");
-            alert.setContentText(null);
+            alert.setHeaderText("You are now alone.\nThe game cannot procede.");
+            alert.setContentText("Someone lost connection - ending game");
             alert.showAndWait();
+            System.exit(0);
         });
     }
 
@@ -261,8 +263,8 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void showGenericMessage(SMessageInvalid message) {
         Platform.runLater(()-> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error dialog");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Disclaimer");
             alert.setHeaderText("\n" + message.error.toUpperCase() + "\n");
             alert.setContentText(null);
             alert.showAndWait();
@@ -295,13 +297,30 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
         Platform.runLater(() -> { //TODO non mostrare se non si può giocare nulla
-            try {
-                currentMessage = messageCharacter;
-                changeScene(CHARACTER);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Character card choice");
+            alert.setHeaderText("You have the possibility to play a character card");
+            alert.setContentText("Do you wanna play one?");
+            ButtonType buttonOne = new ButtonType("Yes");
+            ButtonType buttonTwo = new ButtonType("No");
+            alert.getButtonTypes().setAll(buttonOne, buttonTwo);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if(result.isPresent()) {
+                if(result.get() == buttonOne) {
+                    try {
+                        currentMessage = messageCharacter;
+                        changeScene(CHARACTER);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                else
+                    adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
             }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+
         });
     }
 
