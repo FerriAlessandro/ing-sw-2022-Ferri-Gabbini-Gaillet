@@ -3,7 +3,6 @@ import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.SMessageAssistantStatus;
 import it.polimi.ingsw.network.messages.SMessageGameState;
-import it.polimi.ingsw.network.messages.SMessageMotherNature;
 import it.polimi.ingsw.view.gui.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -11,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 import java.util.*;
 
@@ -101,15 +99,13 @@ public class GameBoardSceneController implements SceneController {
     @FXML
     private ImageView playerboard_3;
 
-    private ArrayList<FXisland> islands = new ArrayList<>();
+    private final ArrayList<FXisland> islands = new ArrayList<>();
 
-    private ArrayList<FXPlayerBoard> playerBoards = new ArrayList<>();
+    private final ArrayList<FXPlayerBoard> playerBoards = new ArrayList<>();
 
-    private ArrayList<FXCloud> clouds = new ArrayList<>();
+    private final ArrayList<FXCloud> clouds = new ArrayList<>();
 
-    private ArrayList<Label> nicknames = new ArrayList<>();
-
-    private int numPlayers;
+    private final ArrayList<Label> nicknames = new ArrayList<>();
 
 
     /**
@@ -243,6 +239,7 @@ public class GameBoardSceneController implements SceneController {
     public void getEntranceChoice(){
         FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
        // FXPlayerBoard board = getPlayerBoardByNickname("Gui");
+        assert board != null;
         board.makeEntranceSelectable();
     }
 
@@ -259,7 +256,7 @@ public class GameBoardSceneController implements SceneController {
      * @return A Map containing the Entrance's students
      */
     public HashMap<it.polimi.ingsw.model.enumerations.Color, Integer> getEntranceColors(){
-        return getPlayerBoardByNickname(getGui().getNickName()).getEntranceColors();
+        return Objects.requireNonNull(getPlayerBoardByNickname(getGui().getNickName())).getEntranceColors();
     }
 
     /**
@@ -283,7 +280,7 @@ public class GameBoardSceneController implements SceneController {
      * @param color The color of the dining room
      */
     public void removeSelectableDiningRoom(it.polimi.ingsw.model.enumerations.Color color){
-        getPlayerBoardByNickname(getGui().getNickName()).removeSelectableDiningRoom(color);
+        Objects.requireNonNull(getPlayerBoardByNickname(getGui().getNickName())).removeSelectableDiningRoom(color);
     }
 
     /**
@@ -292,7 +289,7 @@ public class GameBoardSceneController implements SceneController {
      */
     public void refreshEntrances(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> entrances){
         for(String nickname : entrances.keySet())
-            getPlayerBoardByNickname(nickname).refreshEntrance(entrances.get(nickname));
+            Objects.requireNonNull(getPlayerBoardByNickname(nickname)).refreshEntrance(entrances.get(nickname));
         //getPlayerBoardByNickname("Gui").refreshEntrance(entrances.get("Gui"));
 
     }
@@ -303,7 +300,7 @@ public class GameBoardSceneController implements SceneController {
      */
     public void refreshDiningRooms(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> diningRooms){
         for(String nickname : diningRooms.keySet())
-            getPlayerBoardByNickname(nickname).refreshDiningRooms(diningRooms.get(nickname));
+            Objects.requireNonNull(getPlayerBoardByNickname(nickname)).refreshDiningRooms(diningRooms.get(nickname));
        // getPlayerBoardByNickname("Gui").refreshDiningRooms(diningRooms.get("Gui"));
     }
 
@@ -313,7 +310,7 @@ public class GameBoardSceneController implements SceneController {
      */
     public void refreshProfessors(Map<it.polimi.ingsw.model.enumerations.Color, String> professors){
         for(String nickname : professors.values())
-            getPlayerBoardByNickname(nickname).refreshProfessors(professors);
+            Objects.requireNonNull(getPlayerBoardByNickname(nickname)).refreshProfessors(professors);
         //getPlayerBoardByNickname("Gui").refreshProfessors(professors);
 
     }
@@ -324,7 +321,7 @@ public class GameBoardSceneController implements SceneController {
      */
     public void refreshTowerZones(Map<String, Integer> towers){
        for(String nickname : towers.keySet())
-            getPlayerBoardByNickname(nickname).refreshTowerZones(towers.get(nickname));
+            Objects.requireNonNull(getPlayerBoardByNickname(nickname)).refreshTowerZones(towers.get(nickname));
        // getPlayerBoardByNickname("Gui").refreshTowerZones(towers.get("Gui"));
     }
 
@@ -394,7 +391,7 @@ public class GameBoardSceneController implements SceneController {
      */
     public void refreshCoins(Map<String, Integer> coins){
         for(String nickname : coins.keySet()){
-            getPlayerBoardByNickname(nickname).refreshCoins(coins.get(nickname));
+            Objects.requireNonNull(getPlayerBoardByNickname(nickname)).refreshCoins(coins.get(nickname));
 
         }
     }
@@ -463,10 +460,10 @@ public class GameBoardSceneController implements SceneController {
     }
 
     private FXPlayerBoard getPlayerBoardByNickname(String nickname){
-        for(FXPlayerBoard playerboard : playerBoards)
-            if(playerboard.getNickname().equals(nickname))
-                return playerboard;
-            return null;
+        for(FXPlayerBoard playerBoard : playerBoards)
+            if(playerBoard.getNickname().equals(nickname))
+                return playerBoard;
+        return null;
     }
 
 }

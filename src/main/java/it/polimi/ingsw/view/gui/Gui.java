@@ -45,8 +45,8 @@ public class Gui extends Application implements ViewInterface {
     public static final String LOGIN = "/fxml/LoginScene.fxml";
     public static final String MENU = "/fxml/MainMenuScene.fxml";
     public static final String NICKNAME = "/fxml/NicknameScene.fxml";
-    private HashMap<String, Scene> scenes = new HashMap<>();
-    private HashMap<String, SceneController> controllers = new HashMap<>();
+    private final HashMap<String, Scene> scenes = new HashMap<>();
+    private final HashMap<String, SceneController> controllers = new HashMap<>();
 
 
 
@@ -56,11 +56,10 @@ public class Gui extends Application implements ViewInterface {
     /**
      * Method called when the gui starts. It sets the main menu scene.
      * @param stage is the main stage
-     * @throws Exception
      */
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         initializeGui();
         coins = new HashMap<>();
         currentScene = scenes.get(MENU);
@@ -180,7 +179,7 @@ public class Gui extends Application implements ViewInterface {
             List<Integer> choices = new ArrayList<>();
             choices.add(2);
             choices.add(3);
-            ChoiceDialog<Integer> dialog = new ChoiceDialog(2, choices);
+            ChoiceDialog<Integer> dialog = new ChoiceDialog<>(2, choices);
             dialog.setTitle("Game settings");
             dialog.setHeaderText("You can't fight alone");
             dialog.setContentText("How many wizards will be there?");
@@ -190,7 +189,7 @@ public class Gui extends Application implements ViewInterface {
             List<String> choices2 = new ArrayList<>();
             choices2.add("For dummies");
             choices2.add("Expert");
-            ChoiceDialog<String> dialog2 = new ChoiceDialog("For dummies", choices2);
+            ChoiceDialog<String> dialog2 = new ChoiceDialog<>("For dummies", choices2);
             dialog2.setTitle("Game settings");
             dialog2.setHeaderText("Are you an expert or a noob?");
             dialog2.setContentText("Which version of the game do you want?");
@@ -342,7 +341,8 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
-        Platform.runLater(() -> { //TODO non mostrare se non si può giocare nulla
+        Platform.runLater(() -> {
+            //TODO non mostrare se non si può giocare nulla
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Character card choice");
             alert.setHeaderText("You have the possibility to play a character card");
@@ -547,7 +547,7 @@ public class Gui extends Application implements ViewInterface {
             choices.add(Color.YELLOW);
             choices.add(Color.PINK);
 
-            ChoiceDialog<Color> dialog = new ChoiceDialog(choices.get(0), choices);
+            ChoiceDialog<Color> dialog = new ChoiceDialog<>(choices.get(0), choices);
             dialog.setTitle("Disclaimer");
             dialog.setHeaderText("You have chosen " + characterChosen.name() + " card!");
             if(characterChosen.equals(Characters.ROGUE))
@@ -556,8 +556,7 @@ public class Gui extends Application implements ViewInterface {
                 text = "Select the color that will not count during this turn's influence calculation";
             dialog.setContentText(text);
             Optional<Color> result = dialog.showAndWait();
-            if(result.isPresent())
-                adapter.sendMessage(new RMessageRogueMushroomPicker(characterChosen, nickname, result.get()));
+            result.ifPresent(color -> adapter.sendMessage(new RMessageRogueMushroomPicker(characterChosen, nickname, color)));
         });
     }
 

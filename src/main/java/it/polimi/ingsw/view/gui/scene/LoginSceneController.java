@@ -18,8 +18,6 @@ import java.util.Objects;
 public class LoginSceneController implements SceneController {
 
     private Gui gui;
-    private String ipAddress = "localhost"; //default value
-    private int port = 2351; //default value
 
     @FXML
     private TextField serverAddressField;
@@ -30,16 +28,15 @@ public class LoginSceneController implements SceneController {
 
     @FXML
     void onConnectButtonPressed(ActionEvent event) {
+        int port = 2351; //default value
+        String ipAddress = "localhost"; //default
         //TODO add syntax controls
-        ipAddress = serverAddressField.getText();
+        //default value
+        if(!Objects.equals(serverAddressField.getText(), ""))
+            ipAddress = serverAddressField.getText();
         if(!Objects.equals(serverPortField.getText(), ""))
             port = Integer.parseInt(serverPortField.getText());
 
-        if ((serverAddressField.getText().trim().isEmpty() || serverAddressField.getText().trim().isBlank() &&
-                serverPortField.getText().trim().isEmpty()) || serverPortField.getText().trim().isBlank()) {
-            ipAddress = "localhost";
-            port = 2351;
-        }
         gui.adapter = new Adapter(gui, ipAddress, port);
     }
 

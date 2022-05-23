@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class CharacterChoiceSceneController implements SceneController {
@@ -76,42 +75,30 @@ public class CharacterChoiceSceneController implements SceneController {
     @FXML
     private Button noneButton;
 
-    private ArrayList<ImageView> imageNode = new ArrayList<>();
+    private final ArrayList<ImageView> imageNode = new ArrayList<>();
 
 
-    private Map<Color, Integer> mapOfStudents = new HashMap<>();
-
-    private Image redStudent = new Image("/images/student_red.png");
-    private Image greenStudent = new Image("/images/student_green.png");
-    private Image blueStudent = new Image("/images/student_blue.png");
-    private Image yellowStudent = new Image("/images/student_yellow.png");
-    private Image pinkStudent = new Image("/images/student_pink.png");
-    private Image noEntryTiles = new Image("/images/deny_island_icon.png");
+    private final Image redStudent = new Image("/images/student_red.png");
+    private final Image greenStudent = new Image("/images/student_green.png");
+    private final Image blueStudent = new Image("/images/student_blue.png");
+    private final Image yellowStudent = new Image("/images/student_yellow.png");
+    private final Image pinkStudent = new Image("/images/student_pink.png");
+    private final Image noEntryTiles = new Image("/images/deny_island_icon.png");
 
     /**
-     * It build the scene with the available choice
+     * It builds the scene with the available choice
      */
     @FXML
     void initialize() {
-        imageNode.add(stud11);
-        imageNode.add(stud12);
-        imageNode.add(stud13);
-        imageNode.add(stud14);
-        imageNode.add(stud15);
-        imageNode.add(stud16);
-        imageNode.add(stud21);
-        imageNode.add(stud22);
-        imageNode.add(stud23);
-        imageNode.add(stud24);
-        imageNode.add(stud25);
-        imageNode.add(stud26);
-        imageNode.add(stud31);
-        imageNode.add(stud32);
-        imageNode.add(stud33);
-        imageNode.add(stud34);
-        imageNode.add(stud35);
-        imageNode.add(stud36);
-
+        for(int i = 1; i <= 3; i++){
+            for(int j = 1; j <= 6 ; j++){
+                try {
+                    imageNode.add((ImageView) CharacterChoiceSceneController.class.getDeclaredField("stud" + i + j).get(this));
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @FXML
@@ -158,7 +145,7 @@ public class CharacterChoiceSceneController implements SceneController {
             case 2 -> attachImageToButton(cardThreeButton, imageView, isPlayable);
             default -> {}
         }
-        //TODO aggiugnere la finestrina di informazioni quando si passa con il mouse su una delle carte
+        //TODO aggiungere la finestrina di informazioni quando si passa con il mouse su una delle carte
     }
 
     /**
@@ -207,7 +194,7 @@ public class CharacterChoiceSceneController implements SceneController {
             if (message.students.get(character) != null && !message.students.get(character).values().stream().allMatch(x -> x == 0)) {
                 int studentAdded = 0;
                 for (int j = 0, k = 1; j < 3; j++, k++) {
-                    mapOfStudents = message.students.get((message.effects.get(j)));
+                    Map<Color, Integer> mapOfStudents = message.students.get((message.effects.get(j)));
                     for (Color color : mapOfStudents.keySet()) {
                         switch (color) {
                             case GREEN -> {

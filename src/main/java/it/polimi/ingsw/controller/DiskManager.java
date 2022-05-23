@@ -48,17 +48,19 @@ public class DiskManager {
         return null;
     }*/
 
+    /**
+     * Loads a saved game if it exists.
+     * @return
+     */
     public static GameController loadGame(){
         System.out.println("Checking existence of saved game");
         GameController read = readFile(new File(filename));
         if(read == null){
             System.out.println("No saved game");
-            return null;
+        }else {
+            System.out.println("Found a save");
+            read.playersView = new HashMap<>();
         }
-        System.out.println("Found a save");
-
-        System.out.println("Save is compatible with requests");
-        read.playersView = new HashMap<>();
         return read;
 
     }
