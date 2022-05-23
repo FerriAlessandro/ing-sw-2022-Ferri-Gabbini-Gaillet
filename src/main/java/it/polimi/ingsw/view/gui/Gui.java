@@ -10,14 +10,15 @@ import it.polimi.ingsw.view.gui.scene.SceneController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * This class is the real Graphical User Interface.
@@ -60,16 +61,12 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void start(Stage stage) throws Exception {
-
         initializeGui();
         coins = new HashMap<>();
         currentScene = scenes.get(MENU);
         this.stage = stage;
         stage.setTitle("Eriantys");
-        stage.setScene(currentScene);
-        stage.setWidth(1920d);
-        stage.setHeight(1080d);
-        stage.show();
+        resizeStage(stage);
     }
 
     public void initializeGui(){
@@ -79,10 +76,14 @@ public class Gui extends Application implements ViewInterface {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             try {
                 Parent root = loader.load();
-                scenes.put(fxml, new Scene(root));
+
                 SceneController controller = loader.getController();
                 controllers.put(fxml, controller);
                 controller.setGui(this);
+
+                final Scene scene = new Scene(scaleRootScene(root, fxml));
+                scenes.put(fxml, scene);
+
             }catch(Exception e){
                 e.printStackTrace();
                 return;
@@ -94,24 +95,60 @@ public class Gui extends Application implements ViewInterface {
     }
 
     /**
+     * Scales the provided {@link Parent} to screen resolution.
+     * @param root {@link Parent} to be scaled
+     * @return the scaled {@link Parent}
+     */
+    private Parent scaleRootScene(Parent root, String type){
+        final int initWidth = 1920;      //initial width
+        final int initHeight = 1080;    //initial height
+
+        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = resolution.getWidth();
+        double height = resolution.getHeight();
+        Scale scale = new Scale(width/initWidth, height/initHeight, 0, 0);
+        if(type.equals(MENU) || type.equals(LOGIN)){
+            scale.pivotXProperty().setValue(width/2);
+            scale.pivotYProperty().setValue(height/2);
+        } else {
+            scale.pivotXProperty().setValue(0);
+            scale.pivotYProperty().setValue(0);
+        }
+
+        root.getTransforms().add(scale);
+        return root;
+    }
+
+    /**
      * Function called every time it's necessary change the current scene
      * @param scene is the new scene that will be attached to the stage and showed
-     * @throws Exception
      */
-    public void changeScene(String scene) throws Exception{
-
+    public void changeScene(String scene) {
 
         //Every scene is already initialized and every controller already instantiated
         controller = controllers.get(scene);
         controller.setMessage(currentMessage);
         controller.createScene();
         currentScene = scenes.get(scene);
-        stage.setScene(currentScene);
-        stage.setWidth(1920d);
-        stage.setHeight(1080d);
-        stage.sizeToScene(); //TODO resizing
-        stage.show();
+        resizeStage(stage);
 
+    }
+
+    /**
+     * Sets size of stage to screen size.
+     * @param stage to be shown.
+     */
+    private void resizeStage(Stage stage) {
+        stage.setScene(currentScene);
+        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = resolution.getWidth();
+        double height = resolution.getHeight();
+        stage.setWidth(width);
+        stage.setHeight(height);
+        stage.setResizable(false);
+        stage.setMaximized(true);
+        //stage.setFullScreen(true);
+        stage.show();
     }
 
     /**
@@ -360,7 +397,7 @@ public class Gui extends Application implements ViewInterface {
             alert.showAndWait();
             try {
                 changeScene(GAMEBOARD);
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
+                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
                 gameBoardSceneController.getCloudChoice();
 
             }
