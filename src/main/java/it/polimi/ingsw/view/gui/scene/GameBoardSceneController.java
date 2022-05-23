@@ -13,10 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * This class represents the main game scene
@@ -256,6 +253,13 @@ public class GameBoardSceneController implements SceneController {
         for(FXCloud cloud : clouds){
             cloud.makeSelectable();
         }
+    }
+
+    /**
+     * @return A Map containing the Entrance's students
+     */
+    public HashMap<it.polimi.ingsw.model.enumerations.Color, Integer> getEntranceColors(){
+        return getPlayerBoardByNickname(getGui().getNickName()).getEntranceColors();
     }
 
     /**

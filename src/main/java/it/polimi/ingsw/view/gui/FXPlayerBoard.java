@@ -417,6 +417,19 @@ public class FXPlayerBoard {
         coinsNum.setText("x"+coins.toString());
     }
 
+    /**
+     * @return A Map containing the Entrance's students
+     */
+    public HashMap<Color, Integer> getEntranceColors(){
+        HashMap<Color, Integer> result = new HashMap<>();
+        for(Color color : Color.values())
+            result.put(color, 0);
 
+        for(FXStudent student : entrance)
+            if(student.getOpacity() == 1)
+                result.put(student.getColor(), result.get(student.getColor()) + 1);
+
+        return result;
+    }
 
 }

@@ -10,9 +10,11 @@ import it.polimi.ingsw.view.gui.scene.SceneController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -525,6 +527,76 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void jesterBardScene(SMessageJesterBard message) {
 
+        ArrayList<Color> origin = new ArrayList<>(); //Selected students from the origin
+        ArrayList<Color> entrance = new ArrayList<>(); //Selected students from the entrance
+        Map<Color, Integer> currentEntrance;
+        GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+        currentEntrance = gameBoardSceneController.getEntranceColors();
+        Platform.runLater(()->{
+
+            List<Integer> numOfPossibleMoves = new ArrayList<>();
+            numOfPossibleMoves.add(1);
+            numOfPossibleMoves.add(2);
+            int selectedMoves; //Num of moved students
+            int currentMoves = 0;
+            Characters chosenCharacter = message.characterName;
+            String originText;
+            String entranceText = "Select the student you want to remove from you entrance";
+
+            if(chosenCharacter.equals(Characters.JESTER)) {
+                numOfPossibleMoves.add(3);
+                originText = "Select the student you want to take from the Jester";
+            }
+            else {
+                originText = "Select the student you want to remove from the Dining Room";
+            }
+
+            ChoiceDialog<Integer> numOfMoves = new ChoiceDialog<>(1, numOfPossibleMoves);
+            numOfMoves.setContentText("Choose the number of swaps you want to do");
+            numOfMoves.setHeaderText("Choose a number");
+            numOfMoves.setTitle("Disclaimer");
+            Optional<Integer> result = numOfMoves.showAndWait();
+            if (result.isPresent()) {
+                selectedMoves = result.get();
+                do {
+                    List<Color> choices = new ArrayList<>();
+                    for (Color color : message.origin.keySet())
+                        if (message.origin.get(color) > 0) {
+                            choices.add(color);
+                        }
+
+                    ChoiceDialog<Color> originDialog = new ChoiceDialog<>(choices.get(0), choices);
+                    originDialog.setContentText(originText);
+                    originDialog.setTitle("Disclaimer");
+                    originDialog.setHeaderText("You have chosen " + characterChosen.name() + " card!");
+                    Optional<Color> chosenColor = originDialog.showAndWait();
+                    if (chosenColor.isPresent()) {
+                        ArrayList<Color> availableEntranceColors = new ArrayList<>();
+                        message.origin.put(chosenColor.get(), message.origin.get(chosenColor.get()) - 1);
+                        origin.add(chosenColor.get());
+                        for (Color color : currentEntrance.keySet())
+                            if (currentEntrance.get(color) > 0)
+                                availableEntranceColors.add(color);
+
+                        ChoiceDialog<Color> entranceDialog = new ChoiceDialog<>(availableEntranceColors.get(0), availableEntranceColors);
+                        entranceDialog.setContentText(entranceText);
+                        entranceDialog.setTitle("Disclaimer");
+                        entranceDialog.setHeaderText("Choose a Color");
+                        Optional<Color> entranceResult = entranceDialog.showAndWait();
+                        if (entranceResult.isPresent()) {
+                            entrance.add(entranceResult.get());
+                            currentEntrance.put(entranceResult.get(), currentEntrance.get(entranceResult.get()) - 1);
+                            currentMoves += 1;
+                        }
+
+                    }
+
+                } while (currentMoves < selectedMoves);
+
+                adapter.sendMessage(new RMessageJesterBard(message.characterName, nickname, origin, entrance));
+            }
+
+        });
     }
 
     /**
