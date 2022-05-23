@@ -166,7 +166,8 @@ public class GameBoardSceneController implements SceneController {
             playerboard_3.setVisible(false);
             cloud_3.setVisible(false);
         }
-        for(int i=0;i<nicknames.size();i++){
+
+        for(int i=0;i<numOfPlayers;i++){
             playerBoards.add(new FXPlayerBoard(i+1, this, numOfPlayers, nicknames.get(i)));
             playerBoards.get(i).createPlayerBoard();
             if(expert)
