@@ -8,6 +8,7 @@ import it.polimi.ingsw.network.messages.SMessageCharacter;
 import it.polimi.ingsw.view.gui.Gui;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
@@ -21,6 +22,7 @@ public class CharacterChoiceSceneController implements SceneController {
 
     private Gui gui;
     private Characters characterChosen;
+    private Characters characterToAdd;
     private SMessageCharacter message;
     private String nickname;
 
@@ -63,7 +65,12 @@ public class CharacterChoiceSceneController implements SceneController {
     private ImageView stud35;
     @FXML
     private ImageView stud36;
-
+    @FXML
+    private ImageView cardOneCoin;
+    @FXML
+    private ImageView cardTwoCoin;
+    @FXML
+    private ImageView cardThreeCoin;
     @FXML
     private Button cardOneButton;
 
@@ -145,40 +152,64 @@ public class CharacterChoiceSceneController implements SceneController {
      * @param index     position on the gridPane
      */
     private void addCharacterCard(Characters character, int index) {
-        boolean isPlayable = !(character.getCost() > gui.getCoins().get(nickname));
+        int ActualCostOfTheCard = message.cardCost.get(character);
+        int originalCostOfTheCard = character.getCost();
+        int playerCoins = gui.getCoins().get(nickname);
+        boolean isPlayable = (playerCoins >= ActualCostOfTheCard);
+        boolean hasAlreadyBeenPlayed = (ActualCostOfTheCard > originalCostOfTheCard);
         Image characterToAdd = new Image("/images/characters/" + character + ".jpg");
         ImageView imageView = new ImageView();
+
         imageView.setFitHeight(569.5);
         imageView.setFitWidth(342.5);
         imageView.setImage(characterToAdd);
-
         switch (index) {
-            case 0 -> attachImageToButton(cardOneButton, imageView, isPlayable);
-            case 1 -> attachImageToButton(cardTwoButton, imageView, isPlayable);
-            case 2 -> attachImageToButton(cardThreeButton, imageView, isPlayable);
+            case 0 -> {
+                attachImageToButton(cardOneButton, imageView, isPlayable);
+                if(hasAlreadyBeenPlayed && isPlayable)
+                    cardOneCoin.setOpacity(1.0);
+                if(hasAlreadyBeenPlayed && !isPlayable)
+                    cardOneCoin.setOpacity(0.25);
+            }
+
+            case 1 -> {
+                attachImageToButton(cardTwoButton, imageView, isPlayable);
+                if(hasAlreadyBeenPlayed)
+                    cardTwoCoin.setOpacity(1.0);
+                if(hasAlreadyBeenPlayed && !isPlayable)
+                    cardTwoCoin.setOpacity(0.25);
+            }
+            case 2 -> {
+                attachImageToButton(cardThreeButton, imageView, isPlayable);
+                if(hasAlreadyBeenPlayed)
+                    cardThreeCoin.setOpacity(1.0);
+                if(hasAlreadyBeenPlayed && !isPlayable)
+                    cardThreeCoin.setOpacity(0.25);
+            }
             default -> {}
         }
-        //TODO aggiugnere la finestrina di informazioni quando si passa con il mouse su una delle carte
     }
 
     /**
      * Utility method that attaches the character card image to the button.
      * @param button is the button on which the image will be attached on.
-     * @param imageView contains the image of the character card.
+     * @param cardView contains the image of the character card.
      * @param isPlayable indicates if the character card is playable.
      */
-    private void attachImageToButton(Button button, ImageView imageView, boolean isPlayable) {
-        button.setGraphic(imageView);
+    private void attachImageToButton(Button button, ImageView cardView, boolean isPlayable) {
+        button.setGraphic(cardView);
+        button.setTooltip(
+                new Tooltip(characterToAdd.getEffect())
+        );
         if(isPlayable) {
-            imageView.setCursor(Cursor.HAND);
+            cardView.setCursor(Cursor.HAND);
             button.setDisable(false);
         }
         else {
-            imageView.setCursor(Cursor.DEFAULT);
-            imageView.setOpacity(0.25);
+            cardView.setCursor(Cursor.DEFAULT);
+            cardView.setOpacity(0.25);
             button.setDisable(true);
         }
-
     }
 
     /**
@@ -278,7 +309,8 @@ public class CharacterChoiceSceneController implements SceneController {
         ArrayList<Characters> charactersAvailable = message.effects;
         int i = 0;
         for (Characters character : charactersAvailable) {
-            addCharacterCard(character, i);
+            characterToAdd = character;
+            addCharacterCard(characterToAdd, i);
             i++;
         }
         addStudents();
