@@ -22,7 +22,6 @@ import java.util.*;
  * @version 1.1
  */
 public class VirtualView implements ViewInterface, Observer {
-    private static final long serialVersionUID = 1L;
     private final ClientHandler clientHandler;
 
     /**

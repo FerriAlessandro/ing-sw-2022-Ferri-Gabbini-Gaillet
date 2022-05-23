@@ -35,8 +35,6 @@ public class Gui extends Application implements ViewInterface {
     private boolean firstGameStateMessage = true;
     private int numOfPlayer;
     private Characters characterChosen = Characters.NONE;
-    private FXMLLoader loader;
-    private Parent root;
     private SceneController controller;
     private Message currentMessage;
     public static final String ASSISTANT = "/fxml/AssistantChoiceScene.fxml";
@@ -342,31 +340,34 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
         Platform.runLater(() -> {
-            //TODO non mostrare se non si può giocare nulla
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Character card choice");
-            alert.setHeaderText("You have the possibility to play a character card");
-            alert.setContentText("Do you wanna play one?");
-            ButtonType buttonOne = new ButtonType("Yes");
-            ButtonType buttonTwo = new ButtonType("No");
-            alert.getButtonTypes().setAll(buttonOne, buttonTwo);
+            if (messageCharacter.effects.stream().anyMatch(x -> x.getCost() <= coins.get(nickname))) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Character card choice");
+                alert.setHeaderText("You have the possibility to play a character card");
+                alert.setContentText("Do you wanna play one?");
+                ButtonType buttonOne = new ButtonType("Yes");
+                ButtonType buttonTwo = new ButtonType("No");
+                alert.getButtonTypes().setAll(buttonOne, buttonTwo);
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if(result.isPresent()) {
-                if(result.get() == buttonOne) {
-                    try {
-                        currentMessage = messageCharacter;
-                        changeScene(CHARACTER);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent()) {
+                    if (result.get() == buttonOne) {
+                        try {
+                            currentMessage = messageCharacter;
+                            changeScene(CHARACTER);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else
+                        adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
                 }
-
-                else
-                    adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Caracter card choice");
+                alert.setHeaderText("You don't have enough coins to play any available character card");
+                alert.setContentText(null);
+                alert.showAndWait();
             }
-
         });
     }
 
@@ -444,10 +445,6 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public String getNickName() {
         return nickname;
-    }
-
-    public HashMap<String, SceneController> getControllers() {
-        return controllers;
     }
 
     public HashMap<String, Scene> getScenes() {
