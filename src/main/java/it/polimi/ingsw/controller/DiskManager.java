@@ -30,7 +30,7 @@ public class DiskManager {
      * @param expert true if the game is to be an expert game
      * @return the {@link GameController} matching the provided settings, or null if one is not found
      */
-    public static GameController loadGame(int numPlayers, boolean expert){
+    /*public static GameController loadGame(int numPlayers, boolean expert){
         System.out.println("Checking existence of saved game");
         GameController read = readFile(new File(filename));
         if(read == null){
@@ -38,6 +38,7 @@ public class DiskManager {
             return null;
         }
         System.out.println("Found a save");
+
         if(read.isExpert() == expert && read.getNickNames().size() == numPlayers){
             System.out.println("Save is compatible with requests");
             read.playersView = new HashMap<>();
@@ -45,6 +46,21 @@ public class DiskManager {
         }
         System.out.println("Save not compatible with requests");
         return null;
+    }*/
+
+    public static GameController loadGame(){
+        System.out.println("Checking existence of saved game");
+        GameController read = readFile(new File(filename));
+        if(read == null){
+            System.out.println("No saved game");
+            return null;
+        }
+        System.out.println("Found a save");
+
+        System.out.println("Save is compatible with requests");
+        read.playersView = new HashMap<>();
+        return read;
+
     }
 
     /**

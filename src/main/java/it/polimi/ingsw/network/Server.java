@@ -56,7 +56,7 @@ public class Server {
                         inputStream = new ObjectInputStream(socket.getInputStream());
                         Message message;
                         System.out.println("Generated in stream");
-                        do {
+                       /* do {
                             //Ask for number of players and type of game
                             System.out.println("Asking for game settings");
                             outputStream.writeObject(new SMessage(MessageType.S_GAMESETTINGS));
@@ -66,9 +66,9 @@ public class Server {
 
                         //Cast message
                         numRequiredGame = ((RMessageGameSettings) message).numPlayers;
-                        boolean expertGame = ((RMessageGameSettings) message).expert;
-
-                        controller = new InputController(DiskManager.loadGame(numRequiredGame, expertGame));
+                        boolean expertGame = ((RMessageGameSettings) message).expert;*/
+                        message = new RMessageLoadGame(false);
+                        controller = new InputController(DiskManager.loadGame());
                         if(controller.getGameController() != null){
                             //A saved game was found
                             do {
@@ -81,6 +81,18 @@ public class Server {
 
                         if(controller.getGameController() == null || !((RMessageLoadGame) message).use){
                             //Create new game
+                            do {
+                                //Ask for number of players and type of game
+                                System.out.println("Asking for game settings");
+                                outputStream.writeObject(new SMessage(MessageType.S_GAMESETTINGS));
+                                message = receiveMessageIgnorePing();
+                            } while (message == null || !message.getType().equals(MessageType.R_GAMESETTINGS));
+                            System.out.println("Received game settings");
+
+                            //Cast message
+                            numRequiredGame = ((RMessageGameSettings) message).numPlayers;
+                            boolean expertGame = ((RMessageGameSettings) message).expert;
+
                             controller = new InputController(numRequiredGame, expertGame);
                             System.out.println("Creating new game");
                             ClientHandler.restored = false;
