@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
@@ -26,8 +25,6 @@ public class CharacterChoiceSceneController implements SceneController {
     private SMessageCharacter message;
     private String nickname;
 
-    @FXML
-    private GridPane gridPane;
 
     @FXML
     private ImageView stud11;
@@ -80,23 +77,20 @@ public class CharacterChoiceSceneController implements SceneController {
     @FXML
     private Button cardTwoButton;
 
-    @FXML
-    private Button noneButton;
-
-    private ArrayList<ImageView> imageNode = new ArrayList<>();
+    private final ArrayList<ImageView> imageNode = new ArrayList<>();
 
 
     private Map<Color, Integer> mapOfStudents = new HashMap<>();
 
-    private Image redStudent = new Image("/images/student_red.png");
-    private Image greenStudent = new Image("/images/student_green.png");
-    private Image blueStudent = new Image("/images/student_blue.png");
-    private Image yellowStudent = new Image("/images/student_yellow.png");
-    private Image pinkStudent = new Image("/images/student_pink.png");
-    private Image noEntryTiles = new Image("/images/deny_island_icon.png");
+    private final Image redStudent = new Image("/images/student_red.png");
+    private final Image greenStudent = new Image("/images/student_green.png");
+    private final Image blueStudent = new Image("/images/student_blue.png");
+    private final Image yellowStudent = new Image("/images/student_yellow.png");
+    private final Image pinkStudent = new Image("/images/student_pink.png");
+    private final Image noEntryTiles = new Image("/images/deny_island_icon.png");
 
     /**
-     * It build the scene with the available choice
+     * It builds the scene with the available choice
      */
     @FXML
     void initialize() {

@@ -296,7 +296,15 @@ public class InputController implements Serializable{
      * Check if the {@link RMessageNickname} has acceptable field.
      */
     private void nicknameCheck(Message message) {
-        boolean isValid = !(((RMessageNickname)message).nickname == null);
+        boolean isValid = true;
+        RMessageNickname mess = (RMessageNickname) message;
+
+        if(mess.nickname == null)
+            isValid = false;
+
+        if(mess.nickname.length() == 0)
+            isValid = false;
+
         validateMessage(isValid, message);
     }
 

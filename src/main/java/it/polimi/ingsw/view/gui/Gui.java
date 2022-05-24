@@ -13,9 +13,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * This class is the real Graphical User Interface.
  * @author AlessandroG
- * @version 1.0
+ * @version 2.0
  */
 public class Gui extends Application implements ViewInterface {
 
@@ -35,8 +36,6 @@ public class Gui extends Application implements ViewInterface {
     private boolean firstGameStateMessage = true;
     private int numOfPlayer;
     private Characters characterChosen = Characters.NONE;
-    private FXMLLoader loader;
-    private Parent root;
     private SceneController controller;
     private Message currentMessage;
     public static final String ASSISTANT = "/fxml/AssistantChoiceScene.fxml";
@@ -45,10 +44,8 @@ public class Gui extends Application implements ViewInterface {
     public static final String LOGIN = "/fxml/LoginScene.fxml";
     public static final String MENU = "/fxml/MainMenuScene.fxml";
     public static final String NICKNAME = "/fxml/NicknameScene.fxml";
-    private HashMap<String, Scene> scenes = new HashMap<>();
-    private HashMap<String, SceneController> controllers = new HashMap<>();
-
-
+    private final HashMap<String, Scene> scenes = new HashMap<>();
+    private final HashMap<String, SceneController> controllers = new HashMap<>();
 
     /** Coins owned by each player */
     private Map<String, Integer> coins;
@@ -56,11 +53,10 @@ public class Gui extends Application implements ViewInterface {
     /**
      * Method called when the gui starts. It sets the main menu scene.
      * @param stage is the main stage
-     * @throws Exception
      */
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         initializeGui();
         coins = new HashMap<>();
         currentScene = scenes.get(MENU);
@@ -69,6 +65,9 @@ public class Gui extends Application implements ViewInterface {
         resizeStage(stage);
     }
 
+    /**
+     * Method called at the beginning of start() method. It creates every scene and respective controller and puts them in two maps.
+     */
     public void initializeGui(){
 
         ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME));
@@ -76,28 +75,24 @@ public class Gui extends Application implements ViewInterface {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             try {
                 Parent root = loader.load();
-
                 SceneController controller = loader.getController();
                 controllers.put(fxml, controller);
                 controller.setGui(this);
-
                 final Scene scene = new Scene(scaleRootScene(root, fxml));
                 scenes.put(fxml, scene);
-
-            }catch(Exception e){
+            }
+            catch(Exception e) {
                 e.printStackTrace();
                 return;
             }
-
-
         }
 
     }
 
     /**
      * Scales the provided {@link Parent} to screen resolution.
-     * @param root {@link Parent} to be scaled
-     * @return the scaled {@link Parent}
+     * @param root {@link Parent} to be scaled.
+     * @return the scaled {@link Parent}.
      */
     private Parent scaleRootScene(Parent root, String type){
         final int initWidth = 1920;      //initial width
@@ -107,7 +102,7 @@ public class Gui extends Application implements ViewInterface {
         double width = resolution.getWidth();
         double height = resolution.getHeight();
         Scale scale = new Scale(width/initWidth, height/initHeight, 0, 0);
-        if(type.equals(MENU) || type.equals(LOGIN)){
+        if(type.equals(MENU) || type.equals(LOGIN)) {
             scale.pivotXProperty().setValue(width/2);
             scale.pivotYProperty().setValue(height/2);
         } else {
@@ -120,8 +115,8 @@ public class Gui extends Application implements ViewInterface {
     }
 
     /**
-     * Function called every time it's necessary change the current scene
-     * @param scene is the new scene that will be attached to the stage and showed
+     * Function called every time it's necessary change the current scene.
+     * @param scene is the new scene that will be attached to the stage and showed.
      */
     public void changeScene(String scene) {
 
@@ -156,18 +151,37 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void askNickName() {
+
         Platform.runLater(()-> {
-            //TODO avoid blank nickname
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Nickname selection");
             dialog.setHeaderText("Look, it seems we have a new wizard");
             dialog.setContentText("Please enter your battle name:");
+            Tooltip tooltip = new Tooltip();
+            tooltip.setText(
+                    "Nickname must be at least\n" +
+                    "1 characters in length!\n"
+            );
+            dialog.getEditor().setTooltip(tooltip);
+            Image mageImage = new Image("/images/miscellaneous/MAGO 1_1.jpg");
+            ImageView imageView = new ImageView();
+            imageView.setImage(mageImage);
+            imageView.setFitWidth(50);
+            imageView.setFitHeight(60);
+            dialog.setGraphic(imageView);
+
             Optional<String> result = dialog.showAndWait();
             if(result.isPresent()) {
                 nickname = result.get();
-                adapter.sendMessage(new RMessageNickname(nickname));
+                if(result.get().length() == 0)
+                    askNickName();
+                else
+                    adapter.sendMessage(new RMessageNickname(nickname));
             }
+            else
+                askNickName();
         });
+
     }
 
     /**
@@ -176,7 +190,6 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void askGameSettings() {
         Platform.runLater(()->{
-
             List<Integer> choices = new ArrayList<>();
             choices.add(2);
             choices.add(3);
@@ -446,10 +459,6 @@ public class Gui extends Application implements ViewInterface {
         return nickname;
     }
 
-    public HashMap<String, SceneController> getControllers() {
-        return controllers;
-    }
-
     public HashMap<String, Scene> getScenes() {
         return scenes;
     }
@@ -556,8 +565,7 @@ public class Gui extends Application implements ViewInterface {
                 text = "Select the color that will not count during this turn's influence calculation";
             dialog.setContentText(text);
             Optional<Color> result = dialog.showAndWait();
-            if(result.isPresent())
-                adapter.sendMessage(new RMessageRogueMushroomPicker(characterChosen, nickname, result.get()));
+            result.ifPresent(color -> adapter.sendMessage(new RMessageRogueMushroomPicker(characterChosen, nickname, color)));
         });
     }
 
