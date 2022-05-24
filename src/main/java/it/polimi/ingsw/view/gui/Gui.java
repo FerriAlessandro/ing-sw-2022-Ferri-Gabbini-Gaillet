@@ -57,6 +57,7 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void start(Stage stage) {
+        stage.getIcons().add(new Image("/images/Eriantys.png"));
         initializeGui();
         coins = new HashMap<>();
         currentScene = scenes.get(MENU);
@@ -164,8 +165,7 @@ public class Gui extends Application implements ViewInterface {
             );
             dialog.getEditor().setTooltip(tooltip);
             Image mageImage = new Image("/images/miscellaneous/MAGO 1_1.jpg");
-            ImageView imageView = new ImageView();
-            imageView.setImage(mageImage);
+            ImageView imageView = new ImageView(mageImage);
             imageView.setFitWidth(50);
             imageView.setFitHeight(60);
             dialog.setGraphic(imageView);
@@ -189,6 +189,7 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void askGameSettings() {
+
         Platform.runLater(()->{
             List<Integer> choices = new ArrayList<>();
             choices.add(2);
@@ -197,23 +198,33 @@ public class Gui extends Application implements ViewInterface {
             dialog.setTitle("Game settings");
             dialog.setHeaderText("You can't fight alone");
             dialog.setContentText("How many wizards will be there?");
+            Image settingImage = new Image("/images/miscellaneous/settingIcon.png");
+            ImageView imageView = new ImageView(settingImage);
+            imageView.setFitWidth(70);
+            imageView.setFitHeight(70);
+            dialog.setGraphic(imageView);
             Optional<Integer> result = dialog.showAndWait();
-            result.ifPresent(integer -> numOfPlayer = integer);
-
-            List<String> choices2 = new ArrayList<>();
-            choices2.add("For dummies");
-            choices2.add("Expert");
-            ChoiceDialog<String> dialog2 = new ChoiceDialog("For dummies", choices2);
-            dialog2.setTitle("Game settings");
-            dialog2.setHeaderText("Are you an expert or a noob?");
-            dialog2.setContentText("Which version of the game do you want?");
-            Optional<String> result2 = dialog2.showAndWait();
-            if(result2.isPresent()) {
-                if(result2.get().equals("Expert"))
-                    expert = true;
-                adapter.sendMessage((new RMessageGameSettings(numOfPlayer, expert)));
+            if(result.isPresent()) {
+                numOfPlayer = result.get();
+                List<String> choices2 = new ArrayList<>();
+                choices2.add("For dummies");
+                choices2.add("Expert");
+                ChoiceDialog<String> dialog2 = new ChoiceDialog("For dummies", choices2);
+                dialog2.setTitle("Game settings");
+                dialog2.setHeaderText("Are you an expert or a noob?");
+                dialog2.setContentText("Which version of the game do you want?");
+                dialog2.setGraphic(imageView);
+                Optional<String> result2 = dialog2.showAndWait();
+                if(result2.isPresent()) {
+                    if(result2.get().equals("Expert"))
+                        expert = true;
+                    adapter.sendMessage((new RMessageGameSettings(numOfPlayer, expert)));
+                }
+                else
+                    askGameSettings();
             }
-
+            else
+                askGameSettings();
         });
 
     }
