@@ -7,15 +7,18 @@ package it.polimi.ingsw.network.messages;
  */
 public class SMessageWin extends SMessage{
 
-    /** String describing the win and who won */
-    public final String winMessage;
+    /** String describing who won */
+    public final String nickname;
+    /** True for a tied game, false otherwise */
+    public final boolean tie;
 
     /**
      * Constructor.
-     * @param winMessage
+     * @param nickname of the winner or "It's a tie" for a tied game
      */
-    public SMessageWin(String winMessage){
+    public SMessageWin(String nickname, boolean tie){
         super(MessageType.S_WIN);
-        this.winMessage = winMessage;
+        this.nickname = nickname;
+        this.tie = tie;
     }
 }

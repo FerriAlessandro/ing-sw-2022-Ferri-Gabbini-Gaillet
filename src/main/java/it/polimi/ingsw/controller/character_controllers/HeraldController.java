@@ -70,7 +70,7 @@ public class HeraldController extends CharacterController{
             getGame().checkForArchipelago(islandToCheck);
         }catch (TowerWinException e){
             for (String nickname : gameController.getNickNames())
-                gameController.getVirtualView(nickname).showWinMessage(new SMessageWin(e.getMessage()));
+                gameController.getVirtualView(nickname).showWinMessage(new SMessageWin(e.getMessage(), false));
             gameController.gamePhase = Phase.WINNER;
             return;
 
