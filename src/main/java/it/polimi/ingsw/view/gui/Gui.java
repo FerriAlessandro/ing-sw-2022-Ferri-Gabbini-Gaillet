@@ -164,10 +164,7 @@ public class Gui extends Application implements ViewInterface {
                     "1 characters in length!\n"
             );
             dialog.getEditor().setTooltip(tooltip);
-            Image mageImage = new Image("/images/miscellaneous/MAGO 1_1.jpg");
-            ImageView imageView = new ImageView(mageImage);
-            imageView.setFitWidth(50);
-            imageView.setFitHeight(60);
+            ImageView imageView = addImage("/images/miscellaneous/MAGO 1_1.jpg", false);
             dialog.setGraphic(imageView);
 
             Optional<String> result = dialog.showAndWait();
@@ -198,10 +195,7 @@ public class Gui extends Application implements ViewInterface {
             dialog.setTitle("Game settings");
             dialog.setHeaderText("You can't fight alone");
             dialog.setContentText("How many wizards will be there?");
-            Image settingImage = new Image("/images/miscellaneous/settingIcon.png");
-            ImageView imageView = new ImageView(settingImage);
-            imageView.setFitWidth(70);
-            imageView.setFitHeight(70);
+            ImageView imageView = addImage("/images/miscellaneous/settingIcon.png", true);
             dialog.setGraphic(imageView);
             Optional<Integer> result = dialog.showAndWait();
             if(result.isPresent()) {
@@ -235,8 +229,13 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Next move");
-            alert.setHeaderText("Choose the destination of mother nature");
-            alert.setContentText(null);
+            alert.setHeaderText("Choose the destination of Mother Nature");
+            String contentText = "You can move Mother Nature up to " + message.maxNumTiles + " island";
+            if(message.maxNumTiles > 1)
+                contentText += "s";
+            alert.setContentText(contentText);
+            ImageView imageView = addImage("/images/miscellaneous/MADRE NATURA_1.jpg", false);
+            alert.setGraphic(imageView);
             alert.showAndWait();
             try {
                 changeScene(GAMEBOARD);
@@ -273,8 +272,10 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(()-> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Connection problem");
-            alert.setHeaderText("You are now alone.\nThe game cannot procede.");
-            alert.setContentText("Someone lost connection - ending game");
+            alert.setHeaderText("The game cannot procede");
+            alert.setContentText("A connection problem has occurred - closing application");
+            ImageView imageView = addImage("/images/miscellaneous/connectionImage.jpg", true);
+            alert.setGraphic(imageView);
             alert.showAndWait();
             System.exit(0);
         });
@@ -374,6 +375,8 @@ public class Gui extends Application implements ViewInterface {
             ButtonType buttonOne = new ButtonType("Yes");
             ButtonType buttonTwo = new ButtonType("No");
             alert.getButtonTypes().setAll(buttonOne, buttonTwo);
+            ImageView imageView = addImage("/images/characters/KNIGHT.jpg", false);
+            alert.setGraphic(imageView);
 
             Optional<ButtonType> result = alert.showAndWait();
             if(result.isPresent()) {
@@ -413,11 +416,14 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askCloud() {
+
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Next move");
             alert.setHeaderText("Choose the cloud tile to pick students from");
             alert.setContentText(null);
+            ImageView imageView = addImage("/images/cloud_card.png", true);
+            alert.setGraphic(imageView);
             alert.showAndWait();
             try {
                 changeScene(GAMEBOARD);
@@ -429,6 +435,7 @@ public class Gui extends Application implements ViewInterface {
                 e.printStackTrace();
             }
         });
+
     }
 
     /**
@@ -461,6 +468,9 @@ public class Gui extends Application implements ViewInterface {
                 alert.setTitle("Current player");
                 alert.setHeaderText("It's now " + messageCurrentPlayer.nickname + "'s turn\n");
                 alert.setContentText(null);
+
+                ImageView imageView = addImage("/images/miscellaneous/informationIcon.png", true);
+                alert.setGraphic(imageView);
                 alert.showAndWait();
             });
     }
@@ -702,6 +712,21 @@ public class Gui extends Application implements ViewInterface {
         });
     }
 
+    /**
+     * Utility method to avoid code duplication
+     * @param imageURL is the image to add URL
+     * @param isSquare indicates if the image to add has width and height equal
+     * @return the imageView that will be added to the dialog
+     */
+    private ImageView addImage(String imageURL, boolean isSquare) {
+        Image image = new Image(imageURL);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(60);
+        imageView.setFitHeight(70);
+        if(isSquare)
+            imageView.setFitWidth(70);
+        return imageView;
+    }
 
     public Map<String,Integer> getCoins() {
         return coins;
