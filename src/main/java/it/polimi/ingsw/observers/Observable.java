@@ -26,10 +26,11 @@ public abstract class Observable {
     }
 
     /**
-     * Method to remove an {@link Observer} from this observable object.
-     * @param obs {@link Observer} to be removed
+     * Method to remove all observers from this observable.
      */
-    public void removeObserver(Observer obs){
-        observers.remove(obs);
+    public void clearObservers(){
+        for(Observer obs : observers){
+            observers.remove(obs);
+        }
     }
 }

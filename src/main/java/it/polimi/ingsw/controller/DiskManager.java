@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * This class provides methods for storing on disk the game state and therefore implementing persistence.
@@ -41,7 +40,6 @@ public class DiskManager {
 
         if(read.isExpert() == expert && read.getNickNames().size() == numPlayers){
             System.out.println("Save is compatible with requests");
-            read.playersView = new HashMap<>();
             return read;
         }
         System.out.println("Save not compatible with requests");
@@ -59,7 +57,6 @@ public class DiskManager {
             System.out.println("No saved game");
         }else {
             System.out.println("Found a save");
-            read.playersView = new HashMap<>();
         }
         return read;
 

@@ -30,6 +30,15 @@ public class ClientHandler extends Thread {
     /** True if a player was disconnected and the game is set up for them to reconnect, false otherwise */
     public static boolean disconnectionResilient = false;
 
+    /** Last message received by the only remaining connected client. Stored to be used when other(s) reconnect */
+    public static Message queued = null;
+
+    /** True if only one player is still connected */
+    public static boolean oneRemaining = false;
+
+    /** Last action message that was sent to any player. Used as cache for when the current player disconnects and reconnects (and only one player remains connected in the meantime)*/
+    public static SMessage lastUsefulSent = null;
+
     /**
      * Constructor to be used for players that are not first.
      *
@@ -78,7 +87,14 @@ public class ClientHandler extends Thread {
                     synchronized (timeout) {
                         timeout.euthanize();
                     }
-                    controller.elaborateMessage(inMessage);
+
+                    //If only one player is connected the message is stored until the other player(s) reconnects
+                    if (oneRemaining && !inMessage.getType().equals(MessageType.R_NICKNAME)){
+                        queued = inMessage;
+                    } else {
+                        controller.elaborateMessage(inMessage);
+                    }
+
                     synchronized (timeout) {
                         timeout.reset();
                         timeout.revive();
@@ -101,9 +117,27 @@ public class ClientHandler extends Thread {
     public void sendMessage(SMessage message) {
         try {
             out.writeObject(message);
+
+            if(isActionMessage(message)){
+                //Saves last action message sent so it can be used in case the current player disconnects and only 2 players are present
+                System.out.println("\n\nLast useful sent: " + message.getType());
+                lastUsefulSent = message;
+            }
+
         } catch (IOException e) {
             System.out.println("Unable to send the given message");
         }
+    }
+
+    /**
+     * Discerns between action and informative messages.
+     *
+     * @return true if this message asks the player to perform an action, false otherwise
+     */
+    private boolean isActionMessage(SMessage message){
+        return !message.getType().equals(MessageType.S_INVALID) && !message.getType().equals(MessageType.S_TRYAGAIN) &&
+                !message.getType().equals(MessageType.S_PLAYER) && !message.getType().equals(MessageType.S_GAMESTATE)
+                && !message.getType().equals(MessageType.S_NICKNAME) && !message.getType().equals(MessageType.S_EXPERT);
     }
 
     /**

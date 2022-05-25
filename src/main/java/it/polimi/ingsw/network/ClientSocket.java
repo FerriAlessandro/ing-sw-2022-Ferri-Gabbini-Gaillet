@@ -8,6 +8,7 @@ import it.polimi.ingsw.network.messages.SMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +47,7 @@ public class ClientSocket extends Thread {
      */
     @Override
     public void run() {
-        try{
+        try {
             socket = new Socket(ip, port);
             ObjectInputStream in;
 
@@ -57,27 +58,22 @@ public class ClientSocket extends Thread {
 
             startHeartbeat();
 
-            while (!Thread.currentThread().isInterrupted()){
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Message inMessage = (Message) in.readObject();
                     //System.out.println("Received " + inMessage.getType());
-                    if(inMessage.getType().equals(MessageType.S_DISCONNECT)){
+                    if (inMessage.getType().equals(MessageType.S_DISCONNECT)) {
                         closeConnection();
-                    }else{
+                    } else {
                         adapter.elaborateMessage(inMessage);
                     }
-                } catch (Exception e){
-                    if(!Thread.currentThread().isInterrupted()){
-                        System.out.println(System.nanoTime());
-                        System.out.println("Invalid input or corrupted input stream\n");
-                        e.printStackTrace();
+                } catch (Exception e) {
                         closeConnection();
-                    }else{
-                        closeConnection();
-                    }
                     break;
                 }
             }
+        } catch (ConnectException e){
+            System.out.println("No server seems to be available on the given address");
         }catch (Exception e){
             e.printStackTrace();
         }

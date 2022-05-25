@@ -241,6 +241,13 @@ public class VirtualView implements ViewInterface, Observer {
         clientHandler.sendMessage(new SMessage(MessageType.S_MOVE));
     }
 
+    /**
+     * Resends last action message that was sent to any player.
+     */
+    public void resendLast(){
+        clientHandler.sendMessage(ClientHandler.lastUsefulSent);
+    }
+
     
     /**
      * When this method is called by the observed {@link Game} it creates a {@link SMessageGameState} containing the game state
@@ -299,10 +306,12 @@ public class VirtualView implements ViewInterface, Observer {
         SMessageGameState message = new SMessageGameState(studEntrance, studDining, numTowers, towerColor, studIslands,
                 numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition, coins);
 
+        /*
         System.out.println("\n------------------\n");
         Cli cli = new Cli();
         cli.showBoard(message);
         System.out.println("\n------------------\n");
+         */
 
         showBoard(message);
     }

@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
@@ -39,7 +40,7 @@ public class GameController implements Serializable {
     public boolean hasPlayedCharacter;
     private final ArrayList<String> nickNames = new ArrayList<>();
 
-    private final Timer disconnectionTimer = new Timer();
+    private transient Timer disconnectionTimer = new Timer();
 
     /**
      * Game Controller constructor.
@@ -91,9 +92,6 @@ public class GameController implements Serializable {
      */
     public void restorePlayer(String nickName, VirtualView playerView) throws FullGameException, NotExistingPlayerException{
         if(playersView.size() < numOfPlayers){
-            if(playersView.size() == 1){
-                disconnectionTimer.cancel();
-            }
 
             if(getNickNames().contains(nickName)){
                 playersView.put(nickName, playerView);
@@ -103,17 +101,44 @@ public class GameController implements Serializable {
 
             playerView.setExpert(new SMessageExpert(isExpert));
 
+            if(ClientHandler.disconnectionResilient && ClientHandler.oneRemaining){
+                game.getPlayers().stream().filter(x -> x.getNickName().equals(nickName)).findFirst().ifPresent(x->x.setConnected(true));
+            }
+
             if (playersView.size() == numOfPlayers) {
+                if(!ClientHandler.disconnectionResilient) {
+                    //Resumes a saved game
+                    restartFromPhase();
+                }
+
+                ClientHandler.disconnectionResilient = false;
+                game.clearObservers();
                 for(VirtualView v : playersView.values()){
                     game.addObserver(v);
                 }
+
                 game.notifyObservers();
-                if(!ClientHandler.disconnectionResilient) {
-                    restartFromPhase();
-                }
+
             } else {
                 for(VirtualView v : playersView.values()){
                     v.showLobby(new SMessageLobby(new ArrayList<>(playersView.keySet()), numOfPlayers));
+                }
+            }
+
+            if(playersView.size() == 2 && ClientHandler.disconnectionResilient){
+                //In case the second of only two players reconnects after a disconnection resumes game
+                disconnectionTimer.cancel();
+                ClientHandler.oneRemaining = false;
+                if(ClientHandler.queued!=null) {
+                    //If reconnected player was not the current player elaborates the action made by the other player
+                    elaborateMessage(ClientHandler.queued);
+                    ClientHandler.queued = null;
+                } else if (ClientHandler.lastUsefulSent!=null && nickName.equals(game.getCurrentPlayer().getNickName())){
+                    //If reconnected player was the current player resends the last action message which did not receive a response
+                    VirtualView current = playersView.get(game.getCurrentPlayer().getNickName());
+                    current.setExpert(new SMessageExpert(isExpert));
+                    current.showCurrentPlayer(new SMessageCurrentPlayer(nickName));
+                    current.resendLast();
                 }
             }
 
@@ -204,8 +229,10 @@ public class GameController implements Serializable {
         disconnectedPlayer.ifPresent(x -> x.setConnected(false));
 
         if(playersView.size() == 1) {
+            //Case: only one player is still connected
+            ClientHandler.oneRemaining = true;
             long delay = 20000;
-            broadcastMessage("All other players were disconnected, the game will remain open for " + delay/1000 + "s before the game is ended or they reconnect\nIn the meantime you can continue playing", MessageType.S_INVALID);
+            broadcastMessage("All other players were disconnected, the game will remain open for " + delay/1000 + "s before the game is ended or they reconnect", MessageType.S_INVALID);
 
             //Schedule disconnection after timer expires
             disconnectionTimer.schedule(
@@ -219,8 +246,9 @@ public class GameController implements Serializable {
             );
 
         }else {
+            //Case: two players are still connected
             disconnectedPlayer.ifPresent(x -> broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect", MessageType.S_INVALID));
-        }
+
             //Continue without the player that was disconnected
             disconnectedPlayer.ifPresent(x -> {
 
@@ -249,6 +277,7 @@ public class GameController implements Serializable {
 
             });
 
+        }
 
     }
 
@@ -708,6 +737,19 @@ public class GameController implements Serializable {
                 lambda.run();
             }
         };
+    }
+
+    /**
+     * Custom readObject method to handle transient fields.
+     * @param in the object input stream to read from
+     * @throws IOException when a general problem occurs during read
+     * @throws ClassNotFoundException when no matching definition for the class could be found
+     */
+    @Serial
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        disconnectionTimer = new Timer();
+        playersView = new HashMap<>();
     }
 
 }
