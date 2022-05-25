@@ -290,7 +290,11 @@ public class Cli implements ViewInterface {
     @Override
     public void showWinMessage(SMessageWin message) {
         if(message.getType().equals(MessageType.S_WIN)){
-            System.out.println(message.winMessage);
+            if(message.tie){
+                System.out.println("It's a tie");
+            }else {
+                System.out.println(message.nickname + "has won !!!");
+            }
         }else{
             new InvalidParameterException().printStackTrace();
         }

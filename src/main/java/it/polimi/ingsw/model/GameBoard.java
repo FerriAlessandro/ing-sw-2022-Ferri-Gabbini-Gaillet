@@ -318,7 +318,7 @@ public class GameBoard implements Serializable {
             catch (TowerWinException ex) {
                 Optional<Player> p = getPlayerByTowerColor(newColor);
                 if(p.isPresent())
-                    throw new TowerWinException(p.get().getNickName() + "has won !");
+                    throw new TowerWinException(p.get().getNickName());
             }
         }
     }

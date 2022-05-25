@@ -196,7 +196,7 @@ public class GameController implements Serializable {
         if(playersView.size() == 1) {
             //End game
             for (VirtualView v : playersView.values()) {
-                v.showWinMessage(new SMessageWin("You won"));
+                v.showWinMessage(new SMessageWin(v.getNickName(), false));
                 v.showDisconnectionMessage();
             }
         }else{
@@ -332,11 +332,11 @@ public class GameController implements Serializable {
 
         if(winner.equals("Tie")){
             for (String nickName : nickNames)
-                playersView.get(nickName).showWinMessage(new SMessageWin("It's a tie"));
+                playersView.get(nickName).showWinMessage(new SMessageWin(winner, true));
         }
         else {
             for (String nickName : nickNames)
-                playersView.get(nickName).showWinMessage(new SMessageWin(winner + "has won!"));
+                playersView.get(nickName).showWinMessage(new SMessageWin(winner, false));
         }
 
     }
@@ -570,7 +570,7 @@ public class GameController implements Serializable {
             } catch (TowerWinException e) {
 
                 for (String nickName : nickNames)
-                   getVirtualView(nickName).showWinMessage(new SMessageWin(e.getMessage()));
+                   getVirtualView(nickName).showWinMessage(new SMessageWin(e.getMessage(), false));
                 return;
 
 

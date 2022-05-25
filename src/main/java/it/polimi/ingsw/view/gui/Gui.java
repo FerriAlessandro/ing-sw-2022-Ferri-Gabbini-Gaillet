@@ -13,9 +13,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * This class is the real Graphical User Interface.
  * @author AlessandroG
- * @version 1.0
+ * @version 2.0
  */
 public class Gui extends Application implements ViewInterface {
 
@@ -58,6 +59,7 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void start(Stage stage) {
+        stage.getIcons().add(new Image("/images/Eriantys.png"));
         initializeGui();
         coins = new HashMap<>();
         currentScene = scenes.get(MENU);
@@ -66,6 +68,9 @@ public class Gui extends Application implements ViewInterface {
         resizeStage(stage);
     }
 
+    /**
+     * Method called at the beginning of start() method. It creates every scene and respective controller and puts them in two maps.
+     */
     public void initializeGui(){
 
         ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME));
@@ -73,28 +78,24 @@ public class Gui extends Application implements ViewInterface {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             try {
                 Parent root = loader.load();
-
                 SceneController controller = loader.getController();
                 controllers.put(fxml, controller);
                 controller.setGui(this);
-
                 final Scene scene = new Scene(scaleRootScene(root, fxml));
                 scenes.put(fxml, scene);
-
-            }catch(Exception e){
+            }
+            catch(Exception e) {
                 e.printStackTrace();
                 return;
             }
-
-
         }
 
     }
 
     /**
      * Scales the provided {@link Parent} to screen resolution.
-     * @param root {@link Parent} to be scaled
-     * @return the scaled {@link Parent}
+     * @param root {@link Parent} to be scaled.
+     * @return the scaled {@link Parent}.
      */
     private Parent scaleRootScene(Parent root, String type){
         final int initWidth = 1920;      //initial width
@@ -117,8 +118,8 @@ public class Gui extends Application implements ViewInterface {
     }
 
     /**
-     * Function called every time it's necessary change the current scene
-     * @param scene is the new scene that will be attached to the stage and showed
+     * Function called every time it's necessary change the current scene.
+     * @param scene is the new scene that will be attached to the stage and showed.
      */
     public void changeScene(String scene) {
 
@@ -154,17 +155,33 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void askNickName() {
         Platform.runLater(()-> {
-            //TODO avoid blank nickname
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Nickname selection");
             dialog.setHeaderText("Look, it seems we have a new wizard");
             dialog.setContentText("Please enter your battle name:");
+            Tooltip tooltip = new Tooltip();
+            tooltip.setText(
+                    """
+                        Nickname must be at least
+                        1 characters in length!
+                    """
+            );
+            dialog.getEditor().setTooltip(tooltip);
+            ImageView imageView = addImage("/images/miscellaneous/MAGO 1_1.jpg", false);
+            dialog.setGraphic(imageView);
+
             Optional<String> result = dialog.showAndWait();
             if(result.isPresent()) {
                 nickname = result.get();
-                adapter.sendMessage(new RMessageNickname(nickname));
+                if(result.get().length() == 0)
+                    askNickName();
+                else
+                    adapter.sendMessage(new RMessageNickname(nickname));
             }
+            else
+                askNickName();
         });
+
     }
 
     /**
@@ -173,7 +190,6 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void askGameSettings() {
         Platform.runLater(()->{
-
             List<Integer> choices = new ArrayList<>();
             choices.add(2);
             choices.add(3);
@@ -181,23 +197,30 @@ public class Gui extends Application implements ViewInterface {
             dialog.setTitle("Game settings");
             dialog.setHeaderText("You can't fight alone");
             dialog.setContentText("How many wizards will be there?");
+            ImageView imageView = addImage("/images/miscellaneous/settingIcon.png", true);
+            dialog.setGraphic(imageView);
             Optional<Integer> result = dialog.showAndWait();
-            result.ifPresent(integer -> numOfPlayer = integer);
-
-            List<String> choices2 = new ArrayList<>();
-            choices2.add("For dummies");
-            choices2.add("Expert");
-            ChoiceDialog<String> dialog2 = new ChoiceDialog<>("For dummies", choices2);
-            dialog2.setTitle("Game settings");
-            dialog2.setHeaderText("Are you an expert or a noob?");
-            dialog2.setContentText("Which version of the game do you want?");
-            Optional<String> result2 = dialog2.showAndWait();
-            if(result2.isPresent()) {
-                if(result2.get().equals("Expert"))
-                    expert = true;
-                adapter.sendMessage((new RMessageGameSettings(numOfPlayer, expert)));
+            if(result.isPresent()) {
+                numOfPlayer = result.get();
+                List<String> choices2 = new ArrayList<>();
+                choices2.add("For dummies");
+                choices2.add("Expert");
+                ChoiceDialog<String> dialog2 = new ChoiceDialog<>("For dummies", choices2);
+                dialog2.setTitle("Game settings");
+                dialog2.setHeaderText("Are you an expert or a noob?");
+                dialog2.setContentText("Which version of the game do you want?");
+                dialog2.setGraphic(imageView);
+                Optional<String> result2 = dialog2.showAndWait();
+                if(result2.isPresent()) {
+                    if(result2.get().equals("Expert"))
+                        expert = true;
+                    adapter.sendMessage((new RMessageGameSettings(numOfPlayer, expert)));
+                }
+                else
+                    askGameSettings();
             }
-
+            else
+                askGameSettings();
         });
 
     }
@@ -208,8 +231,13 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Next move");
-            alert.setHeaderText("Choose the destination of mother nature");
-            alert.setContentText(null);
+            alert.setHeaderText("Choose the destination of Mother Nature");
+            String contentText = "You can move Mother Nature up to " + message.maxNumTiles + " island";
+            if(message.maxNumTiles > 1)
+                contentText += "s";
+            alert.setContentText(contentText);
+            ImageView imageView = addImage("/images/miscellaneous/MADRE NATURA_1.jpg", false);
+            alert.setGraphic(imageView);
             alert.showAndWait();
             try {
                 changeScene(GAMEBOARD);
@@ -246,8 +274,10 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(()-> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Connection problem");
-            alert.setHeaderText("You are now alone.\nThe game cannot procede.");
-            alert.setContentText("Someone lost connection - ending game");
+            alert.setHeaderText("The game cannot procede");
+            alert.setContentText("A connection problem has occurred - closing application");
+            ImageView imageView = addImage("/images/miscellaneous/connectionImage.jpg", true);
+            alert.setGraphic(imageView);
             alert.showAndWait();
             System.exit(0);
         });
@@ -348,6 +378,8 @@ public class Gui extends Application implements ViewInterface {
                 ButtonType buttonOne = new ButtonType("Yes");
                 ButtonType buttonTwo = new ButtonType("No");
                 alert.getButtonTypes().setAll(buttonOne, buttonTwo);
+            ImageView imageView = addImage("/images/characters/KNIGHT.jpg", false);
+            alert.setGraphic(imageView);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent()) {
@@ -363,11 +395,12 @@ public class Gui extends Application implements ViewInterface {
                 }
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Caracter card choice");
+                alert.setTitle("Character card choice");
                 alert.setHeaderText("You don't have enough coins to play any available character card");
                 alert.setContentText(null);
                 alert.showAndWait();
             }
+
         });
     }
 
@@ -395,6 +428,8 @@ public class Gui extends Application implements ViewInterface {
             alert.setTitle("Next move");
             alert.setHeaderText("Choose the cloud tile to pick students from");
             alert.setContentText(null);
+            ImageView imageView = addImage("/images/cloud_card.png", true);
+            alert.setGraphic(imageView);
             alert.showAndWait();
             try {
                 changeScene(GAMEBOARD);
@@ -406,6 +441,7 @@ public class Gui extends Application implements ViewInterface {
                 e.printStackTrace();
             }
         });
+
     }
 
     /**
@@ -438,6 +474,9 @@ public class Gui extends Application implements ViewInterface {
                 alert.setTitle("Current player");
                 alert.setHeaderText("It's now " + messageCurrentPlayer.nickname + "'s turn\n");
                 alert.setContentText(null);
+
+                ImageView imageView = addImage("/images/miscellaneous/informationIcon.png", true);
+                alert.setGraphic(imageView);
                 alert.showAndWait();
             });
     }
@@ -679,6 +718,21 @@ public class Gui extends Application implements ViewInterface {
         });
     }
 
+    /**
+     * Utility method to avoid code duplication
+     * @param imageURL is the image to add URL
+     * @param isSquare indicates if the image to add has width and height equal
+     * @return the imageView that will be added to the dialog
+     */
+    private ImageView addImage(String imageURL, boolean isSquare) {
+        Image image = new Image(imageURL);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(60);
+        imageView.setFitHeight(70);
+        if(isSquare)
+            imageView.setFitWidth(70);
+        return imageView;
+    }
 
     public Map<String,Integer> getCoins() {
         return coins;
