@@ -293,7 +293,7 @@ public class Cli implements ViewInterface {
             if(message.tie){
                 System.out.println("It's a tie");
             }else {
-                System.out.println(message.nickname + "has won !!!");
+                System.out.println(message.nickname + " has won !!!");
             }
         }else{
             new InvalidParameterException().printStackTrace();

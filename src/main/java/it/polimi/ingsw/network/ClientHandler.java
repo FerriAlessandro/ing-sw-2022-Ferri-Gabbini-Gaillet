@@ -116,16 +116,18 @@ public class ClientHandler extends Thread {
      */
     public void sendMessage(SMessage message) {
         try {
-            out.writeObject(message);
-
             if(isActionMessage(message)){
                 //Saves last action message sent so it can be used in case the current player disconnects and only 2 players are present
                 System.out.println("\n\nLast useful sent: " + message.getType());
                 lastUsefulSent = message;
             }
 
+            System.out.println("Trying to send this message: " + message.getType() + " to " + playerNickname);
+            out.writeObject(message);
+
         } catch (IOException e) {
             System.out.println("Unable to send the given message");
+            e.printStackTrace();
         }
     }
 

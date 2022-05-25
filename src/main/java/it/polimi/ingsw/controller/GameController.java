@@ -95,11 +95,11 @@ public class GameController implements Serializable {
 
             if(getNickNames().contains(nickName)){
                 playersView.put(nickName, playerView);
+                game.addObserver(playerView);
+                playerView.setExpert(new SMessageExpert(isExpert));
             } else {
                 throw new NotExistingPlayerException();
             }
-
-            playerView.setExpert(new SMessageExpert(isExpert));
 
             if(ClientHandler.disconnectionResilient && ClientHandler.oneRemaining){
                 game.getPlayers().stream().filter(x -> x.getNickName().equals(nickName)).findFirst().ifPresent(x->x.setConnected(true));
@@ -109,12 +109,6 @@ public class GameController implements Serializable {
                 if(!ClientHandler.disconnectionResilient) {
                     //Resumes a saved game
                     restartFromPhase();
-                }
-
-                ClientHandler.disconnectionResilient = false;
-                game.clearObservers();
-                for(VirtualView v : playersView.values()){
-                    game.addObserver(v);
                 }
 
                 game.notifyObservers();
@@ -128,15 +122,16 @@ public class GameController implements Serializable {
             if(playersView.size() == 2 && ClientHandler.disconnectionResilient){
                 //In case the second of only two players reconnects after a disconnection resumes game
                 disconnectionTimer.cancel();
+                System.out.println("Canceled disconnection timer");
                 ClientHandler.oneRemaining = false;
                 if(ClientHandler.queued!=null) {
                     //If reconnected player was not the current player elaborates the action made by the other player
                     elaborateMessage(ClientHandler.queued);
                     ClientHandler.queued = null;
                 } else if (ClientHandler.lastUsefulSent!=null && nickName.equals(game.getCurrentPlayer().getNickName())){
+                    System.out.println("\n\nLast useful message found is of type: " + ClientHandler.lastUsefulSent.getType() + "\n\n");
                     //If reconnected player was the current player resends the last action message which did not receive a response
                     VirtualView current = playersView.get(game.getCurrentPlayer().getNickName());
-                    current.setExpert(new SMessageExpert(isExpert));
                     current.showCurrentPlayer(new SMessageCurrentPlayer(nickName));
                     current.resendLast();
                 }
@@ -222,6 +217,7 @@ public class GameController implements Serializable {
      * @param nickname is the nickname of the player disconnected
      */
     public void playerDisconnected(String nickname) {
+        game.removeObserver(playersView.get(nickname));
         playersView.remove(nickname);
         ClientHandler.disconnectionResilient = true;
 
@@ -235,6 +231,7 @@ public class GameController implements Serializable {
             broadcastMessage("All other players were disconnected, the game will remain open for " + delay/1000 + "s before the game is ended or they reconnect", MessageType.S_INVALID);
 
             //Schedule disconnection after timer expires
+            disconnectionTimer = new Timer();
             disconnectionTimer.schedule(
                     lambda2timer(() -> {
                         for (VirtualView v : playersView.values()) {
