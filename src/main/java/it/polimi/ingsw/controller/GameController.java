@@ -39,6 +39,8 @@ public class GameController implements Serializable {
     public boolean hasPlayedCharacter;
     private final ArrayList<String> nickNames = new ArrayList<>();
 
+    private final Timer disconnectionTimer = new Timer();
+
     /**
      * Game Controller constructor.
      * @param numOfPlayers Num of players in the game
@@ -89,6 +91,10 @@ public class GameController implements Serializable {
      */
     public void restorePlayer(String nickName, VirtualView playerView) throws FullGameException, NotExistingPlayerException{
         if(playersView.size() < numOfPlayers){
+            if(playersView.size() == 1){
+                disconnectionTimer.cancel();
+            }
+
             if(getNickNames().contains(nickName)){
                 playersView.put(nickName, playerView);
             } else {
@@ -192,43 +198,49 @@ public class GameController implements Serializable {
      */
     public void playerDisconnected(String nickname) {
         playersView.remove(nickname);
+        ClientHandler.disconnectionResilient = true;
+
+        Optional<Player> disconnectedPlayer = game.getPlayers().stream().filter(x -> x.getNickName().equals(nickname)).findFirst();
+        disconnectedPlayer.ifPresent(x -> x.setConnected(false));
 
         if(playersView.size() == 1) {
-            //End game
-            for (VirtualView v : playersView.values()) {
-                v.showWinMessage(new SMessageWin(v.getNickName(), false));
-                v.showDisconnectionMessage();
-            }
-        }else{
-            //Set-up for reconnection
-            ClientHandler.disconnectionResilient = true;
+            long delay = 20000;
+            broadcastMessage("All other players were disconnected, the game will remain open for " + delay/1000 + "s before the game is ended or they reconnect\nIn the meantime you can continue playing", MessageType.S_INVALID);
 
+            //Schedule disconnection after timer expires
+            disconnectionTimer.schedule(
+                    lambda2timer(() -> {
+                        for (VirtualView v : playersView.values()) {
+                            v.showWinMessage(new SMessageWin(v.getNickName(), false));
+                            v.showDisconnectionMessage();
+                        }
+                        }),
+                    delay
+            );
 
+        }else {
+            disconnectedPlayer.ifPresent(x -> broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect", MessageType.S_INVALID));
+        }
             //Continue without the player that was disconnected
-            Optional<Player> disconnectedPlayer = game.getPlayers().stream().filter(x -> x.getNickName().equals(nickname)).findFirst();
-            disconnectedPlayer.ifPresent(x -> x.setConnected(false));
-            disconnectedPlayer.ifPresent(x->{
+            disconnectedPlayer.ifPresent(x -> {
 
-                broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect",MessageType.S_INVALID);
-
-                if(game.getCurrentPlayer().equals(x)){
+                if (game.getCurrentPlayer().equals(x)) {
                     try {
                         game.endPlayerTurn(x);
 
                         restartFromPhase();
 
                     } catch (EndRoundException e) {
-                        if(gamePhase.equals(Phase.CHOOSE_ASSISTANT_CARD)){
+                        if (gamePhase.equals(Phase.CHOOSE_ASSISTANT_CARD)) {
                             game.sortPlayersActionTurn();
-                            for(AssistantCard assistant : AssistantCard.values())
+                            for (AssistantCard assistant : AssistantCard.values())
                                 assistant.resetPlayed();  //Reset the already played assistants
                             askMoveOrCharacter();
-                        }else{
+                        } else {
                             //Phase is Choose cloud
-                            if(isLastRound) {
+                            if (isLastRound) {
                                 checkWin();
-                            }
-                            else{
+                            } else {
                                 setupNewRound();
                             }
                         }
@@ -237,7 +249,6 @@ public class GameController implements Serializable {
 
             });
 
-        }
 
     }
 
@@ -683,4 +694,20 @@ public class GameController implements Serializable {
     public boolean isExpert(){
         return isExpert;
     }
+
+
+    /**
+     * Converts a runnable lambda expression to a {@link TimerTask}.
+     * @param lambda expression to be converted.
+     * @return the corresponding TimerTask
+     */
+    private static TimerTask lambda2timer(Runnable lambda) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                lambda.run();
+            }
+        };
+    }
+
 }

@@ -80,17 +80,14 @@ public class CharacterChoiceSceneController implements SceneController {
     @FXML
     private Button noneButton;
 
-    private ArrayList<ImageView> imageNode = new ArrayList<>();
+    private final ArrayList<ImageView> imageNode = new ArrayList<>();
 
-
-    private Map<Color, Integer> mapOfStudents = new HashMap<>();
-
-    private Image redStudent = new Image("/images/student_red.png");
-    private Image greenStudent = new Image("/images/student_green.png");
-    private Image blueStudent = new Image("/images/student_blue.png");
-    private Image yellowStudent = new Image("/images/student_yellow.png");
-    private Image pinkStudent = new Image("/images/student_pink.png");
-    private Image noEntryTiles = new Image("/images/deny_island_icon.png");
+    private final Image redStudent = new Image("/images/student_red.png");
+    private final Image greenStudent = new Image("/images/student_green.png");
+    private final Image blueStudent = new Image("/images/student_blue.png");
+    private final Image yellowStudent = new Image("/images/student_yellow.png");
+    private final Image pinkStudent = new Image("/images/student_pink.png");
+    private final Image noEntryTiles = new Image("/images/deny_island_icon.png");
 
     /**
      * It builds the scene with the available choice
@@ -225,7 +222,7 @@ public class CharacterChoiceSceneController implements SceneController {
             if (message.students.get(character) != null && !message.students.get(character).values().stream().allMatch(x -> x == 0)) {
                 int studentAdded = 0;
                 for (int j = 0, k = 1; j < 3; j++, k++) {
-                    mapOfStudents = message.students.get((message.effects.get(j)));
+                    Map<Color, Integer> mapOfStudents = message.students.get((message.effects.get(j)));
                     for (Color color : mapOfStudents.keySet()) {
                         switch (color) {
                             case GREEN -> {
