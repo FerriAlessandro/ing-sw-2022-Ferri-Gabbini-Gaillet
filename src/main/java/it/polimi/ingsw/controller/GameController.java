@@ -106,12 +106,13 @@ public class GameController implements Serializable {
             }
 
             if (playersView.size() == numOfPlayers) {
+                game.notifyObservers();
                 if(!ClientHandler.disconnectionResilient) {
                     //Resumes a saved game
                     restartFromPhase();
                 }
 
-                game.notifyObservers();
+
 
             } else {
                 for(VirtualView v : playersView.values()){
