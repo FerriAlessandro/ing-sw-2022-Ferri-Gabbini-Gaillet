@@ -44,6 +44,7 @@ public class Gui extends Application implements ViewInterface {
     public static final String LOGIN = "/fxml/LoginScene.fxml";
     public static final String MENU = "/fxml/MainMenuScene.fxml";
     public static final String NICKNAME = "/fxml/NicknameScene.fxml";
+    public static final String LOADING = "/fxml/LoadingScreen.fxml";
     private final HashMap<String, Scene> scenes = new HashMap<>();
     private final HashMap<String, SceneController> controllers = new HashMap<>();
 
@@ -73,7 +74,7 @@ public class Gui extends Application implements ViewInterface {
      */
     public void initializeGui(){
 
-        ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME));
+        ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME, LOADING));
         for(String fxml : sceneFXML){
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             try {
@@ -257,6 +258,8 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void showLobby(SMessageLobby message) {
         Platform.runLater(()-> {
+
+            changeScene(LOADING);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Lobby information");
             alert.setHeaderText("We can't start the game right now, we need other wizard(s)!");
