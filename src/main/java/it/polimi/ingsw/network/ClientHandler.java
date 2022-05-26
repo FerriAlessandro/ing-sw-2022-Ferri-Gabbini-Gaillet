@@ -3,6 +3,7 @@ package it.polimi.ingsw.network;
 import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.exceptions.FullGameException;
 import it.polimi.ingsw.exceptions.NotExistingPlayerException;
+import it.polimi.ingsw.exceptions.UnavailableNicknameException;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
@@ -92,7 +93,13 @@ public class ClientHandler extends Thread {
                     if (oneRemaining && !inMessage.getType().equals(MessageType.R_NICKNAME)){
                         queued = inMessage;
                     } else {
-                        controller.elaborateMessage(inMessage);
+                        try {
+                            controller.elaborateMessage(inMessage);
+                        } catch (RuntimeException e){
+                            e.printStackTrace();
+                            sendMessage(new SMessageInvalid(e.getMessage()));
+                            sendMessage(new SMessage(MessageType.S_TRYAGAIN));
+                        }
                     }
 
                     synchronized (timeout) {
@@ -139,7 +146,8 @@ public class ClientHandler extends Thread {
     private boolean isActionMessage(SMessage message){
         return !message.getType().equals(MessageType.S_INVALID) && !message.getType().equals(MessageType.S_TRYAGAIN) &&
                 !message.getType().equals(MessageType.S_PLAYER) && !message.getType().equals(MessageType.S_GAMESTATE)
-                && !message.getType().equals(MessageType.S_NICKNAME) && !message.getType().equals(MessageType.S_EXPERT);
+                && !message.getType().equals(MessageType.S_NICKNAME) && !message.getType().equals(MessageType.S_EXPERT)
+                && !message.getType().equals(MessageType.S_ASSISTANTSTATUS);
     }
 
     /**
@@ -189,48 +197,39 @@ public class ClientHandler extends Thread {
 
                         if(restored || disconnectionResilient) {
 
+                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                            this.playerNickname = nickMessage.nickname;
+                            try {
+                                VirtualView virtualView = new VirtualView(this);
+                                controller.restorePlayer(nickMessage.nickname, virtualView);
+                                validNickName = true;
 
-                            if(!controller.getGameController().playersView.containsKey(nickMessage.nickname)) {
-                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                                this.playerNickname = nickMessage.nickname;
+                            } catch (FullGameException e) {
+                                //Notifies of full game and closes the connection without notifying the controller
+                                sendMessage(new SMessageInvalid(e.getMessage()));
+                                e.printStackTrace();
                                 try {
-                                    VirtualView virtualView = new VirtualView(this);
-                                    controller.getGameController().restorePlayer(nickMessage.nickname, virtualView);
-                                    validNickName = true;
+                                    out.flush();
+                                    clientSocket.close();
+                                } catch (Exception ignored) {}
+                                this.interrupt();
 
-                                } catch (FullGameException e) {
-                                    //Notifies of full game and closes the connection without notifying the controller
-                                    sendMessage(new SMessageInvalid("The current game is already full. Please try again later"));
-                                    e.printStackTrace();
-                                    try {
-                                        out.flush();
-                                        clientSocket.close();
-                                    } catch (Exception ignored) {}
-                                    this.interrupt();
-
-                                } catch (NotExistingPlayerException e){
-                                    sendMessage(new SMessageInvalid("No pre-existing player had this nickname"));
-                                    e.printStackTrace();
-                                }
-
-                            } else {
-                                sendMessage(new SMessageInvalid("Nickname already taken"));
+                            } catch (NotExistingPlayerException | UnavailableNicknameException e) {
+                                sendMessage(new SMessageInvalid(e.getMessage()));
                             }
 
                         }else {
 
-                            if (!controller.getNicknames().contains(nickMessage.nickname)) {
-                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                                this.playerNickname = nickMessage.nickname;
-                                try {
-                                    VirtualView virtualView = new VirtualView(this);
-                                    controller.addPlayer(nickMessage.nickname, virtualView);
-                                    validNickName = true;
-                                } catch (FullGameException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                sendMessage(new SMessageInvalid("Nickname already taken"));
+                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                            this.playerNickname = nickMessage.nickname;
+                            try {
+                                VirtualView virtualView = new VirtualView(this);
+                                controller.addPlayer(nickMessage.nickname, virtualView);
+                                validNickName = true;
+                            } catch (FullGameException e) {
+                                e.printStackTrace();
+                            } catch (UnavailableNicknameException e){
+                                sendMessage(new SMessageInvalid(e.getMessage()));
                             }
 
                         }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.observers;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 /** This class provides methods for a class to notify changes to all classes implementing
@@ -14,6 +15,19 @@ public abstract class Observable {
     public void notifyObservers(){
         for (Observer obs : observers) {
             obs.notify(this);
+        }
+    }
+
+    /**
+     * Notifies the provided observer.
+     * @param obs the {@link Observer} to be notified
+     * @throws InvalidParameterException if the provided {@link Observer} is not registered on this {@link Observable} object
+     */
+    public void notifyObserver(Observer obs) throws InvalidParameterException{
+        if(observers.contains(obs)){
+            obs.notify(this);
+        } else {
+            throw new InvalidParameterException();
         }
     }
 

@@ -11,6 +11,6 @@ public class FullGameException extends Exception{
      */
 
     public FullGameException(){
-        super("This Match is already full!");
+        super("The current game is already full. Please try again later");
     }
 }

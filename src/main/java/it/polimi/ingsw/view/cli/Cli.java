@@ -220,6 +220,9 @@ public class Cli implements ViewInterface {
     @Override
     public void showDisconnectionMessage() {
         System.out.println("Either you or all other remaining players lost connection - ending game");
+        try {
+            System.in.close();
+        } catch (Exception ignored){}
     }
 
     /**
