@@ -151,14 +151,6 @@ public class GameBoardSceneController implements SceneController {
         this.nicknames.add(player_name_1);
         this.nicknames.add(player_name_2);
         this.nicknames.add(player_name_3);
-        /*player_name_1.setText(nicknames.get(0));
-        this.nicknames.add(player_name_1);
-        player_name_2.setText(nicknames.get(1));
-        this.nicknames.add(player_name_2);
-        if(numOfPlayers == 3) {
-            player_name_3.setText(nicknames.get(2));
-            this.nicknames.add(player_name_3);
-        }*/
         if (numOfPlayers != 3) {
             playerboard_3.setVisible(false);
             cloud_3.setVisible(false);
@@ -242,7 +234,6 @@ public class GameBoardSceneController implements SceneController {
      */
     public void getEntranceChoice(){
         FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
-       // FXPlayerBoard board = getPlayerBoardByNickname("Gui");
         board.makeEntranceSelectable();
     }
 
@@ -293,7 +284,6 @@ public class GameBoardSceneController implements SceneController {
     public void refreshEntrances(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> entrances){
         for(String nickname : entrances.keySet())
             getPlayerBoardByNickname(nickname).refreshEntrance(entrances.get(nickname));
-        //getPlayerBoardByNickname("Gui").refreshEntrance(entrances.get("Gui"));
 
     }
 
@@ -304,7 +294,6 @@ public class GameBoardSceneController implements SceneController {
     public void refreshDiningRooms(Map<String, Map<it.polimi.ingsw.model.enumerations.Color, Integer>> diningRooms){
         for(String nickname : diningRooms.keySet())
             getPlayerBoardByNickname(nickname).refreshDiningRooms(diningRooms.get(nickname));
-       // getPlayerBoardByNickname("Gui").refreshDiningRooms(diningRooms.get("Gui"));
     }
 
     /**
@@ -314,7 +303,6 @@ public class GameBoardSceneController implements SceneController {
     public void refreshProfessors(Map<it.polimi.ingsw.model.enumerations.Color, String> professors){
         for(String nickname : professors.values())
             getPlayerBoardByNickname(nickname).refreshProfessors(professors);
-        //getPlayerBoardByNickname("Gui").refreshProfessors(professors);
 
     }
 
@@ -325,7 +313,6 @@ public class GameBoardSceneController implements SceneController {
     public void refreshTowerZones(Map<String, Integer> towers){
        for(String nickname : towers.keySet())
             getPlayerBoardByNickname(nickname).refreshTowerZones(towers.get(nickname));
-       // getPlayerBoardByNickname("Gui").refreshTowerZones(towers.get("Gui"));
     }
 
     /**
