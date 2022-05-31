@@ -253,6 +253,7 @@ public class FXPlayerBoard {
             if(student.getOpacity() == 1) {
                 student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.HAND));
                 student.setOnMouseClicked(mouseEvent -> {
+                    gameBoardSceneController.getHintsLabel().setText("Place it on an island or in the Dining Room!");
                     gameBoardSceneController.getIslandChoice(student);
                     makeDiningRoomSelectable(student);
                     removeSelectableEntrance();

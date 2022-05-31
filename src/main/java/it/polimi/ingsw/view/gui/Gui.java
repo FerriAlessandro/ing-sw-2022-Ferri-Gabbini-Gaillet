@@ -69,6 +69,11 @@ public class Gui extends Application implements ViewInterface {
         resizeStage(stage);
     }
 
+    @Override
+    public void stop(){
+        adapter.sendMessage(new RMessageDisconnect());
+    }
+
     /**
      * Method called at the beginning of start() method. It creates every scene and respective controller and puts them in two maps.
      */
@@ -230,19 +235,21 @@ public class Gui extends Application implements ViewInterface {
     public void askMotherNatureMove(SMessageMotherNature message) {
 
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+           /* Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Next move");
-            alert.setHeaderText("Choose the destination of Mother Nature");
+            alert.setHeaderText("Choose the destination of Mother Nature");*/
             String contentText = "You can move Mother Nature up to " + message.maxNumTiles + " island";
             if(message.maxNumTiles > 1)
                 contentText += "s";
-            alert.setContentText(contentText);
-            ImageView imageView = addImage("/images/miscellaneous/MADRE NATURA_1.jpg", false);
+             contentText+="!";
+            //alert.setContentText(contentText);
+            gameBoardSceneController.getHintsLabel().setText(contentText);
+           /* ImageView imageView = addImage("/images/miscellaneous/MADRE NATURA_1.jpg", false);
             alert.setGraphic(imageView);
-            alert.showAndWait();
+            alert.showAndWait();*/
             try {
                 changeScene(GAMEBOARD);
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
                 gameBoardSceneController.getIslandChoice();
             }
             catch (Exception e) {
@@ -260,12 +267,12 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(()-> {
 
             changeScene(LOADING);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Lobby information");
             alert.setHeaderText("We can't start the game right now, we need other wizard(s)!");
             alert.setContentText("Waiting for " + message.numPlayersTotal + " players to be connected...\n");
             //TODO add currentPlayers connected list
-            alert.showAndWait();
+            alert.showAndWait();*/
         });
     }
 
@@ -274,16 +281,19 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showDisconnectionMessage() {
-        Platform.runLater(()-> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Connection problem");
-            alert.setHeaderText("The game cannot procede");
-            alert.setContentText("A connection problem has occurred - closing application");
-            ImageView imageView = addImage("/images/miscellaneous/connectionImage.jpg", true);
-            alert.setGraphic(imageView);
-            alert.showAndWait();
-            System.exit(0);
-        });
+
+        if(!Platform.isImplicitExit()) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Connection problem");
+                alert.setHeaderText("The game cannot procede");
+                alert.setContentText("A connection problem has occurred - closing application");
+                ImageView imageView = addImage("/images/miscellaneous/connectionImage.jpg", true);
+                alert.setGraphic(imageView);
+                alert.showAndWait();
+                System.exit(0);
+            });
+        }
     }
 
     @Override
@@ -373,7 +383,7 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
         Platform.runLater(() -> {
-            if (messageCharacter.effects.stream().anyMatch(x -> x.getCost() <= coins.get(nickname))) {
+            if (messageCharacter.effects.stream().anyMatch(x -> messageCharacter.cardCost.get(x) <= coins.get(nickname))) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Character card choice");
                 alert.setHeaderText("You have the possibility to play a character card");
@@ -397,11 +407,12 @@ public class Gui extends Application implements ViewInterface {
                         adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
                 }
             } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+              /*  Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Character card choice");
                 alert.setHeaderText("You don't have enough coins to play any available character card");
                 alert.setContentText(null);
-                alert.showAndWait();
+                alert.showAndWait();*/
+                adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
             }
 
         });
@@ -411,9 +422,10 @@ public class Gui extends Application implements ViewInterface {
     public void askMove() {
         Platform.runLater(() -> {
             try {
-
-                changeScene(GAMEBOARD);
                 GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+                gameBoardSceneController.getHintsLabel().setText("Select a student from the entrance!");
+                changeScene(GAMEBOARD);
+
 
                 gameBoardSceneController.getEntranceChoice();
             }
@@ -427,16 +439,17 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void askCloud() {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+            /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Next move");
             alert.setHeaderText("Choose the cloud tile to pick students from");
             alert.setContentText(null);
             ImageView imageView = addImage("/images/cloud_card.png", true);
             alert.setGraphic(imageView);
-            alert.showAndWait();
+            alert.showAndWait();*/
+            gameBoardSceneController.getHintsLabel().setText("Choose a cloud tile!");
             try {
                 changeScene(GAMEBOARD);
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
                 gameBoardSceneController.getCloudChoice();
 
             }
@@ -473,14 +486,15 @@ public class Gui extends Application implements ViewInterface {
 
         if(!messageCurrentPlayer.nickname.equals(nickname))
             Platform.runLater(()-> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Current player");
                 alert.setHeaderText("It's now " + messageCurrentPlayer.nickname + "'s turn\n");
                 alert.setContentText(null);
 
                 ImageView imageView = addImage("/images/miscellaneous/informationIcon.png", true);
                 alert.setGraphic(imageView);
-                alert.showAndWait();
+                alert.showAndWait();*/
+                gameBoardSceneController.getHintsLabel().setText("It's now "+ messageCurrentPlayer.nickname+"'s turn!");
             });
     }
 
@@ -503,8 +517,10 @@ public class Gui extends Application implements ViewInterface {
     public void grandmaHerbHeraldScene(SMessageGrandmaherbHerald message) {
 
         Platform.runLater(() -> {
+            GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+            this.controller = gameBoardSceneController;
             Characters characterChosen = message.characterName;
-            String text;
+           /* String text;
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Disclaimer");
             alert.setHeaderText("You have chosen " + characterChosen.name() + " card!");
@@ -512,11 +528,14 @@ public class Gui extends Application implements ViewInterface {
                 text = "Select the island where the no entry tile will be applied";
             else
                 text = "Select the island to resolve";
-            alert.setContentText(text);
+            alert.setContentText(text);*/
+            if(characterChosen.equals(Characters.GRANDMA_HERB))
+                gameBoardSceneController.getHintsLabel().setText("Select the island where the no entry tile will be applied!");
+            else
+                gameBoardSceneController.getHintsLabel().setText("Select the island to resolve!");
 
             try {
                 changeScene(GAMEBOARD);
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
                 gameBoardSceneController.getIslandChoiceGrandmaHerald();
 
             }

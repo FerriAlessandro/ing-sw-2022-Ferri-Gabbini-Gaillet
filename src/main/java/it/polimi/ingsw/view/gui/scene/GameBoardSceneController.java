@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.*;
 
@@ -99,6 +100,12 @@ public class GameBoardSceneController implements SceneController {
     @FXML
     private ImageView playerboard_3;
 
+    @FXML
+    private Label hintsLabel;
+
+    @FXML
+    private ImageView speaker;
+
     private final ArrayList<FXisland> islands = new ArrayList<>();
 
     private final ArrayList<FXPlayerBoard> playerBoards = new ArrayList<>();
@@ -106,6 +113,8 @@ public class GameBoardSceneController implements SceneController {
     private final ArrayList<FXCloud> clouds = new ArrayList<>();
 
     private final ArrayList<Label> nicknames = new ArrayList<>();
+    
+
 
 
     /**
@@ -122,6 +131,9 @@ public class GameBoardSceneController implements SceneController {
         chosen_assistant_1.setVisible(false);
         chosen_assistant_2.setVisible(false);
         chosen_assistant_3.setVisible(false);
+        hintsLabel.setFont(new Font("Arial", 17));
+        hintsLabel.setStyle("-fx-font-weight: bold;");
+        
     }
 
     /**
@@ -180,6 +192,7 @@ public class GameBoardSceneController implements SceneController {
         return this.gui;
     }
 
+    public Label getHintsLabel(){return this.hintsLabel;}
 
 
     @Override
@@ -231,7 +244,6 @@ public class GameBoardSceneController implements SceneController {
      */
     public void getEntranceChoice(){
         FXPlayerBoard board = getPlayerBoardByNickname(getGui().getNickName());
-       // FXPlayerBoard board = getPlayerBoardByNickname("Gui");
         assert board != null;
         board.makeEntranceSelectable();
     }
