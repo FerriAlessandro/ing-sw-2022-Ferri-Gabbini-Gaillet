@@ -43,4 +43,10 @@ class AssistantDeckTest {
         deck1.getCards().removeAll(deck2.getCards());
         assertEquals(deck1.currNumOfCards(), 0);
    }
+
+   @Test
+    @DisplayName("Tests if motherNature movement's steps are okay")
+    void motherNatureTest() {
+        assertEquals(1, AssistantCard.OSTRICH.getMotherNatureMovement());
+   }
 }

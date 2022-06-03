@@ -65,21 +65,6 @@ public class Player implements Serializable {
     }
 
     /**
-     * @return The Status of the Player (Online, Offline, Inactive)
-     */
-    public Status getStatus() {
-        return playerStatus;
-    }
-
-    /**
-     * This method sets the Player's Status.
-     * @param playerStatus current Status of the Player
-     */
-    public void setStatus(Status playerStatus){
-        this.playerStatus = playerStatus;
-    }
-
-    /**
      * @return "True" if the Player is the first to play, "False" otherwise
      */
     public boolean isFirst(){

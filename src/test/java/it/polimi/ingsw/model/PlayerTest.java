@@ -68,5 +68,11 @@ class PlayerTest {
 
     }
 
+    @Test
+    @DisplayName("Tests if setConnected and isConnected method work properly")
+    void connectionTest() {
+        p1.setConnected(true);
+        assertTrue(p1.isConnected());
+    }
 
 }

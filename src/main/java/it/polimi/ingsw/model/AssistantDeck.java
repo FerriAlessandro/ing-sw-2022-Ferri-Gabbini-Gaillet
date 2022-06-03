@@ -39,13 +39,6 @@ public class AssistantDeck implements Serializable {
     }
 
     /**
-     * @return The back of the deck.
-     */
-    public Wizard getWizard() {
-        return wizard;
-    }
-
-    /**
      * @return The number of cards left in the deck.
      */
     public int currNumOfCards(){
