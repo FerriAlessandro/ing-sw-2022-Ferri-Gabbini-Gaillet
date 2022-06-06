@@ -113,6 +113,8 @@ public class GameBoardSceneController implements SceneController {
     private final ArrayList<FXCloud> clouds = new ArrayList<>();
 
     private final ArrayList<Label> nicknames = new ArrayList<>();
+
+    private final ArrayList<String> playerNames = new ArrayList<>();
     
 
 
@@ -146,6 +148,7 @@ public class GameBoardSceneController implements SceneController {
 
         ArrayList<String> nicknames = new ArrayList<>(firstGameState.towerColor.keySet());
         for(String name : nicknames){
+            playerNames.add(name);
             if(firstGameState.towerColor.get(name).equals(TowerColor.WHITE))
                 player_name_1.setText(name);
             else if(firstGameState.towerColor.get(name).equals(TowerColor.BLACK))
@@ -312,7 +315,7 @@ public class GameBoardSceneController implements SceneController {
      * @param professors The map containing the updates, maps a color to the nickname of the owner of the professor of that color
      */
     public void refreshProfessors(Map<it.polimi.ingsw.model.enumerations.Color, String> professors){
-        for(String nickname : professors.values())
+        for(String nickname : this.playerNames)
             Objects.requireNonNull(getPlayerBoardByNickname(nickname)).refreshProfessors(professors);
 
     }
