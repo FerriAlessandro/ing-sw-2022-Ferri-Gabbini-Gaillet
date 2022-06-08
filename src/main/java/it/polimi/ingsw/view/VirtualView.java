@@ -209,7 +209,7 @@ public class VirtualView implements ViewInterface, Observer {
      * Ask the user whether to use the loaded game save or not.
      */
     @Override
-    public void askUseSavedGame() {
+    public void askUseSavedGame(SMessageLoadGame message) {
         new UnsupportedOperationException().printStackTrace();
     }
 

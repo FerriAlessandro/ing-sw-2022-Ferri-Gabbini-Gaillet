@@ -500,10 +500,11 @@ public class Cli implements ViewInterface {
      * Ask the user whether to use the loaded game save or not.
      */
     @Override
-    public void askUseSavedGame() {
+    public void askUseSavedGame(SMessageLoadGame message) {
         String choice;
         do {
-            System.out.println("A saved game matching your desired settings was found. Do you wish to continue playing it? y/n");
+            System.out.println("A saved game was found. This game is a " + message.numOfPlayers + " players " + (message.expert ? "expert game" : "simple game"));
+            System.out.println("Do you wish to continue playing this game? y/n");
             choice = in.nextLine();
         }while (!choice.equals("y") && !choice.equals("n"));
         if (choice.equals("y")){

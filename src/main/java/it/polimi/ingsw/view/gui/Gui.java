@@ -697,8 +697,8 @@ public class Gui extends Application implements ViewInterface {
      * If game settings fits with a previous saved game, it asks the first player whether to use the saved game or not.
      */
     @Override
-    public void askUseSavedGame() {
-
+    public void askUseSavedGame(SMessageLoadGame message) {
+        //TODO: change
         Platform.runLater(()-> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Load saved game");

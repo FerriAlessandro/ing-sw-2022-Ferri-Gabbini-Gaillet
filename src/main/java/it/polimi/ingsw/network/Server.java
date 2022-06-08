@@ -51,36 +51,28 @@ public class Server {
                     System.out.println("This is the first player");
                     //IF PLAYER IS FIRST PLAYER OF CURRENT GAME:
                     try {
+
                         ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
                         System.out.println("Generated out stream");
                         inputStream = new ObjectInputStream(socket.getInputStream());
                         Message message;
                         System.out.println("Generated in stream");
-                       /* do {
-                            //Ask for number of players and type of game
-                            System.out.println("Asking for game settings");
-                            outputStream.writeObject(new SMessage(MessageType.S_GAMESETTINGS));
-                            message = receiveMessageIgnorePing();
-                        } while (message == null || !message.getType().equals(MessageType.R_GAMESETTINGS));
-                        System.out.println("Received game settings");
 
-                        //Cast message
-                        numRequiredGame = ((RMessageGameSettings) message).numPlayers;
-                        boolean expertGame = ((RMessageGameSettings) message).expert;*/
                         message = new RMessageLoadGame(false);
+
                         controller = new InputController(DiskManager.loadGame());
+
                         if(controller.getGameController() != null){
                             //A saved game was found
                             do {
-                                //Ask for number of players and type of game
                                 System.out.println("Asking whether the user wants to load a previous game");
-                                outputStream.writeObject(new SMessage(MessageType.S_LOADGAME));
+                                outputStream.writeObject(new SMessageLoadGame(controller.getNicknames().size(), controller.getGameController().isExpert()));
                                 message = receiveMessageIgnorePing();
                             } while (message == null || !message.getType().equals(MessageType.R_LOADGAME));
                         }
 
                         if(controller.getGameController() == null || !((RMessageLoadGame) message).use){
-                            //Create new game
+                            //If no save was found or user decided to play a new game -> create a new game
                             do {
                                 //Ask for number of players and type of game
                                 System.out.println("Asking for game settings");
@@ -97,6 +89,7 @@ public class Server {
                             System.out.println("Creating new game");
                             ClientHandler.restored = false;
                         }else{
+                            //The user decided to use the loaded game save
                             System.out.println("Using loaded save");
                             ClientHandler.restored = true;
                         }
