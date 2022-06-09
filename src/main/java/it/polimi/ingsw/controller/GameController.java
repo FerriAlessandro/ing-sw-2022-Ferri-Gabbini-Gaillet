@@ -33,7 +33,9 @@ public class GameController implements Serializable {
     /** Links each player nickname to the corresponding {@link VirtualView} */
     public transient Map<String, VirtualView > playersView;
     private final boolean isExpert;
+    private boolean gameEnded = false;
     private boolean isLastRound;
+    private boolean isLastRoundBag;
     private final int numOfPlayers;
     private int numOfMoves = 0;
     /** True if someone has played a character card, false otherwise.*/
@@ -49,6 +51,7 @@ public class GameController implements Serializable {
      */
     public GameController(int numOfPlayers, boolean isExpert){
         this.isLastRound = false;
+        this.isLastRoundBag = false;
         this.numOfPlayers = numOfPlayers;
         this.isExpert = isExpert;
         this.hasPlayedCharacter = false;
@@ -248,41 +251,44 @@ public class GameController implements Serializable {
      * @param nickname is the nickname of the player disconnected
      */
     public void playerDisconnected(String nickname) {
-        game.removeObserver(playersView.get(nickname));
-        playersView.remove(nickname);
-        ClientHandler.disconnectionResilient = true;
+        if(!gameEnded) {
+            game.removeObserver(playersView.get(nickname));
+            playersView.remove(nickname);
+            ClientHandler.disconnectionResilient = true;
 
-        Optional<Player> disconnectedPlayer = game.getPlayers().stream().filter(x -> x.getNickName().equals(nickname)).findFirst();
-        disconnectedPlayer.ifPresent(x -> x.setConnected(false));
+            Optional<Player> disconnectedPlayer = game.getPlayers().stream().filter(x -> x.getNickName().equals(nickname)).findFirst();
+            disconnectedPlayer.ifPresent(x -> x.setConnected(false));
 
-        if(playersView.size() == 1) {
-            //Case: only one player is still connected
-            ClientHandler.oneRemaining = true;
-            long delay = 20000;
-            broadcastMessage("All other players were disconnected, the game will remain open for " + delay/1000 + "s before the game is ended or they reconnect", MessageType.S_INVALID);
+            if (playersView.size() == 1) {
+                //Case: only one player is still connected
+                ClientHandler.oneRemaining = true;
+                long delay = 20000;
+                broadcastMessage("All other players were disconnected, the game will remain open for " + delay / 1000 + "s before the game is ended or they reconnect", MessageType.S_INVALID);
 
-            //Schedule disconnection after timer expires
-            disconnectionTimer = new Timer();
-            disconnectionTimer.schedule(
-                    lambda2timer(() -> {
-                        for (VirtualView v : playersView.values()) {
-                            v.showWinMessage(new SMessageWin(v.getNickName(), false));
-                            v.showDisconnectionMessage();
-                        }
+                //Schedule disconnection after timer expires
+                disconnectionTimer = new Timer();
+                disconnectionTimer.schedule(
+                        lambda2timer(() -> {
+                            for (VirtualView v : playersView.values()) {
+                                v.showWinMessage(new SMessageWin(v.getNickName(), false));
+                                v.showDisconnectionMessage();
+                            }
                         }),
-                    delay
-            );
+                        delay
+                );
 
-        }else {
-            //Case: two players are still connected
-            disconnectedPlayer.ifPresent(x -> broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect", MessageType.S_INVALID));
+            } else if(playersView.size() >1) {
+                //Case: two players are still connected
+                disconnectedPlayer.ifPresent(x -> broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect", MessageType.S_INVALID));
 
-            //Continue without the player that was disconnected
-            disconnectedPlayer.ifPresent(x -> {
-                if (game.getCurrentPlayer().equals(x)) {
-                    endPlayerTurn();
-                }
-            });
+                //Continue without the player that was disconnected
+                disconnectedPlayer.ifPresent(x -> {
+                    if (game.getCurrentPlayer().equals(x)) {
+                        endPlayerTurn();
+                    }
+                });
+
+            }
 
         }
 
@@ -302,8 +308,8 @@ public class GameController implements Serializable {
                     assistant.resetPlayed();  //Reset the already played assistants
                 askMoveOrCharacter();
             } else {
-                //Phase is Choose cloud
-                if (isLastRound) {
+                //Phase is Choose cloud or moveMotherNature with empty bag
+                if (isLastRound || isLastRoundBag) {
                     checkWin();
                 } else {
                     setupNewRound();
@@ -399,6 +405,7 @@ public class GameController implements Serializable {
      * Utility method to check who is the winner
      */
     public void checkWin(){
+        gameEnded = true;
         String winner = game.checkWinner();
 
         if(winner.equals("Tie")){
@@ -429,7 +436,7 @@ public class GameController implements Serializable {
         try {
             game.fillClouds();
         }catch(EmptyBagException exc){
-            isLastRound = true;
+            isLastRoundBag = true;
             broadcastMessage("The bag is empty, this is the last round!", MessageType.S_INVALID);
         }
         gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
@@ -523,7 +530,7 @@ public class GameController implements Serializable {
     }
 
     /**
-     * If game is expert this method commands the current player to move students, otherwise it presents them a character card choice.
+     * If game is not expert this method commands the current player to move students, otherwise it presents them a character card choice.
      */
     private void askMoveOrCharacter() {
         broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
@@ -661,9 +668,15 @@ public class GameController implements Serializable {
             }
 
             else {
-                gamePhase = Phase.CHOOSE_CLOUD;
-                DiskManager.saveGame(this);
-                getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
+                if(!isLastRoundBag) {
+                    gamePhase = Phase.CHOOSE_CLOUD;
+                    DiskManager.saveGame(this);
+                    getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
+                }
+                else {
+                    gamePhase = Phase.MOVE_STUDENTS;
+                    endPlayerTurn();
+                }
             }
 
 
