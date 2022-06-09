@@ -8,6 +8,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
 import it.polimi.ingsw.view.gui.scene.NewGameSceneController;
 import it.polimi.ingsw.view.gui.scene.SceneController;
+import it.polimi.ingsw.view.gui.scene.WinSceneController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -46,6 +47,7 @@ public class Gui extends Application implements ViewInterface {
     public static final String MENU ="/fxml/NewGameScene.fxml";
     public static final String NICKNAME = "/fxml/NicknameScene.fxml";
     public static final String LOADING = "/fxml/LoadingScreen.fxml";
+    public static final String WIN = "/fxml/WinScene.fxml";
     private final HashMap<String, Scene> scenes = new HashMap<>();
     private final HashMap<String, SceneController> controllers = new HashMap<>();
 
@@ -84,7 +86,7 @@ public class Gui extends Application implements ViewInterface {
      */
     public void initializeGui(){
 
-        ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME, LOADING));
+        ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME, LOADING, WIN));
         for(String fxml : sceneFXML){
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             try {
@@ -291,8 +293,25 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
+    /**
+     * Display Win Scene
+     * @param message containing information on who won.
+     */
     @Override
     public void showWinMessage(SMessageWin message) {
+        WinSceneController controller = (WinSceneController) controllers.get(WIN);
+        controller.setMessage(message);
+
+        Platform.runLater(() -> {
+            try {
+                controller.createScene();
+                currentScene = scenes.get(WIN);
+                resizeStage(stage);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 
