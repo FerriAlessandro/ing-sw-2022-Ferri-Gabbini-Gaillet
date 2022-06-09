@@ -122,7 +122,7 @@ public class Adapter {
                 break;
 
             case S_LOADGAME:
-                view.askUseSavedGame();
+                view.askUseSavedGame((SMessageLoadGame) message);
                 break;
 
             case S_DISCONNECT:

@@ -48,7 +48,7 @@ public class DiskManager {
 
     /**
      * Loads a saved game if it exists.
-     * @return
+     * @return the {@link GameController} of the saved game if it exists, returns null otherwise.
      */
     public static GameController loadGame(){
         System.out.println("Checking existence of saved game");
@@ -59,7 +59,6 @@ public class DiskManager {
             System.out.println("Found a save");
         }
         return read;
-
     }
 
     /**

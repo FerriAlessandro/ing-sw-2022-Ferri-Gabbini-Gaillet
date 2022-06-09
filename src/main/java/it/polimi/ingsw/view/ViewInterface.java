@@ -128,7 +128,7 @@ public interface ViewInterface {
     /**
      * Ask the user whether to use the loaded game save or not.
      */
-    void askUseSavedGame();
+    void askUseSavedGame(SMessageLoadGame message);
 
     /**
      * Used to set the client flag for expert game handling.
