@@ -96,7 +96,7 @@ public class Gui extends Application implements ViewInterface {
                 controller.setGui(this);
                 final Scene scene = new Scene(scaleRootScene(root, fxml));
                 scenes.put(fxml, scene);
-                if(fxml.equals(MENU) || fxml.equals(LOGIN))
+                if(fxml.equals(MENU) || fxml.equals(LOGIN) || fxml.equals(WIN))
                     root.getStylesheets().add(getClass().getResource("/style/styles.css").toExternalForm());
             }
             catch(Exception e) {

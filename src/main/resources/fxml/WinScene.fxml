@@ -1,17 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-
-
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.scene.WinSceneController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.scene.WinSceneController">
    <children>
-      <ImageView fitHeight="1080.0" fitWidth="1920.0">
+      <ImageView fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/LogoPNG.png" />
+            <Image url="@../images/Light_blue.png" />
          </image>
       </ImageView>
+      <ImageView fitHeight="279.0" fitWidth="365.0" layoutX="140.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/miscellaneous/cloud2.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="634.0" fitWidth="476.0" layoutX="-202.0" layoutY="-104.0" pickOnBounds="true" preserveRatio="true" x="1534.0" y="319.0">
+         <image>
+            <Image url="@../images/miscellaneous/retro2.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="643.0" fitWidth="709.0" layoutX="1.0" layoutY="-135.0" pickOnBounds="true" preserveRatio="true" x="100.0" y="319.0">
+         <image>
+            <Image url="@../images/miscellaneous/retro1.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="208.0" fitWidth="349.0" layoutX="1362.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/miscellaneous/cloud2.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="208.0" fitWidth="349.0" layoutX="139.0" layoutY="665.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/miscellaneous/cloud2.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="208.0" fitWidth="349.0" layoutX="1349.0" layoutY="693.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/miscellaneous/cloud2.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="WinLoseTieImage" fitHeight="539.0" fitWidth="931.0" layoutX="465.0" layoutY="431.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/miscellaneous/Winner.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="463.0" fitWidth="386.0" layoutX="771.0" layoutY="169.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/miscellaneous/mn.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="CloseButton" layoutX="771.0" layoutY="860.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="329.0" text="Close">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Button>
    </children>
 </Pane>

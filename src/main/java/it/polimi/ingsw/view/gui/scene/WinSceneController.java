@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.SMessageWin;
 import it.polimi.ingsw.view.gui.Gui;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -12,10 +13,15 @@ public class WinSceneController implements SceneController {
 
 
     @FXML
-    private Pane pane;
+    private ImageView WinLoseTieImage;
+    @FXML
+    private Button CloseButton;
 
     private SMessageWin message;
     private Gui gui;
+    private final String WIN = "/images/miscellaneous/Winner.png";
+    private final String LOSE = "/images/miscellaneous/Loser.png";
+    private final String TIE = "/images/miscellaneous/Tie.png";
 
 
     @Override
@@ -30,18 +36,20 @@ public class WinSceneController implements SceneController {
 
     @Override
     public void createScene() {
-        Image image = new Image("/images/miscellaneous/gameOverImage.png");
-        ImageView imageView;
+        Image image = new Image(LOSE);
         if(message.tie)
-            image = new Image("/images/miscellaneous/drawImage.png");
+            image = new Image(TIE);
         if(message.nickname.equals(gui.getNickName()))
-            image = new Image("/images/miscellaneous/winImage.png");
-        imageView = new ImageView(image);
-        imageView.setFitWidth(1080);
-        imageView.setFitHeight(680);
-        pane.getChildren().add(imageView);
-        pane.getChildren().get(1).setLayoutX(420);
-        pane.getChildren().get(1).setLayoutY(250);
+            image = new Image(WIN);
+        WinLoseTieImage.setImage(image);
+
+    }
+
+    @FXML
+    public void initialize(){
+        CloseButton.setOnAction((e)-> {
+            System.exit(1);
+        });
     }
 
 }

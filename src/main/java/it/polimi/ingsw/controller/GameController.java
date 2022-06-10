@@ -512,6 +512,10 @@ public class GameController implements Serializable {
             if(!isLastRound){
                 broadcastMessage(e.getMessage(), MessageType.S_INVALID);
                 isLastRound = true;
+                for(VirtualView v : playersView.values()) {
+                    //Notifies all players of the choice made
+                    v.showAssistantStatus(new SMessageAssistantStatus(assistantMessage.nickname, assistantMessage.playedAssistant));
+                }
             }
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
