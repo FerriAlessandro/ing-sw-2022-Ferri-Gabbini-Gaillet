@@ -21,6 +21,8 @@ import java.net.Socket;
 public class Server {
 
     private static ObjectInputStream inputStream;
+    private static boolean firstPlayer;
+    private static InputController controller;
 
     /**
      * Main function
@@ -28,10 +30,7 @@ public class Server {
      */
     public static void main(String[] args){
         int port = 2351;
-        boolean firstPlayer = true;
-        int numRequiredGame;
-        InputController controller = null;
-
+        reset();
 
         if (args.length == 1){
             port = Integer.parseInt(args[0]);
@@ -41,12 +40,12 @@ public class Server {
         }
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server listening - port: " + port);
+            System.out.println("\u001b[33m" + "Server listening - port: " + port + "\u001b[0m");
             //noinspection InfiniteLoopStatement
             while (true) {
                 System.out.println("Waiting for next player");
                 Socket socket = serverSocket.accept();
-                System.out.println("New client connected - address: " + socket.getInetAddress().toString());
+                System.out.println("\u001b[36m" + "New client connected - address: " + socket.getInetAddress().toString() + "\u001b[0m");
                 if (firstPlayer) {
                     System.out.println("This is the first player");
                     //IF PLAYER IS FIRST PLAYER OF CURRENT GAME:
@@ -82,7 +81,7 @@ public class Server {
                             System.out.println("Received game settings");
 
                             //Cast message
-                            numRequiredGame = ((RMessageGameSettings) message).numPlayers;
+                            int numRequiredGame = ((RMessageGameSettings) message).numPlayers;
                             boolean expertGame = ((RMessageGameSettings) message).expert;
 
                             controller = new InputController(numRequiredGame, expertGame);
@@ -136,5 +135,14 @@ public class Server {
             e.printStackTrace();
         }
         return message;
+    }
+
+    /**
+     * Resets the {@link Server} to run a new game.
+     */
+    public static void reset(){
+        System.out.println("\033[31;1;4m" + "SERVER RESET" + "\033[0m");
+        firstPlayer = true;
+        controller = null;
     }
 }

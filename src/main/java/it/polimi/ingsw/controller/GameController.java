@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.ClientHandler;
+import it.polimi.ingsw.network.Server;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
@@ -251,7 +252,11 @@ public class GameController implements Serializable {
      * @param nickname is the nickname of the player disconnected
      */
     public void playerDisconnected(String nickname) {
-        if(!gameEnded) {
+        System.out.println("\033[31;1;4m" + nickname + " was disconnected. " + (playersView.size()-1) + " remaining players" + "\033[0m");
+        if(playersView.size() == 1){
+            //This is the last player (The disconnected player's VirtualView hasn't been removed from the map at this point
+            Server.reset();
+        }else if(!gameEnded) {
             game.removeObserver(playersView.get(nickname));
             playersView.remove(nickname);
             ClientHandler.disconnectionResilient = true;
@@ -260,7 +265,7 @@ public class GameController implements Serializable {
             disconnectedPlayer.ifPresent(x -> x.setConnected(false));
 
             if (playersView.size() == 1) {
-                //Case: only one player is still connected
+                //Case: only one player is still connected. The disconnected player's VirtualView has already been removed from the map at this point
                 ClientHandler.oneRemaining = true;
                 long delay = 20000;
                 broadcastMessage("All other players were disconnected, the game will remain open for " + delay / 1000 + "s before the game is ended or they reconnect", MessageType.S_INVALID);
@@ -270,8 +275,8 @@ public class GameController implements Serializable {
                 disconnectionTimer.schedule(
                         lambda2timer(() -> {
                             for (VirtualView v : playersView.values()) {
-                                v.showWinMessage(new SMessageWin(v.getNickName(), false));
-                                v.showDisconnectionMessage();
+                                    v.showWinMessage(new SMessageWin(v.getNickName(), false));
+                                    v.showDisconnectionMessage();
                             }
                         }),
                         delay
