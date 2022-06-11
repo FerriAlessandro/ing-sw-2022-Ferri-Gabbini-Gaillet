@@ -152,5 +152,6 @@ public class Server {
         controller = null;
         disconnectionResilient = false;
         restored = false;
+        ClientHandler.oneRemaining = false;
     }
 }

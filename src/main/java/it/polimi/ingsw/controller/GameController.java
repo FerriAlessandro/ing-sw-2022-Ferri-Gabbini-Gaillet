@@ -106,18 +106,19 @@ public class GameController implements Serializable {
                     playerView.setExpert(new SMessageExpert(isExpert));
 
                     if (Server.disconnectionResilient) {
-                        //This branch is not taken when loading a save as ClientHandlers are not serialized and stored on disk (and disconnectionResilient is false by default)
-                        for (Player p : game.getPlayers()) {
-                            if (p.getPlayedCard() != null) {
-                                playerView.showAssistantStatus(new SMessageAssistantStatus(p.getNickName(), p.getPlayedCard()));
-                            }
-                        }
                         try {
                             game.notifyObserver(playerView);
                             broadcastMessage(nickName + " reconnected", MessageType.S_INVALID);
                         } catch (InvalidParameterException e) {
                             e.printStackTrace();
                         }
+                        //This branch is not taken when loading a save as ClientHandlers are not serialized and stored on disk (and disconnectionResilient is false by default)
+                        for (Player p : game.getPlayers()) {
+                            if (p.getPlayedCard() != null) {
+                                playerView.showAssistantStatus(new SMessageAssistantStatus(p.getNickName(), p.getPlayedCard()));
+                            }
+                        }
+
 
                         if (ClientHandler.oneRemaining) {
                             game.getPlayers().stream().filter(x -> x.getNickName().equals(nickName)).findFirst().ifPresent(x -> x.setConnected(true));
@@ -256,6 +257,7 @@ public class GameController implements Serializable {
         if(playersView.size() == 1){
             //This is the last player (The disconnected player's VirtualView hasn't been removed from the map at this point
             Server.reset();
+            disconnectionTimer.cancel();
         }else if(!gameEnded) {
             game.removeObserver(playersView.get(nickname));
             playersView.remove(nickname);
