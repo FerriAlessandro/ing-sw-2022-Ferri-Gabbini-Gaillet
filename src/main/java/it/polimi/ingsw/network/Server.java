@@ -30,6 +30,9 @@ public class Server {
     /** True if a player was disconnected and the game is set up for them to reconnect, false otherwise */
     public static boolean disconnectionResilient;
 
+    /** True if only one player is still connected */
+    public static boolean oneRemaining = false;
+
     /**
      * Main function
      * @param args port value to override default value
@@ -152,5 +155,6 @@ public class Server {
         controller = null;
         disconnectionResilient = false;
         restored = false;
+        oneRemaining = false;
     }
 }

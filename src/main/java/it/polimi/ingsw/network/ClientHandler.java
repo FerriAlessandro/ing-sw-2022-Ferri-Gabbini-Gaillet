@@ -28,9 +28,6 @@ public class ClientHandler extends Thread {
     /** Last message received by the only remaining connected client. Stored to be used when other(s) reconnect */
     public static Message queued = null;
 
-    /** True if only one player is still connected */
-    public static boolean oneRemaining = false;
-
     /** Last action message that was sent to any player. Used as cache for when the current player disconnects and reconnects (and only one player remains connected in the meantime)*/
     public static SMessage lastUsefulSent = null;
 
@@ -84,7 +81,7 @@ public class ClientHandler extends Thread {
                     }
 
                     //If only one player is connected the message is stored until the other player(s) reconnects
-                    if (oneRemaining && !inMessage.getType().equals(MessageType.R_NICKNAME)){
+                    if (Server.oneRemaining && !inMessage.getType().equals(MessageType.R_NICKNAME)){
                         queued = inMessage;
                     } else {
                         try {
@@ -140,7 +137,8 @@ public class ClientHandler extends Thread {
         return !message.getType().equals(MessageType.S_INVALID) && !message.getType().equals(MessageType.S_TRYAGAIN) &&
                 !message.getType().equals(MessageType.S_PLAYER) && !message.getType().equals(MessageType.S_GAMESTATE)
                 && !message.getType().equals(MessageType.S_NICKNAME) && !message.getType().equals(MessageType.S_EXPERT)
-                && !message.getType().equals(MessageType.S_ASSISTANTSTATUS);
+                && !message.getType().equals(MessageType.S_ASSISTANTSTATUS) && !message.getType().equals(MessageType.S_WIN) &&
+                !message.getType().equals(MessageType.S_LOBBY) && !message.getType().equals(MessageType.S_DISCONNECT);
     }
 
     /**

@@ -119,12 +119,12 @@ public class GameController implements Serializable {
                             e.printStackTrace();
                         }
 
-                        if (ClientHandler.oneRemaining) {
+                        if (Server.oneRemaining) {
                             game.getPlayers().stream().filter(x -> x.getNickName().equals(nickName)).findFirst().ifPresent(x -> x.setConnected(true));
                             //Only one player was connected and another reconnects after a disconnection -> resume game
                             disconnectionTimer.cancel();
                             System.out.println("Canceled disconnection timer");
-                            ClientHandler.oneRemaining = false;
+                            Server.oneRemaining = false;
                             if (ClientHandler.queued != null) {
                                 //Reconnected player was not the current player -> elaborate the action made by the other player
                                 elaborateMessage(ClientHandler.queued);
@@ -256,6 +256,7 @@ public class GameController implements Serializable {
         if(playersView.size() == 1){
             //This is the last player (The disconnected player's VirtualView hasn't been removed from the map at this point
             Server.reset();
+            disconnectionTimer.cancel();
         }else if(!gameEnded) {
             game.removeObserver(playersView.get(nickname));
             playersView.remove(nickname);
@@ -266,7 +267,7 @@ public class GameController implements Serializable {
 
             if (playersView.size() == 1) {
                 //Case: only one player is still connected. The disconnected player's VirtualView has already been removed from the map at this point
-                ClientHandler.oneRemaining = true;
+                Server.oneRemaining = true;
                 long delay = 20000;
                 broadcastMessage("All other players were disconnected, the game will remain open for " + delay / 1000 + "s before the game is ended or they reconnect", MessageType.S_INVALID);
 
