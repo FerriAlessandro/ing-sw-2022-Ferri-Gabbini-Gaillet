@@ -24,6 +24,12 @@ public class Server {
     private static boolean firstPlayer;
     private static InputController controller;
 
+    /** True when the current game has been restored from a save file, false otherwise */
+    public static boolean restored;
+
+    /** True if a player was disconnected and the game is set up for them to reconnect, false otherwise */
+    public static boolean disconnectionResilient;
+
     /**
      * Main function
      * @param args port value to override default value
@@ -86,11 +92,11 @@ public class Server {
 
                             controller = new InputController(numRequiredGame, expertGame);
                             System.out.println("Creating new game");
-                            ClientHandler.restored = false;
+                            restored = false;
                         }else{
                             //The user decided to use the loaded game save
                             System.out.println("Using loaded save");
-                            ClientHandler.restored = true;
+                            restored = true;
                         }
 
                         new ClientHandler(socket, inputStream, outputStream, controller).start();
@@ -144,5 +150,7 @@ public class Server {
         System.out.println("\033[31;1;4m" + "SERVER RESET" + "\033[0m");
         firstPlayer = true;
         controller = null;
+        disconnectionResilient = false;
+        restored = false;
     }
 }

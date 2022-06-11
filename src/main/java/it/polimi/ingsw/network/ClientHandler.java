@@ -25,12 +25,6 @@ public class ClientHandler extends Thread {
     private String playerNickname = null;
     private final Timer timeout;
 
-    /** True when the current game has been restored from a save file, false otherwise */
-    public static boolean restored = false;
-
-    /** True if a player was disconnected and the game is set up for them to reconnect, false otherwise */
-    public static boolean disconnectionResilient = false;
-
     /** Last message received by the only remaining connected client. Stored to be used when other(s) reconnect */
     public static Message queued = null;
 
@@ -134,7 +128,6 @@ public class ClientHandler extends Thread {
 
         } catch (IOException e) {
             System.out.println("Unable to send the given message");
-            e.printStackTrace();
         }
     }
 
@@ -195,7 +188,7 @@ public class ClientHandler extends Thread {
                     if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
                         RMessageNickname nickMessage = (RMessageNickname) inMessage;
 
-                        if(restored || disconnectionResilient) {
+                        if(Server.restored || Server.disconnectionResilient) {
 
                             System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
                             this.playerNickname = nickMessage.nickname;

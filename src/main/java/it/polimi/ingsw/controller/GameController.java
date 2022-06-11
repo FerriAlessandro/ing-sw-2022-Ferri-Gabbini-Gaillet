@@ -105,7 +105,7 @@ public class GameController implements Serializable {
                     game.addObserver(playerView);
                     playerView.setExpert(new SMessageExpert(isExpert));
 
-                    if (ClientHandler.disconnectionResilient) {
+                    if (Server.disconnectionResilient) {
                         //This branch is not taken when loading a save as ClientHandlers are not serialized and stored on disk (and disconnectionResilient is false by default)
                         for (Player p : game.getPlayers()) {
                             if (p.getPlayedCard() != null) {
@@ -138,7 +138,7 @@ public class GameController implements Serializable {
                             }
                         }
 
-                    } else if (ClientHandler.restored) {
+                    } else if (Server.restored) {
                         System.out.println("RESTORED START");
                         if (playersView.size() == numOfPlayers) {
                             //All players reconnected -> resume game (and show previously selected assistant cards)
@@ -259,7 +259,7 @@ public class GameController implements Serializable {
         }else if(!gameEnded) {
             game.removeObserver(playersView.get(nickname));
             playersView.remove(nickname);
-            ClientHandler.disconnectionResilient = true;
+            Server.disconnectionResilient = true;
 
             Optional<Player> disconnectedPlayer = game.getPlayers().stream().filter(x -> x.getNickName().equals(nickname)).findFirst();
             disconnectedPlayer.ifPresent(x -> x.setConnected(false));
