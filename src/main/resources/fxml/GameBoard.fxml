@@ -131,7 +131,7 @@
       </Label>
       <ImageView fitHeight="106.0" fitWidth="464.0" pickOnBounds="true" preserveRatio="true" x="50.0" y="10.0">
          <image>
-            <Image url="@../images/dialog.png" />
+            <Image url="@../images/Dialog.png" />
          </image>
       </ImageView>
       <Label fx:id="hintsLabel" layoutX="125.0" layoutY="20.0" prefHeight="27.0" prefWidth="379.0">

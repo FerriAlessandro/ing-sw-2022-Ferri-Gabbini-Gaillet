@@ -92,7 +92,7 @@ public class InputController implements Serializable{
      * Method called by the clientHandler when a player disconnects/loses connection
      * @param nickname the player's nickname
      */
-    public void playerDisconnected(String nickname) {
+    synchronized public void playerDisconnected(String nickname) {
         if(nickname == null)
             throw new RuntimeException("Nickname received is nulL!");
         getGameController().playerDisconnected(nickname);

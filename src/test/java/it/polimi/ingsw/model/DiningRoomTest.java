@@ -28,7 +28,7 @@ class DiningRoomTest {
     void addStudentExc1Test() throws FullDestinationException {
         for(int i = 0; i < diningRoom.getMaxStudents(); i++) {
             try {diningRoom.addStudent(Color.GREEN);}
-            catch(RuntimeException e) {e.printStackTrace();}
+            catch(RuntimeException ignored) {}
         }
         FullDestinationException e = new FullDestinationException();
         assertThrowsExactly(e.getClass(), () -> diningRoom.addStudent(Color.GREEN));
@@ -39,7 +39,7 @@ class DiningRoomTest {
     void addStudentExc2Test() throws FullDestinationException {
         for(int i = 0; i < diningRoom.getMaxStudents(); i++) {
             try {diningRoom.addStudent(Color.GREEN); }
-            catch (RuntimeException e) {e.printStackTrace();}
+            catch (RuntimeException ignored) {}
         }
         assertDoesNotThrow(() -> diningRoom.addStudent(Color.YELLOW));
         assertThrowsExactly(FullDestinationException.class, () -> diningRoom.addStudent(Color.GREEN));
