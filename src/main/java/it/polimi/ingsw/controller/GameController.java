@@ -106,13 +106,14 @@ public class GameController implements Serializable {
                     playerView.setExpert(new SMessageExpert(isExpert));
 
                     if (Server.disconnectionResilient) {
+                        //This branch is not taken when loading a save as the Server is not serialized and stored on disk (and disconnectionResilient is false by default)
                         try {
                             game.notifyObserver(playerView);
                             broadcastMessage(nickName + " reconnected", MessageType.S_INVALID);
                         } catch (InvalidParameterException e) {
                             e.printStackTrace();
                         }
-                        //This branch is not taken when loading a save as ClientHandlers are not serialized and stored on disk (and disconnectionResilient is false by default)
+
                         for (Player p : game.getPlayers()) {
                             if (p.getPlayedCard() != null) {
                                 playerView.showAssistantStatus(new SMessageAssistantStatus(p.getNickName(), p.getPlayedCard()));
