@@ -134,7 +134,7 @@ public class ClientHandler extends Thread {
      * @return true if this message asks the player to perform an action, false otherwise
      */
     private boolean isActionMessage(SMessage message){
-        return !message.getType().equals(MessageType.S_INVALID) && !message.getType().equals(MessageType.S_TRYAGAIN) &&
+        return  !message.getType().equals(MessageType.S_INVALID) && !message.getType().equals(MessageType.S_TRYAGAIN) &&
                 !message.getType().equals(MessageType.S_PLAYER) && !message.getType().equals(MessageType.S_GAMESTATE)
                 && !message.getType().equals(MessageType.S_NICKNAME) && !message.getType().equals(MessageType.S_EXPERT)
                 && !message.getType().equals(MessageType.S_ASSISTANTSTATUS) && !message.getType().equals(MessageType.S_WIN) &&
