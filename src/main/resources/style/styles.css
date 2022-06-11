@@ -1,0 +1,4 @@
+.button, .menu-button {
+    -fx-font-size: 25px;
+    -fx-background-radius: 15;
+}

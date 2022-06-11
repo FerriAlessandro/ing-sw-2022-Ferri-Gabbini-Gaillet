@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * This class provides methods for storing on disk the game state and therefore implementing persistence.
@@ -30,7 +29,7 @@ public class DiskManager {
      * @param expert true if the game is to be an expert game
      * @return the {@link GameController} matching the provided settings, or null if one is not found
      */
-    public static GameController loadGame(int numPlayers, boolean expert){
+    /*public static GameController loadGame(int numPlayers, boolean expert){
         System.out.println("Checking existence of saved game");
         GameController read = readFile(new File(filename));
         if(read == null){
@@ -38,13 +37,28 @@ public class DiskManager {
             return null;
         }
         System.out.println("Found a save");
+
         if(read.isExpert() == expert && read.getNickNames().size() == numPlayers){
             System.out.println("Save is compatible with requests");
-            read.playersView = new HashMap<>();
             return read;
         }
         System.out.println("Save not compatible with requests");
         return null;
+    }*/
+
+    /**
+     * Loads a saved game if it exists.
+     * @return the {@link GameController} of the saved game if it exists, returns null otherwise.
+     */
+    public static GameController loadGame(){
+        System.out.println("Checking existence of saved game");
+        GameController read = readFile(new File(filename));
+        if(read == null){
+            System.out.println("No saved game");
+        }else {
+            System.out.println("Found a save");
+        }
+        return read;
     }
 
     /**

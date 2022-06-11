@@ -18,7 +18,7 @@ public class MainMenuSceneController implements SceneController {
     private Gui gui;
 
     @FXML
-    void playButtonPressed(ActionEvent event) throws Exception{
+    void playButtonPressed(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/LoginScene.fxml"));
         gui.changeScene("/fxml/LoginScene.fxml");

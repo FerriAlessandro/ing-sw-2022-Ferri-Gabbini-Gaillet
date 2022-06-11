@@ -30,14 +30,7 @@ public class FXisland {
     private final ArrayList<Circle> pawns = new ArrayList<>(); //Index 0 is the tower, index 1 is mothernature, index 2 is green student, index 3 is red, index 4 is yellow, index 5 is pink, index 6 is blue, index 7 is NoEntryTile
     private final ArrayList<Label> quantity = new ArrayList<>(); //Same as Pawns, but with the quantity of each pawn
     private final GameBoardSceneController gameBoardSceneController;
-    private double islandsHorizontalDistance = 205;
-    private double islandsVerticalDistance = 205;
-    private double pawnsRadius = 12.5;
-    private double labelsVerticalOffset = 10.5;
-    private double labelsHorizontalOffset = 6.5;
-    private double pawnsHorizontalOffset = 35.5;
-    private double pawnsVerticalOffset = 46;
-    private ImageView island;
+    private final ImageView island;
 
     public FXisland(GameBoardSceneController controller, ImageView island){
         this.island = island;
@@ -56,37 +49,44 @@ public class FXisland {
     public void createIsland(int index){
 
         this.index = index;
+        double islandsHorizontalDistance = 205;
         double offset = islandsHorizontalDistance * (index-1); //We multiply the starting coordinates by (205 * 1/2/3/4/5) to get the right coordinates of each island [205 is the space between two islands]; Island with index 1 doesn't have an offset
 
 
         if(index >= 7) {
+            double islandsVerticalDistance = 205;
             towers.setY(towers.getY() + islandsVerticalDistance); //top middle circle of the first island of the second row
             offset = islandsHorizontalDistance * 5 - islandsHorizontalDistance * (index % 7); //island 7 doesn't have an offset, is below island 1
             green_student.setY(green_student.getY() + islandsVerticalDistance);
         }
 
 
+        double pawnsRadius = 12.5;
         pawns.add(new Circle(towers.getX() + offset, towers.getY(), pawnsRadius)); //Tower (12.5 is the radius)
         quantity.add(new Label());
+        double labelsHorizontalOffset = 6.5;
         quantity.get(0).setLayoutX(towers.getX() + offset - labelsHorizontalOffset); //each label is shifted of -6.5 in X and +10.5 on Y from its pawn's coordinates
+        double labelsVerticalOffset = 10.5;
         quantity.get(0).setLayoutY(towers.getY() + labelsVerticalOffset);
         quantity.get(0).setText("0");
 
 
+        double pawnsHorizontalOffset = 35.5;
         pawns.add(new Circle((towers.getX() + pawnsHorizontalOffset) + offset, towers.getY() , pawnsRadius)); //MotherNature
         quantity.add(new Label());
         quantity.get(1).setLayoutX(towers.getX() + pawnsHorizontalOffset + offset - labelsHorizontalOffset);
         quantity.get(1).setLayoutY(towers.getY() + labelsVerticalOffset);
         quantity.get(1).setText("0");
 
-        double horizontal_offset = 0;
+        double horizontal_offset;
         double vertical_offset = 0;
         int labelCounter=2;
-        for(int j=0; j<2 ;j++, vertical_offset += pawnsVerticalOffset){ //Vertical
+        double pawnsVerticalOffset = 46;
+        for(int j = 0; j<2 ; j++, vertical_offset += pawnsVerticalOffset){ //Vertical
             horizontal_offset = 0;
 
             for(int i=0; i<3;i++, horizontal_offset += pawnsHorizontalOffset, labelCounter++){
-                pawns.add(new Circle(green_student.getX() + horizontal_offset + offset, green_student.getY() + vertical_offset, pawnsRadius ));
+                pawns.add(new Circle(green_student.getX() + horizontal_offset + offset, green_student.getY() + vertical_offset, pawnsRadius));
                 quantity.add(new Label());
                 quantity.get(labelCounter).setLayoutX(green_student.getX() +  horizontal_offset + offset - labelsHorizontalOffset);
                 quantity.get(labelCounter).setLayoutY(green_student.getY() + vertical_offset + labelsVerticalOffset);
@@ -149,13 +149,7 @@ public class FXisland {
      * @return The circle representing the pawn of the given color
      */
     public Circle getPawnByColor(it.polimi.ingsw.model.enumerations.Color color){
-        return switch(color){
-            case GREEN ->  pawns.get(2);
-            case RED ->  pawns.get(3);
-            case YELLOW ->  pawns.get(4);
-            case PINK ->  pawns.get(5);
-            case BLUE ->  pawns.get(6);
-        };
+        return (Circle) getByColor(color, pawns);
     }
 
     /**
@@ -164,12 +158,20 @@ public class FXisland {
      * @return The label representing the number of pawn of the given color
      */
     public Label getLabelByColor(it.polimi.ingsw.model.enumerations.Color color){
+        return (Label) getByColor(color, quantity);
+    }
+
+    /**
+     * Utility method to get a value from an {@link ArrayList} based on {@link Color}.
+     * @return the object at corresponding index.
+     */
+    private Object getByColor(it.polimi.ingsw.model.enumerations.Color color, ArrayList<?> arrayList){
         return switch(color){
-            case GREEN ->  quantity.get(2);
-            case RED ->  quantity.get(3);
-            case YELLOW ->  quantity.get(4);
-            case PINK ->  quantity.get(5);
-            case BLUE ->  quantity.get(6);
+            case GREEN ->  arrayList.get(2);
+            case RED ->  arrayList.get(3);
+            case YELLOW ->  arrayList.get(4);
+            case PINK ->  arrayList.get(5);
+            case BLUE ->  arrayList.get(6);
         };
     }
 
@@ -201,7 +203,7 @@ public class FXisland {
      */
     public void makeSelectableMonk(it.polimi.ingsw.model.enumerations.Color color) {
         island.setOnMouseEntered(mouseEvent -> island.setCursor(Cursor.HAND));
-        island.setOnMouseClicked(mouseEvent -> {gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMonkPrincess(Characters.MONK, gameBoardSceneController.getGui().getNickName(), index, color));});
+        island.setOnMouseClicked(mouseEvent -> gameBoardSceneController.getGui().adapter.sendMessage(new RMessageMonkPrincess(Characters.MONK, gameBoardSceneController.getGui().getNickName(), index, color)));
     }
 
     /**
@@ -302,9 +304,7 @@ public class FXisland {
      * @param position The index of the island containing mother nature
      */
     public void refreshMotherNature(int position){
-        if(position == index-1)
-            pawns.get(1).setVisible(true);
-        else pawns.get(1).setVisible(false);
+        pawns.get(1).setVisible(position == index - 1);
     }
 
     /**

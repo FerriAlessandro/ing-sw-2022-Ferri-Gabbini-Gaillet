@@ -18,7 +18,6 @@ public class AssistantChoiceSceneController implements SceneController {
 
     private Gui gui;
     private SMessageShowDeck message;
-    private final ArrayList<ImageView> imageViews = new ArrayList<>();
 
     @FXML
     private GridPane gridPane;
@@ -44,8 +43,6 @@ public class AssistantChoiceSceneController implements SceneController {
     private ImageView turtleView;
 
     @FXML ArrayList<Integer> listOfCards = new ArrayList<>();
-
-    private ArrayList<Integer> listOfCardsAvailable = new ArrayList<>();
 
     @FXML
     void initialize() {
@@ -129,7 +126,7 @@ public class AssistantChoiceSceneController implements SceneController {
     @Override
     public void createScene() {
 
-        listOfCardsAvailable = new ArrayList<>(); //Qui dobbiamo ridichiararlo, altrimenti visto che il controller è creato una sola volta si tiene in memoria le vecchie carte
+        ArrayList<Integer> listOfCardsAvailable = new ArrayList<>(); //Dobbiamo dichiararlo qui, altrimenti visto che il controller è creato una sola volta si tiene in memoria le vecchie carte
         for(AssistantCard cards : message.cards) {
             listOfCardsAvailable.add(cards.getCardValue());
         }

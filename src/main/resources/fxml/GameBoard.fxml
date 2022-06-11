@@ -13,6 +13,11 @@
             <Image url="@../images/Light_blue.png" />
          </image>
       </ImageView>
+      <ImageView fx:id="speaker" fitHeight="150.0" fitWidth="200.0" layoutX="-1.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/DialogCheetah.png" />
+         </image>
+      </ImageView>
       <ImageView fx:id="island_1" fitHeight="198.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true" x="65.0" y="50.0">
          <image>
             <Image url="@../images/island3.png" />
@@ -122,6 +127,16 @@
       <Label fx:id="player_name_3" layoutX="1524.0" layoutY="628.0" prefHeight="52.0" prefWidth="195.0" textAlignment="CENTER">
          <font>
             <Font name="Comic Sans MS" size="35.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="106.0" fitWidth="464.0" pickOnBounds="true" preserveRatio="true" x="50.0" y="10.0">
+         <image>
+            <Image url="@../images/dialog.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="hintsLabel" layoutX="125.0" layoutY="20.0" prefHeight="27.0" prefWidth="379.0">
+         <font>
+            <Font size="16.0" />
          </font>
       </Label>
    </children>

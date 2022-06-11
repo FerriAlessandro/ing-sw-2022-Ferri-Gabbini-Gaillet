@@ -4,6 +4,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import it.polimi.ingsw.exceptions.FullGameException;
+import it.polimi.ingsw.exceptions.NotExistingPlayerException;
+import it.polimi.ingsw.exceptions.UnavailableNicknameException;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.Phase;
@@ -14,7 +16,7 @@ import it.polimi.ingsw.network.messages.*;
  * InputController's task is ensuring that every message from users is correct, both syntactically and
  * in the correct game phase. It has to come also from the correct player.
  * @author AlessandroG
- * @version 1.0
+ * @version 1.1
  */
 public class InputController implements Serializable{
 
@@ -60,13 +62,30 @@ public class InputController implements Serializable{
      * @param nickname the player's nickname
      * @param virtualView the player's virtualView
      * @throws FullGameException when there are already the max number of players connected
+     * @throws UnavailableNicknameException when the provided nickname has already been taken
      */
-    public void addPlayer(String nickname, VirtualView virtualView) throws FullGameException {
+    public void addPlayer(String nickname, VirtualView virtualView) throws FullGameException, UnavailableNicknameException {
         if(nickname == null)
             throw new RuntimeException("Player's nickname received is null!");
         if(virtualView == null)
             throw new RuntimeException("VirtualView received is null!");
         gameController.addPlayer(nickname, virtualView);
+    }
+
+    /**
+     * Method called by the clientHandler the first time a player tries to connect
+     * @param nickname the player's nickname
+     * @param virtualView the player's virtualView
+     * @throws FullGameException when there are already the max number of players connected
+     * @throws UnavailableNicknameException when the provided nickname has already been taken
+     * @throws NotExistingPlayerException when no registered player matches the provided nickname
+     */
+    public void restorePlayer(String nickname, VirtualView virtualView) throws FullGameException, UnavailableNicknameException, NotExistingPlayerException {
+        if(nickname == null)
+            throw new RuntimeException("Player's nickname received is null!");
+        if(virtualView == null)
+            throw new RuntimeException("VirtualView received is null!");
+        gameController.restorePlayer(nickname, virtualView);
     }
 
     /**
@@ -301,8 +320,7 @@ public class InputController implements Serializable{
 
         if(mess.nickname == null)
             isValid = false;
-
-        if(mess.nickname.length() == 0)
+        else if(mess.nickname.length() == 0)
             isValid = false;
 
         validateMessage(isValid, message);
