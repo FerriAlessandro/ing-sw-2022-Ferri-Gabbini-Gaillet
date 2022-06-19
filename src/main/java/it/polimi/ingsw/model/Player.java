@@ -21,7 +21,7 @@ public class Player implements Serializable {
     private final int ID;
     private final String nickName;
     private final AssistantDeck assistantDeck;
-    private Status playerStatus;
+    private final Status playerStatus;
     private boolean isFirst;            //is the first player to play an assistant card
     private boolean isPlayerTurn;
     private final TowerColor towerColor;

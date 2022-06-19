@@ -91,6 +91,7 @@ public interface ViewInterface {
      * Getter method for the nickname of the associated player
      * @return {@link String} nickname of the associated player
      */
+    @SuppressWarnings("unused")
     String getNickName();
 
     /**

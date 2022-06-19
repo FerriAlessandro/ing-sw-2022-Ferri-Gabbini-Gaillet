@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class CharacterChoiceSceneController implements SceneController {

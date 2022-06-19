@@ -97,7 +97,7 @@ public class Gui extends Application implements ViewInterface {
                 final Scene scene = new Scene(scaleRootScene(root, fxml));
                 scenes.put(fxml, scene);
                 if(fxml.equals(MENU) || fxml.equals(LOGIN) || fxml.equals(WIN))
-                    root.getStylesheets().add(getClass().getResource("/style/styles.css").toExternalForm());
+                    root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/styles.css")).toExternalForm());
             }
             catch(Exception e) {
                 e.printStackTrace();
@@ -227,9 +227,7 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showLobby(SMessageLobby message) {
-        Platform.runLater(()-> {
-            changeScene(LOADING);
-        });
+        Platform.runLater(()-> changeScene(LOADING));
     }
 
     /**
@@ -448,10 +446,7 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(() ->gameBoardSceneController.colorCurrentPlayer(messageCurrentPlayer.nickname));
 
         if(!messageCurrentPlayer.nickname.equals(nickname))
-            Platform.runLater(()-> {
-
-                gameBoardSceneController.getHintsLabel().setText("It's now "+ messageCurrentPlayer.nickname+"'s turn!");
-            });
+            Platform.runLater(()-> gameBoardSceneController.getHintsLabel().setText("It's now "+ messageCurrentPlayer.nickname+"'s turn!"));
     }
 
     @Override

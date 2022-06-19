@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 
 public class WinSceneController implements SceneController {
 
@@ -47,9 +46,7 @@ public class WinSceneController implements SceneController {
 
     @FXML
     public void initialize(){
-        CloseButton.setOnAction((e)-> {
-            System.exit(1);
-        });
+        CloseButton.setOnAction((e)-> System.exit(1));
     }
 
 }

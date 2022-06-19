@@ -11,7 +11,6 @@ import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
 import it.polimi.ingsw.observers.Observer;
-import it.polimi.ingsw.view.cli.Cli;
 
 import java.util.*;
 
