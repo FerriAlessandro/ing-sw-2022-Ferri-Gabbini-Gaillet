@@ -235,9 +235,8 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showDisconnectionMessage() {
-
-        if(!Platform.isImplicitExit()) {
             Platform.runLater(() -> {
+                System.out.println("Dentro al runlater");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Connection problem");
                 alert.setHeaderText("The game cannot procede");
@@ -247,7 +246,6 @@ public class Gui extends Application implements ViewInterface {
                 alert.showAndWait();
                 System.exit(0);
             });
-        }
     }
 
     @Override

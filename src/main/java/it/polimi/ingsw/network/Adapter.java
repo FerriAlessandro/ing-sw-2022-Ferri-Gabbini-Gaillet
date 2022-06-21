@@ -53,10 +53,10 @@ public class Adapter {
 
             case S_WIN:
                 view.showWinMessage((SMessageWin) message);
+                gameEnded = true;
                 try{
                     socket.sendMessage(new RMessageDisconnect());
                 }catch (IOException ignored){}
-                gameEnded = true;
                 break;
 
             case S_LOBBY:
