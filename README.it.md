@@ -4,7 +4,7 @@
 
 Questo progetto è stato realizzato per il soddisfacimento dei requisiti della Prova finale di  
 Ingegneria del Software sez. Prof. San Pietro (A.A. 2021-2022), per il C.d.L. in Ingegneria Informatica del Politecnico di Milano
-![Logo Eryantis](src/main/resources/images/LogoPNG.png)
+![Logo Eryantis](src/main/resources/images/LogoReduced.png)
 
 Trasposizione del gioco da tavolo [Eryantis](https://www.craniocreations.it/prodotto/eriantys/) in un gioco online.
 
@@ -20,6 +20,10 @@ I diagrammi delle classi (in modello UML) sono disponibili qui:
 
 ### JavaDoc
 La documentazione del progetto, consultabile [qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/javadoc), è stata realizzata con le tecniche di documentazione di Java (JavaDoc) e presenta una descrizione di tutte le classi e dei loro metodi (ed eventuali attributi) pubblici. La documentazione è consultabile.
+
+### Test Coverage
+Il testing formale di unità realizzato con JUnit si è focalizzato sul model. Il coverage report risultante per questa parte del progetto è consultabile [qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/test_coverage_report).
+
 
 ### Librerie e Plugins
 In questa sezione viene presentata una breve descrizione delle librerie e dei plugin utilizzati per la realizzazione del progetto.
@@ -43,11 +47,9 @@ In questa sezione viene presentata una breve descrizione delle librerie e dei pl
 
 ## Compilazione e packaging
 ### Eseguibili
-I file eseguibili (.jar) sono stati realizzati con l'ausilio di Maven Shade Plugin.
-[Qui-INSERIRE LINK] sono forniti i jar precompilati.
-Per compilare i jar autonomamente ------------------ e posizionali all'interno della cartella -------------------.
-
-I Jar del progetto possono essere scaricati al seguente link: 
+Il file eseguibile (.jar) è stato realizzato con l'ausilio di Maven Shade Plugin.
+[Qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/executable) è fornito il jar precompilato.
+Per compilare i jar autonomamente utilizzare i comandi compile e package di Maven.
 
 ## Esecuzione
 Questo progetto richiede Java 17 o superiore per essere eseguito correttamente.
@@ -72,6 +74,9 @@ oppure
 ```
 java -jar NOMEJAR.jar --s
 ```
+
+Al fine di ottenere la migliore esperienza possibile mentre si gioca con la CLI su Windows consigliamo l'utilizzo di [Windows Terminal](https://github.com/Microsoft/Terminal) come terminale.
+
 #### GUI
 Per poter lanciare la modalità GUI sono disponibili due opzioni:
 - effettuare doppio click sull'eseguibile ```NOMEJAR.jar```
@@ -80,7 +85,11 @@ Per poter lanciare la modalità GUI sono disponibili due opzioni:
 ### Server
 Per lanciare il server digitare da terminale il comando:
 ```
-java -jar NOMEJARSERVER.jar [<port_number>]
+java -jar PSP15.jar --server [<port_number>]
+```
+oppure
+```
+java -jar PSP15.jar -server [<port_number>]
 ```
 #### Parametri
 E' possibile specificare la porta del server (il valore di default è __2351__).

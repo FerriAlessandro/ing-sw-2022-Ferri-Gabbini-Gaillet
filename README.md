@@ -3,7 +3,7 @@
 *Read this in other languages: [english](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/blob/main/README.md), [italiano](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/blob/main/README.it.md)*
 
 This project is intended to satisfy the requirements of the Final Examination of Software Engineering (prof. San Pietro) for the BSc in Engineering of Computing Systems at Politecnico di Milano.
-![Logo Eryantis](src/main/resources/images/LogoPNG.png)
+![Logo Eryantis](src/main/resources/images/LogoReduced.png)
 
 Implementation of the [Eryantis](https://www.craniocreations.it/prodotto/eriantys/) board game as an online multiplayer game.
 
@@ -18,6 +18,9 @@ The Class Diagrams (described using UML) are available here:
 
 ### JavaDoc
 The documentation available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/javadoc)  was realized using Java documentation techniques (JavaDoc) and provides a description of all classes and their methods (and public attributes when necessary). 
+
+### Test Coverage
+Testing efforts focused on the model and was implemented using JUnit. The resulting coverage report of the unit testing is available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/test_coverage_report).
 
 ### Libraries e Plugins
 In this section a brief description of libraries and plugins used in the project is provided.
@@ -41,8 +44,8 @@ In this section a brief description of libraries and plugins used in the project
 
 ## Compilation and packaging
 ### Executables
-The executable (.jar) was created using the Maven Shade plugin. These files are available [here-INSERIRE LINK].
-To compile the jars on your own using the Maven package command and save it in the shade subfolder.
+The executable (.jar) was created using the Maven Shade plugin. These files are available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/executable).
+To compile the jars on your own using the Maven package and compile commands.
 
 ## Run the game
 This game requires Java 17 or higher.
@@ -67,6 +70,8 @@ or
 ```
 java -jar PSP15.jar --s
 ```
+
+To enjoy an optimal experience when playing using the CLI on Windows we suggest using the [Windows Terminal](https://github.com/Microsoft/Terminal).
 
 #### GUI
 Tu run the game using the Graphical User Interface two options are available:
