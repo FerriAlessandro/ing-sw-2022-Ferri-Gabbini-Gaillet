@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.network.Server;
 import it.polimi.ingsw.view.gui.Gui;
 import javafx.application.Application;
 import it.polimi.ingsw.view.cli.AdvancedCli;
@@ -16,12 +17,15 @@ public class ClientApp {
 
         boolean useCli = false;
         boolean simpleCli = false;
+        boolean server = false;
 
         for(String arguments : args) {
             if (arguments.equals("--cli") || arguments.equals("-c")) {
                 useCli = true;
             } else if (arguments.equals("--simple") || arguments.equals("-s")) {
                 simpleCli = true;
+            } else if (arguments.equals("--server") || arguments.equals("-server")){
+                server = true;
             }
         }
 
@@ -33,9 +37,18 @@ public class ClientApp {
                 cli = new Cli();
             }
             cli.startGame();
-        } else {
-            Application.launch(Gui.class);
+        } else if (server) {
+            if (args.length == 2) {
+                String[] serverArgs = new String[1];
+                serverArgs[0] = args[1];
+                Server.main(serverArgs);
+            } else {
+                String[]serverArgs = new String[0];
+                Server.main(serverArgs);
+            }
         }
+        else
+            Application.launch(Gui.class);
     }
 
 }

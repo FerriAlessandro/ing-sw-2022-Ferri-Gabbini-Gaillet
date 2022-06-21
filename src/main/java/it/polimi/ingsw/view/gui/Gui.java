@@ -120,7 +120,7 @@ public class Gui extends Application implements ViewInterface {
         double width = resolution.getWidth();
         double height = resolution.getHeight();
         Scale scale = new Scale(width/initWidth, height/initHeight, 0, 0);
-        if(type.equals(MENU) || type.equals(LOGIN)){
+        if(type.equals(LOGIN)){
             scale.pivotXProperty().setValue(width/2);
             scale.pivotYProperty().setValue(height/2);
         } else {
