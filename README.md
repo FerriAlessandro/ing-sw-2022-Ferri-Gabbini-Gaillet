@@ -41,8 +41,8 @@ In this section a brief description of libraries and plugins used in the project
 
 ## Compilation and packaging
 ### Executables
-The executables (.jar) were created using the Maven Shade plugin. These files are available [here-INSERIRE LINK].
-To compile the jars on your own -------------- and save them in the ------------ folder.
+The executable (.jar) was created using the Maven Shade plugin. These files are available [here-INSERIRE LINK].
+To compile the jars on your own using the Maven package command and save it in the shade subfolder.
 
 ## Run the game
 This game requires Java 17 or higher.
@@ -53,29 +53,34 @@ In this section the procedure needed to run the Eryantis client is described.
 #### CLI
 To run the Command Line Interface write the following command in the terminal:
 ```
-java -jar NOMEJAR.jar --cli
+java -jar PSP15.jar --cli
 ```
 or
 ```
-java -jar NOMEJAR.jar --c
+java -jar PSP15.jar --c
 ```
 It is also possible to use a simplified version of the CLI. In this version no drawings are shown and the game is described completely using text. This version is runnable using:
 ```
-java -jar NOMEJAR.jar --simple
+java -jar PSP15.jar --simple
 ```
 or
 ```
-java -jar NOMEJAR.jar --s
+java -jar PSP15.jar --s
 ```
+
 #### GUI
 Tu run the game using the Graphical User Interface two options are available:
-- opening the executable file ```NOMEJAR.jar``` as you normally would (double-clicking) 
-- running the following command via the command line: ```java -jar NOMEJAR.jar```
+- opening the executable file ```PSP15.jar``` as you normally would (double-clicking) 
+- running the following command via the command line: ```java -jar PSP15.jar```
 
 ### Server
 To run the server run the following command using the command line:
 ```
-java -jar NOMEJARSERVER.jar [<port_number>]
+java -jar PSP15.jar --server [<port_number>]
+```
+or
+```
+java -jar PSP15.jar -server [<port_number>]
 ```
 #### Parameters
 It is possible to specify the server port (the default value is __2351__).
