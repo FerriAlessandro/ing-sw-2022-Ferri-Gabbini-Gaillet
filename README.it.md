@@ -60,19 +60,19 @@ In questa sezione viene descritto come eseguire il client di Eryantis con l'inte
 #### CLI
 Per lanciare la CLI digitare da terminale il comando:
 ```
-java -jar NOMEJAR.jar --cli
+java -jar PSP15.jar --cli
 ```
 oppure
 ```
-java -jar NOMEJAR.jar --c
+java -jar PSP15.jar --c
 ```
 E' anche possibile lanciare la CLI in versione semplificate (senza disegni ma con indicazioni completamente testuali) eseguendo il seguente comando da terminale:
 ```
-java -jar NOMEJAR.jar --simple```
+java -jar PSP15.jar --simple```
 ```
 oppure
 ```
-java -jar NOMEJAR.jar --s
+java -jar PSP15.jar --s
 ```
 
 Al fine di ottenere la migliore esperienza possibile mentre si gioca con la CLI su Windows consigliamo l'utilizzo di [Windows Terminal](https://github.com/Microsoft/Terminal) come terminale.
