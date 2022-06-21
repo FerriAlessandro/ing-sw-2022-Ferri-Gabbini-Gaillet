@@ -21,7 +21,7 @@ public class Player implements Serializable {
     private final int ID;
     private final String nickName;
     private final AssistantDeck assistantDeck;
-    private Status playerStatus;
+    private final Status playerStatus;
     private boolean isFirst;            //is the first player to play an assistant card
     private boolean isPlayerTurn;
     private final TowerColor towerColor;
@@ -62,21 +62,6 @@ public class Player implements Serializable {
      */
     public AssistantDeck getDeck() {
         return assistantDeck;
-    }
-
-    /**
-     * @return The Status of the Player (Online, Offline, Inactive)
-     */
-    public Status getStatus() {
-        return playerStatus;
-    }
-
-    /**
-     * This method sets the Player's Status.
-     * @param playerStatus current Status of the Player
-     */
-    public void setStatus(Status playerStatus){
-        this.playerStatus = playerStatus;
     }
 
     /**

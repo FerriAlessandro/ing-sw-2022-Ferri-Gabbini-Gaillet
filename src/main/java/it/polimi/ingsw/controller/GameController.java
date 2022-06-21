@@ -8,9 +8,11 @@ import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Phase;
 import it.polimi.ingsw.network.ClientHandler;
+import it.polimi.ingsw.network.Server;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
@@ -19,7 +21,7 @@ import java.util.*;
 /**
  * This class represents the Game Controller, which is the one that transforms a user message into an action in the Game
  * @author Alessandro F.
- * @version 1.1
+ * @version 2.0
  */
 
 public class GameController implements Serializable {
@@ -32,12 +34,16 @@ public class GameController implements Serializable {
     /** Links each player nickname to the corresponding {@link VirtualView} */
     public transient Map<String, VirtualView > playersView;
     private final boolean isExpert;
+    private boolean gameEnded = false;
     private boolean isLastRound;
+    private boolean isLastRoundBag;
     private final int numOfPlayers;
     private int numOfMoves = 0;
     /** True if someone has played a character card, false otherwise.*/
     public boolean hasPlayedCharacter;
     private final ArrayList<String> nickNames = new ArrayList<>();
+
+    private transient Timer disconnectionTimer = new Timer();
 
     /**
      * Game Controller constructor.
@@ -46,6 +52,7 @@ public class GameController implements Serializable {
      */
     public GameController(int numOfPlayers, boolean isExpert){
         this.isLastRound = false;
+        this.isLastRoundBag = false;
         this.numOfPlayers = numOfPlayers;
         this.isExpert = isExpert;
         this.hasPlayedCharacter = false;
@@ -85,32 +92,86 @@ public class GameController implements Serializable {
      * Restore player. Matches current player to previously saved player.
      * @param nickName of the player to add
      * @param playerView Virtual View for the player
-     * @throws FullGameException
+     * @throws FullGameException when the current game is already full
+     * @throws UnavailableNicknameException when the provided nickname has already been taken
+     * @throws NotExistingPlayerException when no registered player matches the provided nickname
      */
-    public void restorePlayer(String nickName, VirtualView playerView) throws FullGameException, NotExistingPlayerException{
+    public void restorePlayer(String nickName, VirtualView playerView) throws FullGameException, NotExistingPlayerException, UnavailableNicknameException{
         if(playersView.size() < numOfPlayers){
-            if(getNickNames().contains(nickName)){
-                playersView.put(nickName, playerView);
+            if(!playersView.containsKey(nickName)) {
+                if (getNickNames().contains(nickName)) {
+
+                    playersView.put(nickName, playerView);
+                    game.addObserver(playerView);
+                    playerView.setExpert(new SMessageExpert(isExpert));
+
+                    if (Server.disconnectionResilient) {
+                        //This branch is not taken when loading a save as the Server is not serialized and stored on disk (and disconnectionResilient is false by default)
+                        try {
+                            game.notifyObserver(playerView);
+                            broadcastMessage(nickName + " reconnected", MessageType.S_INVALID);
+                        } catch (InvalidParameterException e) {
+                            e.printStackTrace();
+                        }
+
+                        for (Player p : game.getPlayers()) {
+                            if (p.getPlayedCard() != null) {
+                                playerView.showAssistantStatus(new SMessageAssistantStatus(p.getNickName(), p.getPlayedCard()));
+                            }
+                        }
+
+
+                        if (Server.oneRemaining) {
+                            game.getPlayers().stream().filter(x -> x.getNickName().equals(nickName)).findFirst().ifPresent(x -> x.setConnected(true));
+                            //Only one player was connected and another reconnects after a disconnection -> resume game
+                            disconnectionTimer.cancel();
+                            System.out.println("Canceled disconnection timer");
+                            Server.oneRemaining = false;
+                            if (ClientHandler.queued != null) {
+                                //Reconnected player was not the current player -> elaborate the action made by the other player
+                                elaborateMessage(ClientHandler.queued);
+                                ClientHandler.queued = null;
+                            } else if (ClientHandler.lastUsefulSent != null && nickName.equals(game.getCurrentPlayer().getNickName())) {
+                                System.out.println("\n\nLast useful message found is of type: " + ClientHandler.lastUsefulSent.getType() + "\n\n");
+                                //Reconnected player was the current player -> resend the last action message which did not receive a response
+                                VirtualView current = playersView.get(game.getCurrentPlayer().getNickName());
+                                current.showCurrentPlayer(new SMessageCurrentPlayer(nickName));
+                                current.resendLast();
+                            }
+                        }
+
+                    } else if (Server.restored) {
+                        System.out.println("RESTORED START");
+                        if (playersView.size() == numOfPlayers) {
+                            //All players reconnected -> resume game (and show previously selected assistant cards)
+                            game.notifyObservers();
+
+                            for (VirtualView v : playersView.values()) {
+                                for (Player p : game.getPlayers()) {
+                                    if (p.getPlayedCard() != null) {
+                                        v.showAssistantStatus(new SMessageAssistantStatus(p.getNickName(), p.getPlayedCard()));
+                                    }
+                                }
+                            }
+                            restartFromPhase();
+
+                        } else {
+                            //Not all players have reconnected yet -> wait for others and show lobby
+                            for (VirtualView v : playersView.values()) {
+                                v.showLobby(new SMessageLobby(new ArrayList<>(playersView.keySet()), numOfPlayers));
+                            }
+                        }
+
+                    } else {
+                        throw new RuntimeException("This method can only be called when the game is either restored or disconnection-resilient");
+                    }
+
+                } else {
+                    throw new NotExistingPlayerException();
+                }
             } else {
-                throw new NotExistingPlayerException();
+                throw new UnavailableNicknameException();
             }
-
-            playerView.setExpert(new SMessageExpert(isExpert));
-
-            if (playersView.size() == numOfPlayers) {
-                for(VirtualView v : playersView.values()){
-                    game.addObserver(v);
-                }
-                game.notifyObservers();
-                if(!ClientHandler.disconnectionResilient) {
-                    restartFromPhase();
-                }
-            } else {
-                for(VirtualView v : playersView.values()){
-                    v.showLobby(new SMessageLobby(new ArrayList<>(playersView.keySet()), numOfPlayers));
-                }
-            }
-
         } else {
             throw new FullGameException();
         }
@@ -121,43 +182,45 @@ public class GameController implements Serializable {
      * @param nickName Nickname of the player to add
      * @param playerView Virtual View for the player
      * @throws FullGameException Thrown if there's an attempt to add players in an already full game
+     * @throws UnavailableNicknameException when the provided nickname has already been taken
      */
-    public void addPlayer(String nickName, VirtualView playerView) throws FullGameException {
+    public void addPlayer(String nickName, VirtualView playerView) throws FullGameException, UnavailableNicknameException {
 
         if (playersView.size() < numOfPlayers) {
+            if(!playersView.containsKey(nickName)) {
 
-            nickNames.add(nickName);  // in order of arrival
+                nickNames.add(nickName);  // in order of arrival
 
-            playersView.put(nickName, playerView);
+                playersView.put(nickName, playerView);
 
-            playerView.setExpert(new SMessageExpert(isExpert));
+                playerView.setExpert(new SMessageExpert(isExpert));
 
-            if (playersView.size() == numOfPlayers) {
-                game = new Game(nickNames);
-                gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
-                DiskManager.saveGame(this);
-                if(isExpert){
-                    ArrayList<Characters> characters = new ArrayList<>(List.of(Characters.values()));
-                    characters.remove(Characters.NONE);
-                    for(int i=0;i<3;i++){
-                        Collections.shuffle(characters);
-                        game.getGameBoard().addCharacterCard(characters.get(0));
-                        characters.remove(0);
+                if (playersView.size() == numOfPlayers) {
+                    game = new Game(nickNames);
+                    gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
+                    DiskManager.saveGame(this);
+                    if (isExpert) {
+                        ArrayList<Characters> characters = new ArrayList<>(List.of(Characters.values()));
+                        characters.remove(Characters.NONE);
+                        for (int i = 0; i < 3; i++) {
+                            Collections.shuffle(characters);
+                            game.getGameBoard().addCharacterCard(characters.get(0));
+                            characters.remove(0);
+                        }
+                    }
+
+                    for (VirtualView v : playersView.values()) {
+                        game.addObserver(v);
+                    }
+                    game.notifyObservers();
+                    broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
+                    getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
+                } else {
+                    for (VirtualView v : playersView.values()) {
+                        v.showLobby(new SMessageLobby(new ArrayList<>(playersView.keySet()), numOfPlayers));
                     }
                 }
-
-                for(VirtualView v : playersView.values()){
-                    game.addObserver(v);
-                }
-                game.notifyObservers();
-                broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
-                getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
-            } else {
-                for(VirtualView v : playersView.values()){
-                    v.showLobby(new SMessageLobby(new ArrayList<>(playersView.keySet()), numOfPlayers));
-                }
-            }
-
+            } else throw new UnavailableNicknameException();
         }
         else throw new FullGameException();
     }
@@ -191,54 +254,76 @@ public class GameController implements Serializable {
      * @param nickname is the nickname of the player disconnected
      */
     public void playerDisconnected(String nickname) {
-        playersView.remove(nickname);
+        System.out.println("\033[31;1;4m" + nickname + " was disconnected. " + (playersView.size()-1) + " remaining players" + "\033[0m");
+        if(playersView.size() == 1){
+            //This is the last player (The disconnected player's VirtualView hasn't been removed from the map at this point
+            Server.reset();
+            disconnectionTimer.cancel();
+        }else if(!gameEnded) {
+            game.removeObserver(playersView.get(nickname));
+            playersView.remove(nickname);
+            Server.disconnectionResilient = true;
 
-        if(playersView.size() == 1) {
-            //End game
-            for (VirtualView v : playersView.values()) {
-                v.showWinMessage(new SMessageWin(v.getNickName(), false));
-                v.showDisconnectionMessage();
-            }
-        }else{
-            //Set-up for reconnection
-            ClientHandler.disconnectionResilient = true;
-
-
-            //Continue without the player that was disconnected
             Optional<Player> disconnectedPlayer = game.getPlayers().stream().filter(x -> x.getNickName().equals(nickname)).findFirst();
             disconnectedPlayer.ifPresent(x -> x.setConnected(false));
-            disconnectedPlayer.ifPresent(x->{
 
-                broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect",MessageType.S_INVALID);
+            if (playersView.size() == 1) {
+                //Case: only one player is still connected. The disconnected player's VirtualView has already been removed from the map at this point
+                Server.oneRemaining = true;
+                long delay = 20000;
+                broadcastMessage("All other players were disconnected, the game will remain open for " + delay / 1000 + "s before the game is ended or they reconnect", MessageType.S_INVALID);
 
-                if(game.getCurrentPlayer().equals(x)){
-                    try {
-                        game.endPlayerTurn(x);
-
-                        restartFromPhase();
-
-                    } catch (EndRoundException e) {
-                        if(gamePhase.equals(Phase.CHOOSE_ASSISTANT_CARD)){
-                            game.sortPlayersActionTurn();
-                            for(AssistantCard assistant : AssistantCard.values())
-                                assistant.resetPlayed();  //Reset the already played assistants
-                            askMoveOrCharacter();
-                        }else{
-                            //Phase is Choose cloud
-                            if(isLastRound) {
-                                checkWin();
+                //Schedule disconnection after timer expires
+                disconnectionTimer = new Timer();
+                disconnectionTimer.schedule(
+                        lambda2timer(() -> {
+                            for (VirtualView v : playersView.values()) {
+                                    v.showWinMessage(new SMessageWin(v.getNickName(), false));
+                                    v.showDisconnectionMessage();
                             }
-                            else{
-                                setupNewRound();
-                            }
-                        }
+                        }),
+                        delay
+                );
+
+            } else if(playersView.size() >1) {
+                //Case: two players are still connected
+                disconnectedPlayer.ifPresent(x -> broadcastMessage(nickname + " was disconnected, the game will continue without them until they reconnect", MessageType.S_INVALID));
+
+                //Continue without the player that was disconnected
+                disconnectedPlayer.ifPresent(x -> {
+                    if (game.getCurrentPlayer().equals(x)) {
+                        endPlayerTurn();
                     }
-                }
+                });
 
-            });
+            }
 
         }
 
+    }
+
+    /**
+     * Ends the turn of the current Player.
+     */
+    private void endPlayerTurn() {
+        try {
+            game.endPlayerTurn(game.getCurrentPlayer());
+            restartFromPhase();
+        } catch (EndRoundException e) {
+            if (gamePhase.equals(Phase.CHOOSE_ASSISTANT_CARD)) {
+                game.sortPlayersActionTurn();
+                for (AssistantCard assistant : AssistantCard.values())
+                    assistant.resetPlayed();  //Reset the already played assistants
+                askMoveOrCharacter();
+            } else {
+                //Phase is Choose cloud or moveMotherNature with empty bag
+                if (isLastRound || isLastRoundBag) {
+                    checkWin();
+                } else {
+                    setupNewRound();
+                }
+            }
+        }
     }
 
     /**
@@ -328,6 +413,7 @@ public class GameController implements Serializable {
      * Utility method to check who is the winner
      */
     public void checkWin(){
+        gameEnded = true;
         String winner = game.checkWinner();
 
         if(winner.equals("Tie")){
@@ -358,7 +444,7 @@ public class GameController implements Serializable {
         try {
             game.fillClouds();
         }catch(EmptyBagException exc){
-            isLastRound = true;
+            isLastRoundBag = true;
             broadcastMessage("The bag is empty, this is the last round!", MessageType.S_INVALID);
         }
         gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
@@ -434,6 +520,10 @@ public class GameController implements Serializable {
             if(!isLastRound){
                 broadcastMessage(e.getMessage(), MessageType.S_INVALID);
                 isLastRound = true;
+                for(VirtualView v : playersView.values()) {
+                    //Notifies all players of the choice made
+                    v.showAssistantStatus(new SMessageAssistantStatus(assistantMessage.nickname, assistantMessage.playedAssistant));
+                }
             }
             broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
             getVirtualView(game.getCurrentPlayer().getNickName()).showAssistantChoice(new SMessageShowDeck(game.getPlayerDeck()));
@@ -452,7 +542,7 @@ public class GameController implements Serializable {
     }
 
     /**
-     * If game is expert this method commands the current player to move students, otherwise it presents them a character card choice.
+     * If game is not expert this method commands the current player to move students, otherwise it presents them a character card choice.
      */
     private void askMoveOrCharacter() {
         broadcastMessage(game.getCurrentPlayer().getNickName(), MessageType.S_PLAYER);
@@ -590,9 +680,15 @@ public class GameController implements Serializable {
             }
 
             else {
-                gamePhase = Phase.CHOOSE_CLOUD;
-                DiskManager.saveGame(this);
-                getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
+                if(!isLastRoundBag) {
+                    gamePhase = Phase.CHOOSE_CLOUD;
+                    DiskManager.saveGame(this);
+                    getVirtualView(game.getCurrentPlayer().getNickName()).askCloud();
+                }
+                else {
+                    gamePhase = Phase.MOVE_STUDENTS;
+                    endPlayerTurn();
+                }
             }
 
 
@@ -683,4 +779,33 @@ public class GameController implements Serializable {
     public boolean isExpert(){
         return isExpert;
     }
+
+
+    /**
+     * Converts a runnable lambda expression to a {@link TimerTask}.
+     * @param lambda expression to be converted.
+     * @return the corresponding TimerTask
+     */
+    private static TimerTask lambda2timer(Runnable lambda) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                lambda.run();
+            }
+        };
+    }
+
+    /**
+     * Custom readObject method to handle transient fields.
+     * @param in the object input stream to read from
+     * @throws IOException when a general problem occurs during read
+     * @throws ClassNotFoundException when no matching definition for the class could be found
+     */
+    @Serial
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        disconnectionTimer = new Timer();
+        playersView = new HashMap<>();
+    }
+
 }

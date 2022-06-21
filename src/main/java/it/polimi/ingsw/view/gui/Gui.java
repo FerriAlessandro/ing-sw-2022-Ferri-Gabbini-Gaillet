@@ -6,7 +6,9 @@ import it.polimi.ingsw.network.Adapter;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.gui.scene.GameBoardSceneController;
+import it.polimi.ingsw.view.gui.scene.NewGameSceneController;
 import it.polimi.ingsw.view.gui.scene.SceneController;
+import it.polimi.ingsw.view.gui.scene.WinSceneController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -42,14 +44,22 @@ public class Gui extends Application implements ViewInterface {
     public static final String CHARACTER = "/fxml/CharacterChoiceScene.fxml";
     public static final String GAMEBOARD = "/fxml/GameBoard.fxml";
     public static final String LOGIN = "/fxml/LoginScene.fxml";
-    public static final String MENU = "/fxml/MainMenuScene.fxml";
+    public static final String MENU ="/fxml/NewGameScene.fxml";
     public static final String NICKNAME = "/fxml/NicknameScene.fxml";
+    public static final String LOADING = "/fxml/LoadingScreen.fxml";
+    public static final String WIN = "/fxml/WinScene.fxml";
     private final HashMap<String, Scene> scenes = new HashMap<>();
     private final HashMap<String, SceneController> controllers = new HashMap<>();
 
+
+
     /** Coins owned by each player */
     private Map<String, Integer> coins;
-    
+
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
     /**
      * Method called when the gui starts. It sets the main menu scene.
      * @param stage is the main stage
@@ -60,10 +70,15 @@ public class Gui extends Application implements ViewInterface {
         stage.getIcons().add(new Image("/images/Eriantys.png"));
         initializeGui();
         coins = new HashMap<>();
-        currentScene = scenes.get(MENU);
+        currentScene = scenes.get(LOGIN);
         this.stage = stage;
         stage.setTitle("Eriantys");
         resizeStage(stage);
+    }
+
+    @Override
+    public void stop(){
+        adapter.sendMessage(new RMessageDisconnect());
     }
 
     /**
@@ -71,7 +86,7 @@ public class Gui extends Application implements ViewInterface {
      */
     public void initializeGui(){
 
-        ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME));
+        ArrayList<String> sceneFXML = new ArrayList<>(Arrays.asList(ASSISTANT, CHARACTER, GAMEBOARD, LOGIN, MENU, NICKNAME, LOADING, WIN));
         for(String fxml : sceneFXML){
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             try {
@@ -81,6 +96,8 @@ public class Gui extends Application implements ViewInterface {
                 controller.setGui(this);
                 final Scene scene = new Scene(scaleRootScene(root, fxml));
                 scenes.put(fxml, scene);
+                if(fxml.equals(MENU) || fxml.equals(LOGIN) || fxml.equals(WIN))
+                    root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/style/styles.css")).toExternalForm());
             }
             catch(Exception e) {
                 e.printStackTrace();
@@ -103,7 +120,7 @@ public class Gui extends Application implements ViewInterface {
         double width = resolution.getWidth();
         double height = resolution.getHeight();
         Scale scale = new Scale(width/initWidth, height/initHeight, 0, 0);
-        if(type.equals(MENU) || type.equals(LOGIN)) {
+        if(type.equals(MENU) || type.equals(LOGIN)){
             scale.pivotXProperty().setValue(width/2);
             scale.pivotYProperty().setValue(height/2);
         } else {
@@ -152,31 +169,14 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void askNickName() {
-
         Platform.runLater(()-> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Nickname selection");
-            dialog.setHeaderText("Look, it seems we have a new wizard");
-            dialog.setContentText("Please enter your battle name:");
-            Tooltip tooltip = new Tooltip();
-            tooltip.setText(
-                    "Nickname must be at least\n" +
-                    "1 characters in length!\n"
-            );
-            dialog.getEditor().setTooltip(tooltip);
-            ImageView imageView = addImage("/images/miscellaneous/MAGO 1_1.jpg", false);
-            dialog.setGraphic(imageView);
-
-            Optional<String> result = dialog.showAndWait();
-            if(result.isPresent()) {
-                nickname = result.get();
-                if(result.get().length() == 0)
-                    askNickName();
-                else
-                    adapter.sendMessage(new RMessageNickname(nickname));
+            NewGameSceneController controller = (NewGameSceneController) controllers.get(MENU);
+            controller.askNickName();
+            try{
+                changeScene(MENU);
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            else
-                askNickName();
         });
 
     }
@@ -186,39 +186,14 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void askGameSettings() {
-
         Platform.runLater(()->{
-            List<Integer> choices = new ArrayList<>();
-            choices.add(2);
-            choices.add(3);
-            ChoiceDialog<Integer> dialog = new ChoiceDialog(2, choices);
-            dialog.setTitle("Game settings");
-            dialog.setHeaderText("You can't fight alone");
-            dialog.setContentText("How many wizards will be there?");
-            ImageView imageView = addImage("/images/miscellaneous/settingIcon.png", true);
-            dialog.setGraphic(imageView);
-            Optional<Integer> result = dialog.showAndWait();
-            if(result.isPresent()) {
-                numOfPlayer = result.get();
-                List<String> choices2 = new ArrayList<>();
-                choices2.add("For dummies");
-                choices2.add("Expert");
-                ChoiceDialog<String> dialog2 = new ChoiceDialog("For dummies", choices2);
-                dialog2.setTitle("Game settings");
-                dialog2.setHeaderText("Are you an expert or a noob?");
-                dialog2.setContentText("Which version of the game do you want?");
-                dialog2.setGraphic(imageView);
-                Optional<String> result2 = dialog2.showAndWait();
-                if(result2.isPresent()) {
-                    if(result2.get().equals("Expert"))
-                        expert = true;
-                    adapter.sendMessage((new RMessageGameSettings(numOfPlayer, expert)));
-                }
-                else
-                    askGameSettings();
+            NewGameSceneController controller = (NewGameSceneController) controllers.get(MENU);
+            controller.askGameSettings();
+            try{
+                changeScene(MENU);
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            else
-                askGameSettings();
         });
 
     }
@@ -227,19 +202,17 @@ public class Gui extends Application implements ViewInterface {
     public void askMotherNatureMove(SMessageMotherNature message) {
 
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Next move");
-            alert.setHeaderText("Choose the destination of Mother Nature");
+            GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+
             String contentText = "You can move Mother Nature up to " + message.maxNumTiles + " island";
             if(message.maxNumTiles > 1)
                 contentText += "s";
-            alert.setContentText(contentText);
-            ImageView imageView = addImage("/images/miscellaneous/MADRE NATURA_1.jpg", false);
-            alert.setGraphic(imageView);
-            alert.showAndWait();
+             contentText+="!";
+
+            gameBoardSceneController.getHintsLabel().setText(contentText);
+
             try {
                 changeScene(GAMEBOARD);
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
                 gameBoardSceneController.getIslandChoice();
             }
             catch (Exception e) {
@@ -254,14 +227,7 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showLobby(SMessageLobby message) {
-        Platform.runLater(()-> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Lobby information");
-            alert.setHeaderText("We can't start the game right now, we need other wizard(s)!");
-            alert.setContentText("Waiting for " + message.numPlayersTotal + " players to be connected...\n");
-            //TODO add currentPlayers connected list
-            alert.showAndWait();
-        });
+        Platform.runLater(()-> changeScene(LOADING));
     }
 
     /**
@@ -269,16 +235,19 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showDisconnectionMessage() {
-        Platform.runLater(()-> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Connection problem");
-            alert.setHeaderText("The game cannot procede");
-            alert.setContentText("A connection problem has occurred - closing application");
-            ImageView imageView = addImage("/images/miscellaneous/connectionImage.jpg", true);
-            alert.setGraphic(imageView);
-            alert.showAndWait();
-            System.exit(0);
-        });
+
+        if(!Platform.isImplicitExit()) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Connection problem");
+                alert.setHeaderText("The game cannot procede");
+                alert.setContentText("A connection problem has occurred - closing application");
+                ImageView imageView = addImage("/images/miscellaneous/connectionImage.jpg", true);
+                alert.setGraphic(imageView);
+                alert.showAndWait();
+                System.exit(0);
+            });
+        }
     }
 
     @Override
@@ -322,8 +291,25 @@ public class Gui extends Application implements ViewInterface {
 
     }
 
+    /**
+     * Display Win Scene
+     * @param message containing information on who won.
+     */
     @Override
     public void showWinMessage(SMessageWin message) {
+        WinSceneController controller = (WinSceneController) controllers.get(WIN);
+        controller.setMessage(message);
+
+        Platform.runLater(() -> {
+            try {
+                controller.createScene();
+                currentScene = scenes.get(WIN);
+                resizeStage(stage);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 
@@ -367,31 +353,33 @@ public class Gui extends Application implements ViewInterface {
      */
     @Override
     public void showCharacterChoice(SMessageCharacter messageCharacter) {
-        Platform.runLater(() -> { //TODO non mostrare se non si può giocare nulla
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Character card choice");
-            alert.setHeaderText("You have the possibility to play a character card");
-            alert.setContentText("Do you wanna play one?");
-            ButtonType buttonOne = new ButtonType("Yes");
-            ButtonType buttonTwo = new ButtonType("No");
-            alert.getButtonTypes().setAll(buttonOne, buttonTwo);
+        Platform.runLater(() -> {
+            if (messageCharacter.effects.stream().anyMatch(x -> messageCharacter.cardCost.get(x) <= coins.get(nickname))) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Character card choice");
+                alert.setHeaderText("You have the possibility to play a character card");
+                alert.setContentText("Do you wanna play one?");
+                ButtonType buttonOne = new ButtonType("Yes");
+                ButtonType buttonTwo = new ButtonType("No");
+                alert.getButtonTypes().setAll(buttonOne, buttonTwo);
             ImageView imageView = addImage("/images/characters/KNIGHT.jpg", false);
             alert.setGraphic(imageView);
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if(result.isPresent()) {
-                if(result.get() == buttonOne) {
-                    try {
-                        currentMessage = messageCharacter;
-                        changeScene(CHARACTER);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent()) {
+                    if (result.get() == buttonOne) {
+                        try {
+                            currentMessage = messageCharacter;
+                            changeScene(CHARACTER);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else
+                        adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
                 }
+            } else {
 
-                else
-                    adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
+                adapter.sendMessage(new RMessageCharacter(Characters.NONE, nickname));
             }
 
         });
@@ -401,9 +389,10 @@ public class Gui extends Application implements ViewInterface {
     public void askMove() {
         Platform.runLater(() -> {
             try {
-
-                changeScene(GAMEBOARD);
                 GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+                gameBoardSceneController.getHintsLabel().setText("Select a student from the entrance!");
+                changeScene(GAMEBOARD);
+
 
                 gameBoardSceneController.getEntranceChoice();
             }
@@ -416,18 +405,12 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void askCloud() {
-
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Next move");
-            alert.setHeaderText("Choose the cloud tile to pick students from");
-            alert.setContentText(null);
-            ImageView imageView = addImage("/images/cloud_card.png", true);
-            alert.setGraphic(imageView);
-            alert.showAndWait();
+            GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+
+            gameBoardSceneController.getHintsLabel().setText("Choose a cloud tile!");
             try {
                 changeScene(GAMEBOARD);
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
                 gameBoardSceneController.getCloudChoice();
 
             }
@@ -463,16 +446,7 @@ public class Gui extends Application implements ViewInterface {
         Platform.runLater(() ->gameBoardSceneController.colorCurrentPlayer(messageCurrentPlayer.nickname));
 
         if(!messageCurrentPlayer.nickname.equals(nickname))
-            Platform.runLater(()-> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Current player");
-                alert.setHeaderText("It's now " + messageCurrentPlayer.nickname + "'s turn\n");
-                alert.setContentText(null);
-
-                ImageView imageView = addImage("/images/miscellaneous/informationIcon.png", true);
-                alert.setGraphic(imageView);
-                alert.showAndWait();
-            });
+            Platform.runLater(()-> gameBoardSceneController.getHintsLabel().setText("It's now "+ messageCurrentPlayer.nickname+"'s turn!"));
     }
 
     @Override
@@ -494,20 +468,17 @@ public class Gui extends Application implements ViewInterface {
     public void grandmaHerbHeraldScene(SMessageGrandmaherbHerald message) {
 
         Platform.runLater(() -> {
+            GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controllers.get(GAMEBOARD);
+            this.controller = gameBoardSceneController;
             Characters characterChosen = message.characterName;
-            String text;
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Disclaimer");
-            alert.setHeaderText("You have chosen " + characterChosen.name() + " card!");
+
             if(characterChosen.equals(Characters.GRANDMA_HERB))
-                text = "Select the island where the no entry tile will be applied";
+                gameBoardSceneController.getHintsLabel().setText("Select the island where the no entry tile will be applied!");
             else
-                text = "Select the island to resolve";
-            alert.setContentText(text);
+                gameBoardSceneController.getHintsLabel().setText("Select the island to resolve!");
 
             try {
                 changeScene(GAMEBOARD);
-                GameBoardSceneController gameBoardSceneController = (GameBoardSceneController) controller;
                 gameBoardSceneController.getIslandChoiceGrandmaHerald();
 
             }
@@ -577,7 +548,7 @@ public class Gui extends Application implements ViewInterface {
             choices.add(Color.YELLOW);
             choices.add(Color.PINK);
 
-            ChoiceDialog<Color> dialog = new ChoiceDialog(choices.get(0), choices);
+            ChoiceDialog<Color> dialog = new ChoiceDialog<>(choices.get(0), choices);
             dialog.setTitle("Disclaimer");
             dialog.setHeaderText("You have chosen " + characterChosen.name() + " card!");
             if(characterChosen.equals(Characters.ROGUE))
@@ -669,23 +640,14 @@ public class Gui extends Application implements ViewInterface {
      * If game settings fits with a previous saved game, it asks the first player whether to use the saved game or not.
      */
     @Override
-    public void askUseSavedGame() {
-
-        Platform.runLater(()-> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Load saved game");
-            alert.setHeaderText("A saved game matching this settings has been found");
-            alert.setContentText("Do you want restore it?");
-            ButtonType buttonOne = new ButtonType("Yes");
-            ButtonType buttonTwo = new ButtonType("No");
-            alert.getButtonTypes().setAll(buttonOne, buttonTwo);
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if(result.isPresent()) {
-                if(result.get() == buttonOne)
-                    adapter.sendMessage(new RMessageLoadGame(true));
-                else
-                    adapter.sendMessage(new RMessageLoadGame(false));
+    public void askUseSavedGame(SMessageLoadGame message) {
+        Platform.runLater(() -> {
+            NewGameSceneController controller = (NewGameSceneController) controllers.get(MENU);
+            controller.askUseSavedGame(message);
+            try {
+                changeScene(MENU);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }

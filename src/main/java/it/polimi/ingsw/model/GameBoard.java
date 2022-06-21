@@ -423,7 +423,7 @@ public class GameBoard implements Serializable {
                         //Normal situation
                         Player owner = professors.get(color);
                         for (Player player : playerBoards.keySet()) {
-                            if (playerBoards.get(player).getDiningRoom().getNumStudents(color) > playerBoards.get(owner).getDiningRoom().getNumStudents(color) ||
+                            if ((playerBoards.get(player).getDiningRoom().getNumStudents(color) > playerBoards.get(owner).getDiningRoom().getNumStudents(color)) ||
                                     (farmerCharacterCardIsActive && playerBoards.get(player).getDiningRoom().getNumStudents(color) == playerBoards.get(owner).getDiningRoom().getNumStudents(color) &&
                                             player.isPlayerTurn()))
                                 owner = player;

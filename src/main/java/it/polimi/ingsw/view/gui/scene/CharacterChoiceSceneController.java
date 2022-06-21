@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class CharacterChoiceSceneController implements SceneController {
@@ -77,10 +76,10 @@ public class CharacterChoiceSceneController implements SceneController {
     @FXML
     private Button cardTwoButton;
 
+    @FXML
+    private Button noneButton;
+
     private final ArrayList<ImageView> imageNode = new ArrayList<>();
-
-
-    private Map<Color, Integer> mapOfStudents = new HashMap<>();
 
     private final Image redStudent = new Image("/images/student_red.png");
     private final Image greenStudent = new Image("/images/student_green.png");
@@ -94,25 +93,15 @@ public class CharacterChoiceSceneController implements SceneController {
      */
     @FXML
     void initialize() {
-        imageNode.add(stud11);
-        imageNode.add(stud12);
-        imageNode.add(stud13);
-        imageNode.add(stud14);
-        imageNode.add(stud15);
-        imageNode.add(stud16);
-        imageNode.add(stud21);
-        imageNode.add(stud22);
-        imageNode.add(stud23);
-        imageNode.add(stud24);
-        imageNode.add(stud25);
-        imageNode.add(stud26);
-        imageNode.add(stud31);
-        imageNode.add(stud32);
-        imageNode.add(stud33);
-        imageNode.add(stud34);
-        imageNode.add(stud35);
-        imageNode.add(stud36);
-
+        for(int i = 1; i <= 3; i++){
+            for(int j = 1; j <= 6 ; j++){
+                try {
+                    imageNode.add((ImageView) CharacterChoiceSceneController.class.getDeclaredField("stud" + i + j).get(this));
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @FXML
@@ -232,7 +221,7 @@ public class CharacterChoiceSceneController implements SceneController {
             if (message.students.get(character) != null && !message.students.get(character).values().stream().allMatch(x -> x == 0)) {
                 int studentAdded = 0;
                 for (int j = 0, k = 1; j < 3; j++, k++) {
-                    mapOfStudents = message.students.get((message.effects.get(j)));
+                    Map<Color, Integer> mapOfStudents = message.students.get((message.effects.get(j)));
                     for (Color color : mapOfStudents.keySet()) {
                         switch (color) {
                             case GREEN -> {

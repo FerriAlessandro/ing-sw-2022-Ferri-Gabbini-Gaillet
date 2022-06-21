@@ -91,6 +91,7 @@ public interface ViewInterface {
      * Getter method for the nickname of the associated player
      * @return {@link String} nickname of the associated player
      */
+    @SuppressWarnings("unused")
     String getNickName();
 
     /**
@@ -128,7 +129,7 @@ public interface ViewInterface {
     /**
      * Ask the user whether to use the loaded game save or not.
      */
-    void askUseSavedGame();
+    void askUseSavedGame(SMessageLoadGame message);
 
     /**
      * Used to set the client flag for expert game handling.

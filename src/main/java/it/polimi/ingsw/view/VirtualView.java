@@ -11,7 +11,6 @@ import it.polimi.ingsw.network.ClientHandler;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.Observable;
 import it.polimi.ingsw.observers.Observer;
-import it.polimi.ingsw.view.cli.Cli;
 
 import java.util.*;
 
@@ -22,7 +21,6 @@ import java.util.*;
  * @version 1.1
  */
 public class VirtualView implements ViewInterface, Observer {
-    private static final long serialVersionUID = 1L;
     private final ClientHandler clientHandler;
 
     /**
@@ -210,7 +208,7 @@ public class VirtualView implements ViewInterface, Observer {
      * Ask the user whether to use the loaded game save or not.
      */
     @Override
-    public void askUseSavedGame() {
+    public void askUseSavedGame(SMessageLoadGame message) {
         new UnsupportedOperationException().printStackTrace();
     }
 
@@ -240,6 +238,13 @@ public class VirtualView implements ViewInterface, Observer {
     @Override
     public void askMove(){
         clientHandler.sendMessage(new SMessage(MessageType.S_MOVE));
+    }
+
+    /**
+     * Resends last action message that was sent to any player.
+     */
+    public void resendLast(){
+        clientHandler.sendMessage(ClientHandler.lastUsefulSent);
     }
 
     
@@ -300,10 +305,12 @@ public class VirtualView implements ViewInterface, Observer {
         SMessageGameState message = new SMessageGameState(studEntrance, studDining, numTowers, towerColor, studIslands,
                 numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition, coins);
 
+        /*
         System.out.println("\n------------------\n");
         Cli cli = new Cli();
         cli.showBoard(message);
         System.out.println("\n------------------\n");
+         */
 
         showBoard(message);
     }

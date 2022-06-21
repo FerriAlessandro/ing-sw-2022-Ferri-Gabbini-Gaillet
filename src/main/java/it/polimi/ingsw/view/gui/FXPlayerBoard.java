@@ -13,23 +13,21 @@ import javafx.scene.text.Font;
 import java.util.*;
 
 /**
- * This class is used to store and modify the students, professors and towers on a player's playerboard
+ * This class is used to store and modify the students, professors and towers on a player's player-board
  * @author Alessandro F.
  * @version 1.0
  */
 
 public class FXPlayerBoard {
 
-    private TowerColor towerColor;
-    public String nickname;
-    private final int boardNumber; //Number of the board to set the right coordinates for the pawns
+    private final TowerColor towerColor;
+    public final String nickname;
     private final int numOfPlayers;
 
     private final ArrayList<FXStudent> entrance = new ArrayList<>();
     private final HashMap<Color, ArrayList<FXStudent>> diningRooms = new HashMap<>();
     private final HashMap<Color, FXStudent> professorZone = new HashMap<>();
     private final ArrayList<Circle> towerZone = new ArrayList<>();
-    private Circle coins;
     private Label coinsNum;
     private final GameBoardSceneController gameBoardSceneController;
     private final Coordinates startingEntrance = new Coordinates(68,745.5); // First pawn of the entrance (Top left one), there is no pawn there
@@ -37,14 +35,7 @@ public class FXPlayerBoard {
     private final Coordinates startingProfessor = new Coordinates(480, 745.5); //First pawn of the professors zone (green professor)
     private final Coordinates startingTower = new Coordinates(545,789); //First pawn of the tower zone (top left one)
     private final Coordinates label = new Coordinates (280, 628); //Coordinates of the nickname label
-    private final double entranceHorizontalOffset = 36; //Offset between pawns in the entrance
-    private final double entranceVerticalOffset = 43.5;//Offset between pawns in the entrance
-    private final double diningHorizontalOffset = 29;//Offset between pawns in the Dining Room
-    private final double diningVerticaloffset = 43;//Offset between pawns in the Dining Room
     private final double professorsVerticalOffset = 43.5; //Offset between pawns in the Professors' area
-    private final double playerBoardsHorizontalOffset = 620; //Offset between playerboards
-    private final double towersHorizontalOffset = 35; //Offset between pawns in the Tower Zone
-    private final double towersVerticalOffset = 43; //Offset between pawns in the Tower Zone
     private final double offset; //Offset of a given playerboard from the first one
     private final double radius = 12.5; //Radius of the circles that represent the students
     private final double professorsRadius = 16.5; //Radius of the circles that represent professors and towers
@@ -59,8 +50,10 @@ public class FXPlayerBoard {
     public FXPlayerBoard(int boardNumber, GameBoardSceneController gameBoardSceneController, int numOfPlayers, String nickname){
         this.nickname = nickname;
         this.numOfPlayers = numOfPlayers;
+        //Offset between playerboards
+        double playerBoardsHorizontalOffset = 620;
         this.offset = playerBoardsHorizontalOffset * (boardNumber - 1);
-        this.boardNumber = boardNumber;
+        //Number of the board to set the right coordinates for the pawns
         this.gameBoardSceneController = gameBoardSceneController;
         if(boardNumber == 1)
             towerColor = TowerColor.WHITE;
@@ -88,11 +81,15 @@ public class FXPlayerBoard {
     private void createEntrance(){ //We create every circle and set them to not visibile, when the player adds a pawn to the entrance i simply search for the first "not visible" circle and set it visibile with the right color sprite
 
         double horizontal_offset = 0;
-        double vertical_offset = 0;
+        double vertical_offset;
 
-        for(int i=0; i<2; i++, horizontal_offset+=entranceHorizontalOffset){
+        //Offset between pawns in the entrance
+        double entranceHorizontalOffset = 36;
+        for(int i = 0; i<2; i++, horizontal_offset+= entranceHorizontalOffset){
             vertical_offset = 0;
-            for (int j=0;j<5;j++, vertical_offset += entranceVerticalOffset){
+            //Offset between pawns in the entrance
+            double entranceVerticalOffset = 43.5;
+            for (int j = 0; j<5; j++, vertical_offset += entranceVerticalOffset){
                 if(i!=0 || j!= 0) //The top left entrance spot is empty
                     entrance.add(new FXStudent(startingEntrance.getX() + offset + horizontal_offset , startingEntrance.getY() + vertical_offset, radius));
             }
@@ -115,7 +112,7 @@ public class FXPlayerBoard {
     private void createDiningRoom(){
 
         double horizontal_offset = 0;
-        double vertical_offset = 0;
+        double vertical_offset;
         String imageColor;
         String imagePath;
 
@@ -126,7 +123,9 @@ public class FXPlayerBoard {
             imageColor = color.toString().toLowerCase(Locale.ROOT);
             imagePath = "images/student_" + imageColor + ".png";
             Image studentImage = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
-            for(int i=0; i<10; i++, horizontal_offset+=diningHorizontalOffset) {
+            //Offset between pawns in the Dining Room
+            double diningHorizontalOffset = 29;
+            for(int i = 0; i<10; i++, horizontal_offset+= diningHorizontalOffset) {
                 diningRooms.get(color).add(new FXStudent(startingDiningRoom.getX() + offset + horizontal_offset, startingDiningRoom.getY() + vertical_offset, radius));
                 diningRooms.get(color).get(i).setColor(color);
                 diningRooms.get(color).get(i).setFill(new ImagePattern(studentImage));
@@ -152,7 +151,7 @@ public class FXPlayerBoard {
 
         String imageColor;
         String imagePath;
-        double verticalOffset = 0;
+        double verticalOffset;
         for(Color color : Color.values()){
             verticalOffset = getVerticalOffset(color);
             imageColor = color.toString().toLowerCase(Locale.ROOT);
@@ -177,7 +176,7 @@ public class FXPlayerBoard {
     private void createTowerZone(){
 
         double horizontalOffset = 0;
-        double verticalOffset = 0;
+        double verticalOffset;
         int counter = 0;
         int numOfRows;
         String imageColor;
@@ -188,9 +187,13 @@ public class FXPlayerBoard {
             numOfRows = 3;
         else numOfRows = 2;
 
-        for(int i=0; i<3; i++, horizontalOffset+=towersHorizontalOffset){
+        //Offset between pawns in the Tower Zone
+        double towersHorizontalOffset = 35;
+        for(int i = 0; i<3; i++, horizontalOffset+= towersHorizontalOffset){
             verticalOffset=0;
-            for(int j=0; j<numOfRows;j++, verticalOffset += towersVerticalOffset, counter++){
+            //Offset between pawns in the Tower Zone
+            double towersVerticalOffset = 43;
+            for(int j = 0; j<numOfRows; j++, verticalOffset += towersVerticalOffset, counter++){
                 if(i!= 2 || j!= 2){
                     towerZone.add(new Circle(startingTower.getX() + offset + horizontalOffset, startingTower.getY() + verticalOffset, professorsRadius));
                     Image towerImage = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath)));
@@ -221,7 +224,6 @@ public class FXPlayerBoard {
         label.setStyle("-fx-font-weight: bold;");
         label.setVisible(true);
         gameBoardSceneController.mainPane.getChildren().addAll(circle, label);
-        this.coins = circle;
         this.coinsNum = label;
 
         }
@@ -232,12 +234,14 @@ public class FXPlayerBoard {
      * @return The correct vertical offset
      */
     private double getVerticalOffset(Color color){
+        double diningVerticalOffset = 43;
         return switch (color) {
             case GREEN -> 0;
-            case RED -> diningVerticaloffset;
-            case YELLOW -> diningVerticaloffset * 2;
-            case PINK -> diningVerticaloffset * 3;
-            default -> diningVerticaloffset * 4;
+            //Offset between pawns in the Dining Room
+            case RED -> diningVerticalOffset;
+            case YELLOW -> diningVerticalOffset * 2;
+            case PINK -> diningVerticalOffset * 3;
+            default -> diningVerticalOffset * 4;
         };
     }
 
@@ -249,6 +253,7 @@ public class FXPlayerBoard {
             if(student.getOpacity() == 1) {
                 student.setOnMouseEntered(mouseEvent -> student.setCursor(Cursor.HAND));
                 student.setOnMouseClicked(mouseEvent -> {
+                    gameBoardSceneController.getHintsLabel().setText("Place it on an island or in the Dining Room!");
                     gameBoardSceneController.getIslandChoice(student);
                     makeDiningRoomSelectable(student);
                     removeSelectableEntrance();
@@ -303,18 +308,6 @@ public class FXPlayerBoard {
 
     public ArrayList<FXStudent> getEntrance(){
         return this.entrance;
-    }
-
-    public ArrayList<Circle> getTowerZone(){
-        return this.towerZone;
-    }
-
-    public HashMap<Color, ArrayList<FXStudent>> getDiningRoom(){
-        return this.diningRooms;
-    }
-
-    public HashMap<Color, FXStudent> getProfessorZone(){
-        return this.professorZone;
     }
 
     /**

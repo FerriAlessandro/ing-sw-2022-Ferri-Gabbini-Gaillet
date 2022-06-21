@@ -7,28 +7,35 @@ import it.polimi.ingsw.view.cli.Cli;
 
 /**
  * This class represents the client application. It creates a CLI or a GUI based on Client choice.
- * @author AlesssandroG
- * @version 1.0
+ * @author AlesssandroG, A.G. Gaillet
+ * @version 1.1
  */
 public class ClientApp {
 
     public static void main(String[] args) {
 
-        //TODO we have to decide if we want a standalone launcher
-        /*boolean cliUsage = false;
+        boolean useCli = false;
+        boolean simpleCli = false;
 
-        for(String arguments : args)
-            if(arguments.equals("--cli") || arguments.equals("-c")) {
-                cliUsage = true;
-                break;
+        for(String arguments : args) {
+            if (arguments.equals("--cli") || arguments.equals("-c")) {
+                useCli = true;
+            } else if (arguments.equals("--simple") || arguments.equals("-s")) {
+                simpleCli = true;
             }
-
-        if(cliUsage) {
-            Cli cli = new AdvancedCli();
-            cli.startGame();
         }
-        else
-            Application.launch(Gui.class);*/
-        Application.launch(Gui.class);
+
+        if(useCli) {
+            Cli cli;
+            if(simpleCli) {
+                cli = new AdvancedCli();
+            }else {
+                cli = new Cli();
+            }
+            cli.startGame();
+        } else {
+            Application.launch(Gui.class);
+        }
     }
+
 }

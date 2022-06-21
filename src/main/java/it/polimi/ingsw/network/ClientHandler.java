@@ -3,6 +3,7 @@ package it.polimi.ingsw.network;
 import it.polimi.ingsw.controller.InputController;
 import it.polimi.ingsw.exceptions.FullGameException;
 import it.polimi.ingsw.exceptions.NotExistingPlayerException;
+import it.polimi.ingsw.exceptions.UnavailableNicknameException;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.VirtualView;
 
@@ -24,11 +25,11 @@ public class ClientHandler extends Thread {
     private String playerNickname = null;
     private final Timer timeout;
 
-    /** True when the current game has been restored from a save file, false otherwise */
-    public static boolean restored = false;
+    /** Last message received by the only remaining connected client. Stored to be used when other(s) reconnect */
+    public static Message queued = null;
 
-    /** True if a player was disconnected and the game is set up for them to reconnect, false otherwise */
-    public static boolean disconnectionResilient = false;
+    /** Last action message that was sent to any player. Used as cache for when the current player disconnects and reconnects (and only one player remains connected in the meantime)*/
+    public static SMessage lastUsefulSent = null;
 
     /**
      * Constructor to be used for players that are not first.
@@ -70,7 +71,7 @@ public class ClientHandler extends Thread {
         while (!Thread.currentThread().isInterrupted() && !clientSocket.isClosed()) {
             try {
                 Message inMessage = (Message) in.readObject();
-                System.out.println("Message received, type: " + inMessage.getType() + "Client Handler:" + Thread.currentThread().getId());
+                System.out.println("\u001b[38;5;244m" + "Message received, type: " + inMessage.getType() + "Client Handler: " + Thread.currentThread().getId() + " - " + playerNickname + "\u001b[0m");
 
                 if (inMessage.getType().equals(MessageType.R_DISCONNECT)) {
                     disconnect();
@@ -78,7 +79,20 @@ public class ClientHandler extends Thread {
                     synchronized (timeout) {
                         timeout.euthanize();
                     }
-                    controller.elaborateMessage(inMessage);
+
+                    //If only one player is connected the message is stored until the other player(s) reconnects
+                    if (Server.oneRemaining && !inMessage.getType().equals(MessageType.R_NICKNAME)){
+                        queued = inMessage;
+                    } else {
+                        try {
+                            controller.elaborateMessage(inMessage);
+                        } catch (RuntimeException e){
+                            e.printStackTrace();
+                            sendMessage(new SMessageInvalid(e.getMessage()));
+                            sendMessage(new SMessage(MessageType.S_TRYAGAIN));
+                        }
+                    }
+
                     synchronized (timeout) {
                         timeout.reset();
                         timeout.revive();
@@ -100,10 +114,31 @@ public class ClientHandler extends Thread {
      */
     public void sendMessage(SMessage message) {
         try {
+            if(isActionMessage(message)){
+                //Saves last action message sent so it can be used in case the current player disconnects and only 2 players are present
+                System.out.println("\n\nLast useful sent: " + message.getType());
+                lastUsefulSent = message;
+            }
+
+            System.out.println("Trying to send this message: " + message.getType() + " to " + playerNickname);
             out.writeObject(message);
+
         } catch (IOException e) {
             System.out.println("Unable to send the given message");
         }
+    }
+
+    /**
+     * Discerns between action and informative messages.
+     *
+     * @return true if this message asks the player to perform an action, false otherwise
+     */
+    private boolean isActionMessage(SMessage message){
+        return  !message.getType().equals(MessageType.S_INVALID) && !message.getType().equals(MessageType.S_TRYAGAIN) &&
+                !message.getType().equals(MessageType.S_PLAYER) && !message.getType().equals(MessageType.S_GAMESTATE)
+                && !message.getType().equals(MessageType.S_NICKNAME) && !message.getType().equals(MessageType.S_EXPERT)
+                && !message.getType().equals(MessageType.S_ASSISTANTSTATUS) && !message.getType().equals(MessageType.S_WIN) &&
+                !message.getType().equals(MessageType.S_LOBBY) && !message.getType().equals(MessageType.S_DISCONNECT);
     }
 
     /**
@@ -151,50 +186,41 @@ public class ClientHandler extends Thread {
                     if (inMessage.getType().equals(MessageType.R_NICKNAME)) {
                         RMessageNickname nickMessage = (RMessageNickname) inMessage;
 
-                        if(restored || disconnectionResilient) {
+                        if(Server.restored || Server.disconnectionResilient) {
 
+                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                            this.playerNickname = nickMessage.nickname;
+                            try {
+                                VirtualView virtualView = new VirtualView(this);
+                                controller.restorePlayer(nickMessage.nickname, virtualView);
+                                validNickName = true;
 
-                            if(!controller.getGameController().playersView.containsKey(nickMessage.nickname)) {
-                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                                this.playerNickname = nickMessage.nickname;
+                            } catch (FullGameException e) {
+                                //Notifies of full game and closes the connection without notifying the controller
+                                sendMessage(new SMessageInvalid(e.getMessage()));
+                                e.printStackTrace();
                                 try {
-                                    VirtualView virtualView = new VirtualView(this);
-                                    controller.getGameController().restorePlayer(nickMessage.nickname, virtualView);
-                                    validNickName = true;
+                                    out.flush();
+                                    clientSocket.close();
+                                } catch (Exception ignored) {}
+                                this.interrupt();
 
-                                } catch (FullGameException e) {
-                                    //Notifies of full game and closes the connection without notifying the controller
-                                    sendMessage(new SMessageInvalid("The current game is already full. Please try again later"));
-                                    e.printStackTrace();
-                                    try {
-                                        out.flush();
-                                        clientSocket.close();
-                                    } catch (Exception ignored) {}
-                                    this.interrupt();
-
-                                } catch (NotExistingPlayerException e){
-                                    sendMessage(new SMessageInvalid("No pre-existing player had this nickname"));
-                                    e.printStackTrace();
-                                }
-
-                            } else {
-                                sendMessage(new SMessageInvalid("Nickname already taken"));
+                            } catch (NotExistingPlayerException | UnavailableNicknameException e) {
+                                sendMessage(new SMessageInvalid(e.getMessage()));
                             }
 
                         }else {
 
-                            if (!controller.getNicknames().contains(nickMessage.nickname)) {
-                                System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
-                                this.playerNickname = nickMessage.nickname;
-                                try {
-                                    VirtualView virtualView = new VirtualView(this);
-                                    controller.addPlayer(nickMessage.nickname, virtualView);
-                                    validNickName = true;
-                                } catch (FullGameException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                sendMessage(new SMessageInvalid("Nickname already taken"));
+                            System.out.println("Nickname for " + clientSocket.getInetAddress() + " is " + nickMessage.nickname);
+                            this.playerNickname = nickMessage.nickname;
+                            try {
+                                VirtualView virtualView = new VirtualView(this);
+                                controller.addPlayer(nickMessage.nickname, virtualView);
+                                validNickName = true;
+                            } catch (FullGameException e) {
+                                e.printStackTrace();
+                            } catch (UnavailableNicknameException e){
+                                sendMessage(new SMessageInvalid(e.getMessage()));
                             }
 
                         }

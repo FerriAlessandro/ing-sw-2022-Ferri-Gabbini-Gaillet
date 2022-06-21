@@ -61,6 +61,9 @@ class GameTest {
         assertEquals(p, p1);
         assertEquals(p.getNickName(), p1.getNickName());
 
+        for(Player player : game.getPlayers())
+            player.setPlayerTurn(false);
+        assertThrowsExactly(NoCurrentPlayerException.class, () -> game.getCurrentPlayer());
     }
 
     @Test

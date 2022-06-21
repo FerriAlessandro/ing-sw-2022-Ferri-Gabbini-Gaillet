@@ -220,6 +220,9 @@ public class Cli implements ViewInterface {
     @Override
     public void showDisconnectionMessage() {
         System.out.println("Either you or all other remaining players lost connection - ending game");
+        try {
+            System.in.close();
+        } catch (Exception ignored){}
     }
 
     /**
@@ -293,7 +296,7 @@ public class Cli implements ViewInterface {
             if(message.tie){
                 System.out.println("It's a tie");
             }else {
-                System.out.println(message.nickname + "has won !!!");
+                System.out.println(message.nickname + " has won !!!");
             }
         }else{
             new InvalidParameterException().printStackTrace();
@@ -497,10 +500,11 @@ public class Cli implements ViewInterface {
      * Ask the user whether to use the loaded game save or not.
      */
     @Override
-    public void askUseSavedGame() {
+    public void askUseSavedGame(SMessageLoadGame message) {
         String choice;
         do {
-            System.out.println("A saved game matching your desired settings was found. Do you wish to continue playing it? y/n");
+            System.out.println("A saved game was found. This game is a " + message.numOfPlayers + " players " + (message.expert ? "expert game" : "simple game"));
+            System.out.println("Do you wish to continue playing this game? y/n");
             choice = in.nextLine();
         }while (!choice.equals("y") && !choice.equals("n"));
         if (choice.equals("y")){

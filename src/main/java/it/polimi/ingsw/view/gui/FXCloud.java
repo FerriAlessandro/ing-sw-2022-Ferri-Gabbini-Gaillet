@@ -20,8 +20,6 @@ import java.util.Objects;
 
 public class FXCloud {
 
-    private final double cloudHorizontalOffset = 50 ; //Offset between students on the cloud
-    private final double cloudVerticalOffset = 50;//Offset between students on the cloud
     private final double cloudAbsoluteHorizontalOffset; //Horizontal offset between clouds
     private final double cloudAbsoluteVerticalOffset; //Vertical offset between clouds
     private final Coordinates firstStudent = new Coordinates(1460, 115); //first student of the first cloud
@@ -29,7 +27,6 @@ public class FXCloud {
     private final ArrayList<FXStudent> students= new ArrayList<> (); //We store the Circles representing the students to have a way of retrieving them from the Scene Tree
     private final int cloudIndex;
     private final int numOfPlayers;
-    private final double radius = 12.5;
     private final ImageView cloud;
 
 
@@ -65,13 +62,18 @@ public class FXCloud {
     public void createCloud() {
 
         double horizontalOffset = 0;
-        double verticalOffset = 0;
+        double verticalOffset;
         int count = 0;
 
+        //Offset between students on the cloud
+        double cloudHorizontalOffset = 50;
         for (int i = 0; i < 2; i++, horizontalOffset += cloudHorizontalOffset) {
             verticalOffset = 0;
+            //Offset between students on the cloud
+            double cloudVerticalOffset = 50;
             for (int j = 0; j < 2; j++, verticalOffset += cloudVerticalOffset, count++) {
                 if(i!=1 || j!=1 || numOfPlayers == 3){
+                    double radius = 12.5;
                     students.add(new FXStudent(firstStudent.getX() + cloudAbsoluteHorizontalOffset + horizontalOffset, firstStudent.getY() + verticalOffset + cloudAbsoluteVerticalOffset, radius));
                     gameBoardSceneController.mainPane.getChildren().add(students.get(count));
                     students.get(count).setOpacity(0);
