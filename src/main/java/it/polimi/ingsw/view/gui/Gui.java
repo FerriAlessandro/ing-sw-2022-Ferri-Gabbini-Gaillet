@@ -236,14 +236,15 @@ public class Gui extends Application implements ViewInterface {
     @Override
     public void showDisconnectionMessage() {
             Platform.runLater(() -> {
-                System.out.println("Dentro al runlater");
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Connection problem");
                 alert.setHeaderText("The game cannot procede");
                 alert.setContentText("A connection problem has occurred - closing application");
                 ImageView imageView = addImage("/images/miscellaneous/connectionImage.jpg", true);
                 alert.setGraphic(imageView);
-                alert.showAndWait();
+                try {
+                    alert.showAndWait();
+                }catch (Exception ignored){}
                 System.exit(0);
             });
     }

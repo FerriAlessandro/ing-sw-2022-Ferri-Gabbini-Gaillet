@@ -63,7 +63,6 @@ public class DiskManager {
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             gameController = (GameController) objectInputStream.readObject();
         }catch (Exception e){
-            e.printStackTrace();
             System.out.println("Unable to find any saved game");
         }
         return gameController;

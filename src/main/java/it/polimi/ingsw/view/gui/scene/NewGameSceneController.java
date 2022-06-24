@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
+import java.io.IOException;
+
 
 public class NewGameSceneController implements SceneController {
 

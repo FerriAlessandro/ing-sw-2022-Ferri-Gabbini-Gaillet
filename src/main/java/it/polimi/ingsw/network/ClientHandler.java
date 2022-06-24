@@ -9,6 +9,7 @@ import it.polimi.ingsw.view.VirtualView;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.spec.ECField;
 
 /**
  * This class handles communications with one client.
@@ -147,6 +148,9 @@ public class ClientHandler extends Thread {
     public void disconnect() {
         System.out.println("Disconnection of: " + clientSocket.getInetAddress());
         if (playerNickname != null) {
+            try {
+                Server.removeClientHandler(this);
+            }catch (Exception ignored){}
             controller.playerDisconnected(playerNickname);
         }
         timeout.interrupt();
@@ -198,7 +202,7 @@ public class ClientHandler extends Thread {
                             } catch (FullGameException e) {
                                 //Notifies of full game and closes the connection without notifying the controller
                                 sendMessage(new SMessageInvalid(e.getMessage()));
-                                e.printStackTrace();
+
                                 try {
                                     out.flush();
                                     clientSocket.close();
@@ -230,13 +234,8 @@ public class ClientHandler extends Thread {
             } while (!inMessage.getType().equals(MessageType.R_NICKNAME) || !validNickName);
 
         } catch (Exception e) {
-            if (!e.getClass().equals(EOFException.class)) {
-                //System.out.println("Invalid input or corrupted input stream");
-                e.printStackTrace();
-            } else {
-                System.out.println("EOF exception received");
-                disconnect();
-            }
+            System.out.println("Networking error, unable to receive nickname on CH " + Thread.currentThread().getId());
+            disconnect();
         }
     }
 

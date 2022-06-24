@@ -153,8 +153,8 @@ public class Adapter {
         try {
             socket.sendMessage(message);
         } catch (IOException e){
-            //System.out.println("--UNABLE TO SEND MESSAGE--");
-            e.printStackTrace();
+            System.out.println("--UNABLE TO SEND MESSAGE--");
+            view.showDisconnectionMessage();
         }
         //System.out.println("--MESSAGE SENT--");
     }

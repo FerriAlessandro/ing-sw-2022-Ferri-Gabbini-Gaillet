@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Class that represent the Server. It contains the server-side entrypoint and handles initial communication with
@@ -33,12 +34,15 @@ public class Server {
     /** True if only one player is still connected */
     public static boolean oneRemaining = false;
 
+    private static ArrayList<ClientHandler> clientHandlers;
+
     /**
      * Main function
      * @param args port value to override default value
      */
     public static void main(String[] args){
         int port = 2351;
+        clientHandlers = new ArrayList<>();
         reset();
 
         if (args.length == 1){
@@ -102,19 +106,23 @@ public class Server {
                             restored = true;
                         }
 
-                        new ClientHandler(socket, inputStream, outputStream, controller).start();
+                        ClientHandler cl = new ClientHandler(socket, inputStream, outputStream, controller);
+                        clientHandlers.add(cl);
+                        cl.start();
                         firstPlayer = false;
 
                     } catch (IOException ioException) {
-                        System.out.println("Unable to get a stream");
-                        ioException.printStackTrace();
+                        System.out.println("An networking error occurred during setup");
+                        Server.reset();
                     }
 
                 } else {
                     //IF AT LEAST ONE OTHER PLAYER IS ALREADY CONNECTED
                     try {
                         //Use existing game settings (using existing controller)
-                        new ClientHandler(socket, controller).start();
+                        ClientHandler cl = new ClientHandler(socket, controller);
+                        clientHandlers.add(cl);
+                        cl.start();
                     }catch (IOException e){
                         e.printStackTrace();
                         System.out.println("Unable to create clientHandler");
@@ -124,6 +132,7 @@ public class Server {
         } catch (IOException e){
             System.out.println("Unable to create the socket\n");
             e.printStackTrace();
+            System.out.println("\\033[31;1;4m\" + \"SHUTTING DOWN\" + \"\\033[0m");
         }
     }
 
@@ -140,8 +149,7 @@ public class Server {
 
             System.out.println("Received " + message.getType() + " message");
         } catch (Exception e) {
-            System.out.println(System.nanoTime());
-            e.printStackTrace();
+            System.out.println("Unable to properly read the input stream");
         }
         return message;
     }
@@ -150,11 +158,25 @@ public class Server {
      * Resets the {@link Server} to run a new game.
      */
     public static void reset(){
+        if (clientHandlers != null){
+            for (ClientHandler cl : clientHandlers){
+                cl.disconnect();
+            }
+        }
+
         System.out.println("\033[31;1;4m" + "SERVER RESET" + "\033[0m");
         firstPlayer = true;
         controller = null;
         disconnectionResilient = false;
         restored = false;
         oneRemaining = false;
+    }
+
+    /**
+     * Remove the provided {@link ClientHandler} from the list of valid clients.
+     * @param clientHandler to be removed
+     */
+    public static void removeClientHandler(ClientHandler clientHandler){
+        clientHandlers.remove(clientHandler);
     }
 }
