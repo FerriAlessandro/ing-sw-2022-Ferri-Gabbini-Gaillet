@@ -5,12 +5,12 @@ import it.polimi.ingsw.view.gui.Gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-
-import java.io.IOException;
+import javafx.scene.layout.Pane;
 
 
 public class NewGameSceneController implements SceneController {
 
+    public Pane NewGamePane;
     private Gui gui;
 
     @FXML
@@ -42,7 +42,9 @@ public class NewGameSceneController implements SceneController {
 
     private boolean askedToLoad = false;
 
-
+    /**
+     * Method called to initialize the Controller
+     */
     @FXML
     public void initialize(){
         backButton.setVisible(false);
@@ -66,6 +68,10 @@ public class NewGameSceneController implements SceneController {
 
     }
 
+    /**
+     * Creates an interface to ask the user if he wants to load a saved game
+     * @param message Message containing the load game option
+     */
     public void askUseSavedGame(SMessageLoadGame message) {
 
         String mode;
@@ -97,23 +103,7 @@ public class NewGameSceneController implements SceneController {
             gui.adapter.sendMessage(new RMessageLoadGame(false));
             numOfPlayersButton.setText("Players");
             gameModeButton.setText("Mode");
-            numOfPlayersButton.getItems().add(new MenuItem("2"));
-            numOfPlayersButton.getItems().add(new MenuItem("3"));
-
-            for(MenuItem m : numOfPlayersButton.getItems())
-                m.setOnAction((e2)-> numOfPlayersButton.setText(m.getText()));
-            gameModeButton.getItems().add(new MenuItem("Easy"));
-            gameModeButton.getItems().add(new MenuItem("Expert"));
-
-            for(MenuItem m : gameModeButton.getItems())
-                m.setOnAction((e3) -> gameModeButton.setText(m.getText()));
-
-            confirmButton.setOnAction((e4) -> {
-                if(!numOfPlayersButton.getText().equals("Players") && !gameModeButton.getText().equals("Mode"))
-                    gui.adapter.sendMessage(new RMessageGameSettings(Integer.parseInt(numOfPlayersButton.getText()), gameModeButton.getText().equals("Expert")));
-            });
-            backButton.setVisible(false);
-            newGameButton.setVisible(false);
+            createMenuButtons(gameModeButton, backButton, newGameButton);
             loadGameButton.setVisible(false);
             gameModeButton.setVisible(true);
             numOfPlayersButton.setVisible(true);
@@ -134,31 +124,41 @@ public class NewGameSceneController implements SceneController {
 
     }
 
+    /**
+     * Creates buttons for the menu scene.
+     * @param gameModeButton used to set the game mode
+     * @param backButton used to go back
+     * @param newGameButton used to create a new game
+     */
+    private void createMenuButtons(MenuButton gameModeButton, Button backButton, Button newGameButton) {
+        numOfPlayersButton.getItems().add(new MenuItem("2"));
+        numOfPlayersButton.getItems().add(new MenuItem("3"));
 
+        for(MenuItem m : numOfPlayersButton.getItems())
+            m.setOnAction((e2)-> numOfPlayersButton.setText(m.getText()));
+        gameModeButton.getItems().add(new MenuItem("Easy"));
+        gameModeButton.getItems().add(new MenuItem("Expert"));
+
+        for(MenuItem m : gameModeButton.getItems())
+            m.setOnAction((e3) -> gameModeButton.setText(m.getText()));
+
+        confirmButton.setOnAction((e4) -> {
+            if(!numOfPlayersButton.getText().equals("Players") && !gameModeButton.getText().equals("Mode"))
+                gui.adapter.sendMessage(new RMessageGameSettings(Integer.parseInt(numOfPlayersButton.getText()), gameModeButton.getText().equals("Expert")));
+        });
+        backButton.setVisible(false);
+        newGameButton.setVisible(false);
+    }
+
+    /**
+     * Asks the settings to the user
+     */
     public void askGameSettings(){
         if(!askedToLoad) {
             newGameButton.setOnAction(null);
             newGameButton.setOnAction((e) -> {
                 confirmButton.setOnAction(null);
-                numOfPlayersButton.getItems().add(new MenuItem("2"));
-                numOfPlayersButton.getItems().add(new MenuItem("3"));
-
-                for (MenuItem m : numOfPlayersButton.getItems())
-                    m.setOnAction((e2) -> numOfPlayersButton.setText(m.getText()));
-
-                gameModeButton.getItems().add(new MenuItem("Easy"));
-                gameModeButton.getItems().add(new MenuItem("Expert"));
-
-                for (MenuItem m : gameModeButton.getItems())
-                    m.setOnAction((e3) -> numOfPlayersButton.setText(m.getText()));
-
-                confirmButton.setOnAction((e4) -> {
-                    if (!numOfPlayersButton.getText().equals("Players") && !gameModeButton.getText().equals("Mode"))
-                        gui.adapter.sendMessage(new RMessageGameSettings(Integer.parseInt(numOfPlayersButton.getText()), gameModeButton.getText().equals("Expert")));
-                });
-
-                newGameButton.setVisible(false);
-                loadGameButton.setVisible(false);
+                createMenuButtons(numOfPlayersButton, newGameButton, loadGameButton);
                 numOfPlayersButton.setVisible(true);
                 gameModeButton.setVisible(true);
                 confirmButton.setVisible(true);
@@ -167,6 +167,9 @@ public class NewGameSceneController implements SceneController {
 
     }
 
+    /**
+     * Asks the nickname to the user
+     */
     public void askNickName(){
         newGameButton.setVisible(false);
         loadGameButton.setVisible(false);
@@ -177,6 +180,10 @@ public class NewGameSceneController implements SceneController {
         confirmNicknameButton.setVisible(true);
     }
 
+    /**
+     * Passes a Gui reference to the Controller
+     * @param gui to be used
+     */
     @Override
     public void setGui(Gui gui) {
         this.gui= gui;

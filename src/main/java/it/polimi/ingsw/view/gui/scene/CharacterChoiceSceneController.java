@@ -13,11 +13,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.event.ActionEvent;
+import javafx.scene.layout.GridPane;
+
 import java.util.ArrayList;
 import java.util.Map;
 
 public class CharacterChoiceSceneController implements SceneController {
 
+    public GridPane gridPane;
     private Gui gui;
     private Characters characterChosen;
     private Characters characterToAdd;

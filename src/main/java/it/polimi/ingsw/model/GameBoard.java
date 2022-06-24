@@ -209,15 +209,6 @@ public class GameBoard implements Serializable {
     }
 
     /**
-     * Checks if the {@link Bag} is empty.
-     *
-     * @return true if the {@link Bag} is empty, false otherwise
-     */
-    public boolean checkEmptyBag() {
-        return bag.numRemaining() == 0;
-    }
-
-    /**
      * Moves a student of a given {@link Color} from a given origin to a given destination. Reassigns professors if needed.
      *
      * @param color       {@link Color} of the student to be moved

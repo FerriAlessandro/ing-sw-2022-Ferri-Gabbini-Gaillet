@@ -4,7 +4,6 @@ import it.polimi.ingsw.exceptions.CardNotAvailableException;
 import it.polimi.ingsw.exceptions.CardNotFoundException;
 import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
-import it.polimi.ingsw.model.enumerations.Status;
 import it.polimi.ingsw.model.enumerations.TowerColor;
 
 import java.io.Serial;
@@ -21,7 +20,6 @@ public class Player implements Serializable {
     private final int ID;
     private final String nickName;
     private final AssistantDeck assistantDeck;
-    private final Status playerStatus;
     private boolean isFirst;            //is the first player to play an assistant card
     private boolean isPlayerTurn;
     private final TowerColor towerColor;
@@ -40,7 +38,6 @@ public class Player implements Serializable {
         this.isFirst = isFirst;
         this.isPlayerTurn = isPlayerTurn;
         this.towerColor = color;
-        this.playerStatus = Status.ONLINE;
         this.isConnected = true;
 
     }

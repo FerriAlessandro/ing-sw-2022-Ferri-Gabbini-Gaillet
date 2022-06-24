@@ -13,14 +13,14 @@ This project consists in the implementation of the game mentioned above as a sin
 
 ### UML
 The Class Diagrams (described using UML) are available here:
-- [Initial UML diagrams](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/uml_diagrams/initial)
-- [Final UML diagrams](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/uml_diagrams/final)
+- [Initial UML diagrams](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/uml_diagrams/initial)
+- [Final UML diagrams](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/uml_diagrams/final)
 
 ### JavaDoc
-The documentation available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/javadoc)  was realized using Java documentation techniques (JavaDoc) and provides a description of all classes and their methods (and public attributes when necessary). 
+The documentation available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/javadoc)  was realized using Java documentation techniques (JavaDoc) and provides a description of all classes and their methods (and public attributes when necessary). 
 
 ### Test Coverage
-Testing efforts focused on the model and was implemented using JUnit. The resulting coverage report of the unit testing is available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/test_coverage_report).
+Testing efforts focused on the model and was implemented using JUnit. The resulting coverage report of the unit testing is available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/test_coverage_report).
 
 ### Libraries e Plugins
 In this section a brief description of libraries and plugins used in the project is provided.
@@ -44,7 +44,7 @@ In this section a brief description of libraries and plugins used in the project
 
 ## Compilation and packaging
 ### Executables
-The executable (.jar) was created using the Maven Shade plugin. These files are available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/executable).
+The executable (.jar) was created using the Maven Shade plugin. These files are available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/jar).
 To compile the jars on your own using the Maven package and compile commands.
 
 ## Run the game

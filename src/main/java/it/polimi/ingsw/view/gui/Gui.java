@@ -36,7 +36,6 @@ public class Gui extends Application implements ViewInterface {
     private String nickname;
     private boolean expert = false;
     private boolean firstGameStateMessage = true;
-    private int numOfPlayer;
     private Characters characterChosen = Characters.NONE;
     private SceneController controller;
     private Message currentMessage;

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.EmptyOriginException;
 import it.polimi.ingsw.exceptions.FullDestinationException;
 import it.polimi.ingsw.model.enumerations.Color;
 
@@ -63,7 +64,7 @@ public abstract class TileWithStudents implements Serializable {
      */
     public void removeStudent(Color color) throws RuntimeException {
         if (students.get(color) == 0)
-            throw new RuntimeException("There are no students of this color");
+            throw new EmptyOriginException();
         students.put(color, (students.get(color)) - 1);
     }
 

@@ -42,7 +42,7 @@ class EntranceTest {
     @DisplayName("Test the corner case of removeStudent when when there are no students.")
     void removeStudentCornerTest() {
         for(Color color : Color.values()){
-            assertThrowsExactly(RuntimeException.class, () -> entrance.removeStudent(color));
+            assertThrows(RuntimeException.class, () -> entrance.removeStudent(color));
         }
     }
     @Test

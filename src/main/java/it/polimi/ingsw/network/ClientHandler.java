@@ -9,7 +9,6 @@ import it.polimi.ingsw.view.VirtualView;
 
 import java.io.*;
 import java.net.Socket;
-import java.security.spec.ECField;
 
 /**
  * This class handles communications with one client.

@@ -78,7 +78,7 @@ public class FXPlayerBoard {
      * Helper method used to create an Entrance, it creates the circles representing the students and adds them in an ArrayList (to be able to retrieve them when needed), then
      * it adds them to the Scene Tree
      */
-    private void createEntrance(){ //We create every circle and set them to not visibile, when the player adds a pawn to the entrance i simply search for the first "not visible" circle and set it visibile with the right color sprite
+    private void createEntrance(){ //We create every circle and set them to not visibile, when the player adds a pawn to the entrance I simply search for the first "not visible" circle and set it visibile with the right color sprite
 
         double horizontal_offset = 0;
         double vertical_offset;

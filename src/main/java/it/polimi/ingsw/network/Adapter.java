@@ -11,15 +11,10 @@ import java.io.IOException;
  * @version 1.0
  */
 public class Adapter {
-    private ViewInterface view;
-    private ClientSocket socket;
+    private final ViewInterface view;
+    private final ClientSocket socket;
     private Message previousMessage = new SMessageInvalid("No previous command");
     private boolean gameEnded = false;
-
-    /**
-     * Constructor used for mock classes that extend {@link Adapter}. To be used for testing.
-     */
-    public Adapter(){}
 
     /**
      * Constructor that allows for overriding of default ip and port values.

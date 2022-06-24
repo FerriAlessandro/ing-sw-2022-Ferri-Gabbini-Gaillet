@@ -15,14 +15,14 @@ L'utente può interagire con il gioco tramite una di due interfacce: una Command
 
 ### UML
 I diagrammi delle classi (in modello UML) sono disponibili qui:
-- [UML Iniziali](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/uml_diagrams/initial)
-- [UML Finali](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/uml_diagrams/final)
+- [UML Iniziali](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/uml_diagrams/initial)
+- [UML Finali](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/uml_diagrams/final)
 
 ### JavaDoc
-La documentazione del progetto, consultabile [qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/javadoc), è stata realizzata con le tecniche di documentazione di Java (JavaDoc) e presenta una descrizione di tutte le classi e dei loro metodi (ed eventuali attributi) pubblici. La documentazione è consultabile.
+La documentazione del progetto, consultabile [qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/javadoc), è stata realizzata con le tecniche di documentazione di Java (JavaDoc) e presenta una descrizione di tutte le classi e dei loro metodi (ed eventuali attributi) pubblici. La documentazione è consultabile.
 
 ### Test Coverage
-Il testing formale di unità realizzato con JUnit si è focalizzato sul model. Il coverage report risultante per questa parte del progetto è consultabile [qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/test_coverage_report).
+Il testing formale di unità realizzato con JUnit si è focalizzato sul model. Il coverage report risultante per questa parte del progetto è consultabile [qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/test_coverage_report).
 
 
 ### Librerie e Plugins
@@ -48,7 +48,7 @@ In questa sezione viene presentata una breve descrizione delle librerie e dei pl
 ## Compilazione e packaging
 ### Eseguibili
 Il file eseguibile (.jar) è stato realizzato con l'ausilio di Maven Shade Plugin.
-[Qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliveries/executable) è fornito il jar precompilato.
+[Qui](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/jar) è fornito il jar precompilato.
 Per compilare i jar autonomamente utilizzare i comandi compile e package di Maven.
 
 ## Esecuzione

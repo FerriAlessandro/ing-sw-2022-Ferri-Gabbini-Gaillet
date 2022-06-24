@@ -22,7 +22,6 @@ public class Game extends Observable implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private ArrayList<Player> players; //sorted based on the assistant cards played (lowest to highest)
-    private Phase gamePhase;
     private final GameBoard gameBoard;
     private final int numOfPlayers;
 
@@ -34,7 +33,6 @@ public class Game extends Observable implements Serializable {
 
         this.players = new ArrayList<>();
         this.numOfPlayers = playersNames.size();
-        this.gamePhase = Phase.CHOOSE_ASSISTANT_CARD;
         this.players.add(new Player(1,new AssistantDeck(Wizard.WIZARD_1), playersNames.get(0), true, true, TowerColor.WHITE));
         this.players.add(new Player(2, new AssistantDeck(Wizard.WIZARD_2), playersNames.get(1), false, false, TowerColor.BLACK));
         if(playersNames.size()==3)
@@ -55,28 +53,6 @@ public class Game extends Observable implements Serializable {
      */
     public GameBoard getGameBoard() {
         return gameBoard;
-    }
-
-    /**
-     * @return The number of Players in the game
-     */
-    public int getNumOfPlayers() {
-        return numOfPlayers;
-    }
-
-    /**
-     * @return The current Phase of the game
-     */
-    public Phase getGamePhase() {
-        return gamePhase;
-    }
-
-    /**
-     * This method sets the Game Phase.
-     * @param gamePhase The new Game Phase
-     */
-    public void setGamePhase(Phase gamePhase) {
-        this.gamePhase = gamePhase;
     }
 
     /**

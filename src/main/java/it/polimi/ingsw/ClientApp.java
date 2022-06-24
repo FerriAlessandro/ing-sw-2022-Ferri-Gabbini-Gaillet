@@ -43,8 +43,7 @@ public class ClientApp {
                 serverArgs[0] = args[1];
                 Server.main(serverArgs);
             } else {
-                String[]serverArgs = new String[0];
-                Server.main(serverArgs);
+                Server.main(new String[0]);
             }
         }
         else

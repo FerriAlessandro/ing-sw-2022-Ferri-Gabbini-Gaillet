@@ -5,7 +5,6 @@ import it.polimi.ingsw.exceptions.TowerWinException;
 import it.polimi.ingsw.model.IslandTile;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Phase;
-import it.polimi.ingsw.model.enumerations.TowerColor;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.RMessageGrandmaherbHerald;
 import it.polimi.ingsw.network.messages.SMessageGrandmaherbHerald;
@@ -49,7 +48,6 @@ public class HeraldController extends CharacterController{
     public void activate (Message message){
 
         RMessageGrandmaherbHerald heraldMessage = (RMessageGrandmaherbHerald) message;
-        TowerColor influenceWinner;
         IslandTile islandToCheck;
         int desiredIsland = heraldMessage.islandIndex - 1;
         int lastIslandIndex = getGameBoard().getIslands().size() - 1;

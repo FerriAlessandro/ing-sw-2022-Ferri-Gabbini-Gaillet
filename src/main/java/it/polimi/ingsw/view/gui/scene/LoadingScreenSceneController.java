@@ -10,8 +10,6 @@ import javafx.scene.text.Font;
 
 public class LoadingScreenSceneController implements SceneController{
 
-    private Gui gui;
-
     @FXML
     private Pane loadingPane;
 
@@ -30,7 +28,6 @@ public class LoadingScreenSceneController implements SceneController{
     }
     @Override
     public void setGui(Gui gui) {
-        this.gui = gui;
     }
 
     @Override

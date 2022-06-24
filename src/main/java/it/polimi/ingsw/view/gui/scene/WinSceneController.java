@@ -18,9 +18,6 @@ public class WinSceneController implements SceneController {
 
     private SMessageWin message;
     private Gui gui;
-    private final String WIN = "/images/miscellaneous/Winner.png";
-    private final String LOSE = "/images/miscellaneous/Loser.png";
-    private final String TIE = "/images/miscellaneous/Tie.png";
 
 
     @Override
@@ -35,6 +32,9 @@ public class WinSceneController implements SceneController {
 
     @Override
     public void createScene() {
+        String LOSE = "/images/miscellaneous/Loser.png";
+        String TIE = "/images/miscellaneous/Tie.png";
+        String WIN = "/images/miscellaneous/Winner.png";
         Image image = new Image(LOSE);
         if(message.tie)
             image = new Image(TIE);

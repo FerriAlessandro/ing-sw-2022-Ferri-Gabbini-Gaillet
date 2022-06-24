@@ -305,13 +305,6 @@ public class VirtualView implements ViewInterface, Observer {
         SMessageGameState message = new SMessageGameState(studEntrance, studDining, numTowers, towerColor, studIslands,
                 numTowersIslands, colorTowersIslands, forbiddenTokens, studClouds, professors, motherNaturePosition, coins);
 
-        /*
-        System.out.println("\n------------------\n");
-        Cli cli = new Cli();
-        cli.showBoard(message);
-        System.out.println("\n------------------\n");
-         */
-
         showBoard(message);
     }
 

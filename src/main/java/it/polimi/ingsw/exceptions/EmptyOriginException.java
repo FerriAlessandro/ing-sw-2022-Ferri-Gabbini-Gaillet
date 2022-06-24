@@ -5,7 +5,7 @@ package it.polimi.ingsw.exceptions;
  * @author A.G. Gaillet
  * @version 1.0
  */
-public class EmptyOriginException extends Exception{
+public class EmptyOriginException extends RuntimeException{
     /**
      * Constructor.
      */
