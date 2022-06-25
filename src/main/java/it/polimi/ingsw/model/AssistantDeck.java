@@ -23,7 +23,7 @@ public class AssistantDeck implements Serializable {
     /**
      * Constructor. Creates a deck by adding all existing {@link AssistantCard}s.
      */
-    public AssistantDeck(Wizard wizard){                            // player can choose its wizard
+    public AssistantDeck(){                            // player can choose its wizard
         // goes through each AssistantCard instance and adds it to the deck
         deck.addAll(Arrays.asList(AssistantCard.values()));
 

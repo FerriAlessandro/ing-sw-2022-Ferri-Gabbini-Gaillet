@@ -4,7 +4,6 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enumerations.Characters;
 import it.polimi.ingsw.model.enumerations.Color;
 import it.polimi.ingsw.model.enumerations.TowerColor;
-import it.polimi.ingsw.model.enumerations.Wizard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ class GameBoardTest {
         t1.add(TowerColor.GRAY);
 
         for (int i = 0; i< numPlayers; i++) {
-            AssistantDeck ad = new AssistantDeck(Wizard.WIZARD_1);
+            AssistantDeck ad = new AssistantDeck();
             Player pl1 = new Player(1, ad, "test", false, false, t1.get(i % t1.size()));
             PlayerBoard pb1 = new PlayerBoard(numPlayers);
             playerBoards.put(pl1, pb1);

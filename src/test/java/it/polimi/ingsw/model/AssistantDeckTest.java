@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enumerations.AssistantCard;
-import it.polimi.ingsw.model.enumerations.Wizard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,8 @@ class AssistantDeckTest {
 
     @BeforeEach
     void setUp() {
-        deck1 = new AssistantDeck(Wizard.WIZARD_1);
-        deck2 = new AssistantDeck(Wizard.WIZARD_2);
+        deck1 = new AssistantDeck();
+        deck2 = new AssistantDeck();
     }
 
 

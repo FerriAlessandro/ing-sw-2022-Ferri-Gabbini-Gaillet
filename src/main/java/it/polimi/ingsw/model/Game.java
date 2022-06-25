@@ -33,10 +33,10 @@ public class Game extends Observable implements Serializable {
 
         this.players = new ArrayList<>();
         this.numOfPlayers = playersNames.size();
-        this.players.add(new Player(1,new AssistantDeck(Wizard.WIZARD_1), playersNames.get(0), true, true, TowerColor.WHITE));
-        this.players.add(new Player(2, new AssistantDeck(Wizard.WIZARD_2), playersNames.get(1), false, false, TowerColor.BLACK));
+        this.players.add(new Player(1,new AssistantDeck(), playersNames.get(0), true, true, TowerColor.WHITE));
+        this.players.add(new Player(2, new AssistantDeck(), playersNames.get(1), false, false, TowerColor.BLACK));
         if(playersNames.size()==3)
-            this.players.add(new Player(3, new AssistantDeck(Wizard.WIZARD_3), playersNames.get(2), false, false, TowerColor.GRAY));
+            this.players.add(new Player(3, new AssistantDeck(), playersNames.get(2), false, false, TowerColor.GRAY));
 
         this.gameBoard = new GameBoard(players);
     }

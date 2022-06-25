@@ -5,7 +5,6 @@ import it.polimi.ingsw.exceptions.CardNotFoundException;
 import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.enumerations.AssistantCard;
 import it.polimi.ingsw.model.enumerations.TowerColor;
-import it.polimi.ingsw.model.enumerations.Wizard;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,8 +14,8 @@ class PlayerTest {
 
     @BeforeEach
     void setUp() {
-        p1 = new Player(1, new AssistantDeck(Wizard.WIZARD_1), "alex", true, true, TowerColor.WHITE);
-        p2 = new Player(2, new AssistantDeck(Wizard.WIZARD_2), "alex2", false, false, TowerColor.BLACK);
+        p1 = new Player(1, new AssistantDeck(), "alex", true, true, TowerColor.WHITE);
+        p2 = new Player(2, new AssistantDeck(), "alex2", false, false, TowerColor.BLACK);
         for(AssistantCard assistantCard : AssistantCard.values())
             assistantCard.resetPlayed();
 

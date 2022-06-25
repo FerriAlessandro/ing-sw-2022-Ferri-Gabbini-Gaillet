@@ -152,7 +152,7 @@ public class NewGameSceneController implements SceneController {
                 gameModeButton.getItems().add(new MenuItem("Expert"));
 
                 for (MenuItem m : gameModeButton.getItems())
-                    m.setOnAction((e3) -> numOfPlayersButton.setText(m.getText()));
+                    m.setOnAction((e3) -> gameModeButton.setText(m.getText()));
 
                 confirmButton.setOnAction((e4) -> {
                     if (!numOfPlayersButton.getText().equals("Players") && !gameModeButton.getText().equals("Mode"))
