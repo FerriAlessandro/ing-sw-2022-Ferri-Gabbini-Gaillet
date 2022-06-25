@@ -20,12 +20,12 @@ public class ClientApp {
         boolean server = false;
 
         for(String arguments : args) {
-            if (arguments.equals("--cli") || arguments.equals("-c")) {
-                useCli = true;
-            } else if (arguments.equals("--simple") || arguments.equals("-s")) {
-                simpleCli = true;
-            } else if (arguments.equals("--server") || arguments.equals("-server")){
-                server = true;
+            switch (arguments) {
+                case "--cli", "-c" -> useCli = true;
+                case "--simple", "-s" -> simpleCli = true;
+                case "--server", "-server" -> server = true;
+                case "--author", "--authors" -> printAuthors();
+                case "--info" -> printInfo();
             }
         }
 
@@ -48,6 +48,39 @@ public class ClientApp {
         }
         else
             Application.launch(Gui.class);
+    }
+
+    /**
+     * Prints authors to command line.
+     */
+    private static void printAuthors(){
+        System.out.print("""
+                                    
+                                    
+                                    This version of Eryantis has been programmed with love by:
+                                     - Alessandro Ferri
+                                     - Alessandro Gabbini
+                                     - Angelo G. Gaillet
+                                     
+                                     
+                                     """);
+        System.exit(0);
+    }
+
+    /**
+     * Prints software info to command line.
+     */
+    private static void printInfo(){
+        System.out.println("""
+                                    
+                                    
+                                    This program was developed in accordance with the requirements of the final examination of Software Engineering
+                                    at Politecnico di Milano. For further information visit the repository of the project at the following link:
+                                    https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet
+                                    
+                                    
+                                    """);
+        System.exit(0);
     }
 
 }

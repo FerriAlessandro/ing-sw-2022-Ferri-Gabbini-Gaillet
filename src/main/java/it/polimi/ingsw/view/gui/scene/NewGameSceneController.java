@@ -79,37 +79,48 @@ public class NewGameSceneController implements SceneController {
             mode = "Expert";
         else mode = "Easy";
         askedToLoad = true;
-
-
         loadGameButton.setVisible(true);
         loadGameButton.setOnAction((event) -> {
-                backButton.setVisible(true);
-                confirmButton.setOnAction(null);
-                numOfPlayersButton.setText(Integer.toString(message.numOfPlayers));
-                gameModeButton.setText(mode);
-                newGameButton.setVisible(false);
-                loadGameButton.setVisible(false);
-                numOfPlayersButton.setVisible(true);
-                gameModeButton.setVisible(true);
-                confirmButton.setVisible(true);
-                confirmButton.setOnAction((event2) -> { //if the user clicked "load game" the confirm button will send "true" to the server
-                    gui.adapter.sendMessage(new RMessageLoadGame(true));
-                });
-
+            backButton.setVisible(true);
+            confirmButton.setOnAction(null);
+            numOfPlayersButton.setText(Integer.toString(message.numOfPlayers));
+            gameModeButton.setText(mode);
+            newGameButton.setVisible(false);
+            loadGameButton.setVisible(false);
+            numOfPlayersButton.setVisible(true);
+            gameModeButton.setVisible(true);
+            confirmButton.setVisible(true);
+            confirmButton.setOnAction((event2) -> { //if the user clicked "load game" the confirm button will send "true" to the server
+                gui.adapter.sendMessage(new RMessageLoadGame(true));
             });
-
+        });
         newGameButton.setOnAction(null);
         newGameButton.setOnAction((e)-> {
             gui.adapter.sendMessage(new RMessageLoadGame(false));
             numOfPlayersButton.setText("Players");
             gameModeButton.setText("Mode");
-            createMenuButtons(gameModeButton, backButton, newGameButton);
+            numOfPlayersButton.getItems().add(new MenuItem("2"));
+            numOfPlayersButton.getItems().add(new MenuItem("3"));
+
+            for(MenuItem m : numOfPlayersButton.getItems())
+                m.setOnAction((e2)-> numOfPlayersButton.setText(m.getText()));
+            gameModeButton.getItems().add(new MenuItem("Easy"));
+            gameModeButton.getItems().add(new MenuItem("Expert"));
+
+            for(MenuItem m : gameModeButton.getItems())
+                m.setOnAction((e3) -> gameModeButton.setText(m.getText()));
+
+            confirmButton.setOnAction((e4) -> {
+                if(!numOfPlayersButton.getText().equals("Players") && !gameModeButton.getText().equals("Mode"))
+                    gui.adapter.sendMessage(new RMessageGameSettings(Integer.parseInt(numOfPlayersButton.getText()), gameModeButton.getText().equals("Expert")));
+            });
+            backButton.setVisible(false);
+            newGameButton.setVisible(false);
             loadGameButton.setVisible(false);
             gameModeButton.setVisible(true);
             numOfPlayersButton.setVisible(true);
             confirmButton.setVisible(true);
         });
-
         backButton.setOnAction((event)->{
             loadGameButton.setVisible(true);
             newGameButton.setVisible(true);
@@ -121,33 +132,6 @@ public class NewGameSceneController implements SceneController {
             backButton.setVisible(false);
         });
 
-
-    }
-
-    /**
-     * Creates buttons for the menu scene.
-     * @param gameModeButton used to set the game mode
-     * @param backButton used to go back
-     * @param newGameButton used to create a new game
-     */
-    private void createMenuButtons(MenuButton gameModeButton, Button backButton, Button newGameButton) {
-        numOfPlayersButton.getItems().add(new MenuItem("2"));
-        numOfPlayersButton.getItems().add(new MenuItem("3"));
-
-        for(MenuItem m : numOfPlayersButton.getItems())
-            m.setOnAction((e2)-> numOfPlayersButton.setText(m.getText()));
-        gameModeButton.getItems().add(new MenuItem("Easy"));
-        gameModeButton.getItems().add(new MenuItem("Expert"));
-
-        for(MenuItem m : gameModeButton.getItems())
-            m.setOnAction((e3) -> gameModeButton.setText(m.getText()));
-
-        confirmButton.setOnAction((e4) -> {
-            if(!numOfPlayersButton.getText().equals("Players") && !gameModeButton.getText().equals("Mode"))
-                gui.adapter.sendMessage(new RMessageGameSettings(Integer.parseInt(numOfPlayersButton.getText()), gameModeButton.getText().equals("Expert")));
-        });
-        backButton.setVisible(false);
-        newGameButton.setVisible(false);
     }
 
     /**
@@ -158,7 +142,25 @@ public class NewGameSceneController implements SceneController {
             newGameButton.setOnAction(null);
             newGameButton.setOnAction((e) -> {
                 confirmButton.setOnAction(null);
-                createMenuButtons(numOfPlayersButton, newGameButton, loadGameButton);
+                numOfPlayersButton.getItems().add(new MenuItem("2"));
+                numOfPlayersButton.getItems().add(new MenuItem("3"));
+
+                for (MenuItem m : numOfPlayersButton.getItems())
+                    m.setOnAction((e2) -> numOfPlayersButton.setText(m.getText()));
+
+                gameModeButton.getItems().add(new MenuItem("Easy"));
+                gameModeButton.getItems().add(new MenuItem("Expert"));
+
+                for (MenuItem m : gameModeButton.getItems())
+                    m.setOnAction((e3) -> numOfPlayersButton.setText(m.getText()));
+
+                confirmButton.setOnAction((e4) -> {
+                    if (!numOfPlayersButton.getText().equals("Players") && !gameModeButton.getText().equals("Mode"))
+                        gui.adapter.sendMessage(new RMessageGameSettings(Integer.parseInt(numOfPlayersButton.getText()), gameModeButton.getText().equals("Expert")));
+                });
+
+                newGameButton.setVisible(false);
+                loadGameButton.setVisible(false);
                 numOfPlayersButton.setVisible(true);
                 gameModeButton.setVisible(true);
                 confirmButton.setVisible(true);

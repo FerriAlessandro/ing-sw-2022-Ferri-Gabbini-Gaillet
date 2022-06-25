@@ -77,7 +77,9 @@ public class Gui extends Application implements ViewInterface {
 
     @Override
     public void stop(){
-        adapter.sendMessage(new RMessageDisconnect());
+        try {
+            adapter.sendMessage(new RMessageDisconnect());
+        }catch (NullPointerException ignored){} //Happens when one closes the application before they connected to the server
     }
 
     /**
