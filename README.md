@@ -17,18 +17,24 @@ The Class Diagrams (described using UML) are available here:
 - [Final UML diagrams](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/uml_diagrams/final)
 
 ### JavaDoc
-The documentation available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/javadoc)  was realized using Java documentation techniques (JavaDoc) and provides a description of all classes and their methods (and public attributes when necessary). 
+The project documentation was written following Java documentation techniques and can be read in html formal using the 'javadoc' command on the source files.
 
 ### Test Coverage
-Testing efforts focused on the model and was implemented using JUnit. The resulting coverage report of the unit testing is available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/test_coverage_report).
+Testing efforts focused on the model and was implemented using JUnit. 
+The following table shows a summary of coverage report on the mentioned package.
+
+| Package               | Class % | Method % | Line % |
+|-----------------------|---------|----------|--------|
+| it.polimi.ingsw.model | 90%     | 89%      | 82%    |
 
 ### Libraries e Plugins
 In this section a brief description of libraries and plugins used in the project is provided.
-|Library/Plugin|Description|
-|---------------|-----------|
-|__Maven__|Project-management tool, provides for automation of compilation and managment of dependencies.|
-|__JUnit__|Unit testing framework.|
-|__JavaFx__|Library used to create Graphical User Interfaces|
+
+| Library/Plugin | Description                                                                                    |
+|----------------|------------------------------------------------------------------------------------------------|
+| __Maven__      | Project-management tool, provides for automation of compilation and managment of dependencies. |
+| __JUnit__      | Unit testing framework.                                                                        |
+| __JavaFx__     | Library used to create Graphical User Interfaces                                               |
 
 
 ## Functionalities
@@ -44,8 +50,8 @@ In this section a brief description of libraries and plugins used in the project
 
 ## Compilation and packaging
 ### Executables
-The executable (.jar) was created using the Maven Shade plugin. These files are available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/jar).
-To compile the jars on your own using the Maven package and compile commands.
+The executable (.jar) was created using the Maven Shade plugin. This file is available [here](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/tree/main/deliverables/jar).
+To compile the jar on your own use the Maven package and compile commands.
 
 ## Run the game
 This game requires Java 17 or higher.
