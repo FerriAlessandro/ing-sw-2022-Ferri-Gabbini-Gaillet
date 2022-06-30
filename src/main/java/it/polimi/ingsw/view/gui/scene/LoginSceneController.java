@@ -11,7 +11,7 @@ import java.util.Objects;
 
 
 /**
- * This is the Login Scene Controller. It handles the connection to the server.
+ * Scene Controller of the Login Scene. It handles the connection to the server.
  * @author AlessandroG
  * @version 1.0
  */
@@ -30,12 +30,16 @@ public class LoginSceneController implements SceneController {
     void onConnectButtonPressed(ActionEvent event) {
         int port = 2351; //default value
         String ipAddress = "localhost"; //default
-        //TODO add syntax controls
-        //default value
         if(!Objects.equals(serverAddressField.getText(), ""))
             ipAddress = serverAddressField.getText();
-        if(!Objects.equals(serverPortField.getText(), ""))
-            port = Integer.parseInt(serverPortField.getText());
+        if(!Objects.equals(serverPortField.getText(), "")) {
+            try {
+                port = Integer.parseInt(serverPortField.getText());
+            }
+            catch(NumberFormatException e) {
+                System.out.println("Invalid port value. Default value used instead");
+            }
+        }
 
         gui.adapter = new Adapter(gui, ipAddress, port);
     }

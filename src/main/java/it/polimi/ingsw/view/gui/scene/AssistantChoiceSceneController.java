@@ -14,6 +14,12 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 
+/**
+ * Scene Controller of the AssistantChoice Scene.
+ * Methods handle the choice of an assistant card, sending the message containing the choice to the adapter.
+ * @author AlessandroG
+ * @version 1.0
+ */
 public class AssistantChoiceSceneController implements SceneController {
 
     private Gui gui;
@@ -44,6 +50,9 @@ public class AssistantChoiceSceneController implements SceneController {
 
     @FXML ArrayList<Integer> listOfCards = new ArrayList<>();
 
+    /**
+     * Initialize method creates an array containing the index of the ten assistant cards
+     */
     @FXML
     void initialize() {
         for(int i = 1; i <= 10; i++) { //inizializziamo qui perchè tanto questo non cambia mai, il controller non viene più istanziato ogni volta!
@@ -123,6 +132,10 @@ public class AssistantChoiceSceneController implements SceneController {
         this.message = (SMessageShowDeck)message;
     }
 
+    /**
+     * Builds the JavaFX scene containing the 10 available assistant cards.
+     * If a card has already been played, the method changes the graphical appearance of the card and makes it not clickable.
+     */
     @Override
     public void createScene() {
 
@@ -140,6 +153,9 @@ public class AssistantChoiceSceneController implements SceneController {
         }
     }
 
+    /**
+     * Handles the passage between the assistant choice scene and the gameBoard scene.
+     */
     public void gameBoardScene(){
         try{
             gui.changeScene(Gui.GAMEBOARD);

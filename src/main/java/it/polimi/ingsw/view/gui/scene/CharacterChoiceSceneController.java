@@ -18,6 +18,12 @@ import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Scene Controller of the CharacterChoice Scene.
+ * Methods handle the choice of a character card, sending the message containing the choice to the adapter.
+ * @author AlessandroG
+ * @version 1.0
+ */
 public class CharacterChoiceSceneController implements SceneController {
 
     public GridPane gridPane;
