@@ -104,4 +104,5 @@ In this section all group (code PSP15) members are listed in alphabetical order.
 
 ## License
 Eriantys is a board game created and owned by [Cranio Creations](https://www.craniocreations.it), graphical assets are under their copyright.
+
 The software is licensed under the [MIT License](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/blob/main/LICENSE), you may use it according to its guidelines.
