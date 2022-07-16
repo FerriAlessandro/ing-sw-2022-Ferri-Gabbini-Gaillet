@@ -105,6 +105,6 @@ In questa sezione vengono elencati in ordine alfabetico i componenti del gruppo 
 - [__Alessandro Gabbini__](https://github.com/alessandroGabbini)
 - [__Angelo Giovanni Gaillet__](https://github.com/aggaillet)
 
-##Licenze
-Eriantys è un gioco da tavolo di proprietà intellettuale di [Cranio Creations](http://www.craniocreations.it).
+## Licenze
+Eriantys è un gioco da tavolo di proprietà intellettuale di [Cranio Creations](https://www.craniocreations.it).
 Il codice è sotto [Licenza MIT](https://github.com/FerriAlessandro/ing-sw-2022-Ferri-Gabbini-Gaillet/blob/main/LICENSE), il software potrà essere utilizzato seguendo le sue linee guida.
