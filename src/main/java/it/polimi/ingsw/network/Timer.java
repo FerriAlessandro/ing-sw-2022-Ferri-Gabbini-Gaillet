@@ -48,6 +48,14 @@ public class Timer extends Thread{
                     Thread.currentThread().interrupt();
                 }
             }
+            synchronized (this) {
+                try {
+                    Thread.currentThread().wait(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
         }
     }
 

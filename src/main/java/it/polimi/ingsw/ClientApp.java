@@ -32,9 +32,9 @@ public class ClientApp {
         if(useCli) {
             Cli cli;
             if(simpleCli) {
-                cli = new AdvancedCli();
-            }else {
                 cli = new Cli();
+            }else {
+                cli = new AdvancedCli();
             }
             cli.startGame();
         } else if (server) {
